@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+Promise.resolve().then(() => require("./provider/data"));
+Promise.resolve().then(() => require("./provider/document-formatting-edit-provider"));
+Promise.resolve().then(() => require("./provider/folding-range-provider"));
+Promise.resolve().then(() => require("./provider/document-color-provider"));
+Promise.resolve().then(() => require("./provider/completion-provider"));
+Promise.resolve().then(() => require("./provider/hover-provider"));
+Promise.resolve().then(() => require("./provider/signature-help-provider"));
+Promise.resolve().then(() => require("./provider/definition-provider"));
+Promise.resolve().then(() => require("./provider/diagnostic-provider"));
+Promise.resolve().then(() => require("./provider/rename-provider"));
+Promise.resolve().then(() => require("./provider/outline-provider"));
