@@ -20,7 +20,7 @@ class DocumentFormattingSortEditProvider {
         for (let line = 0; line < document.lineCount; line++) {
             const lineText = document.lineAt(line);
             const text = lineText.text;
-            if (/^\s*(library|scope|struct|interface|globals|(?:(?:private|public)\s+)?(?:static\s+)?function(?<!\s+interface\b)|(?:(?:private|public)\s+)?(?:static\s+)?method|(?:static\s+)?if|loop|while|for|module|\/\/!\s+(?:zinc|textmacro|nov[Jj]ass|inject))\b/.test(text)) {
+            if (/^\s*((library|library_once)|scope|struct|interface|globals|(?:(?:private|public)\s+)?(?:static\s+)?function(?<!\s+interface\b)|(?:(?:private|public)\s+)?(?:static\s+)?method|(?:static\s+)?if|loop|while|for|module|\/\/!\s+(?:zinc|textmacro|nov[Jj]ass|inject))\b/.test(text)) {
                 if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                     textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
                 }

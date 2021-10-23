@@ -98,7 +98,7 @@ function parse(content) {
             library = null;
             libraryState = 0;
         };
-        if (type == "library") {
+        if (type == "library" || type == "library_once") {
             resetLibrary();
         }
     };
@@ -404,7 +404,7 @@ function parse(content) {
                 }
             }
         };
-        if (token.isId() && token.value == "library") {
+        if (token.isId() && (token.value == "library" || token.value == "library_once")) {
             resetLibrary();
             library = new ast_1.Library("");
             library.loc.start = new common_1.Position(token.line, token.position);

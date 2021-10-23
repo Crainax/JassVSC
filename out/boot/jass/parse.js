@@ -60,7 +60,7 @@ function parse(content, options = JassOption.default()) {
         }
     })
         .filter((token) => {
-        if (token.value == "library") {
+        if (token.value == "library" || token.value == "library_once") {
             inLibrary = true;
         }
         else if (token.value == "endlibrary") {
