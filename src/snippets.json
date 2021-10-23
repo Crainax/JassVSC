@@ -9,12 +9,12 @@
     "description": "if",
     "scope": "source.jass"
   },
-  "ifelse": {
+  /*   "ifelse": {
     "prefix": "ifelse",
     "body": "if ${1:condition} then\n\t${2:}\nelse\n\t${0:}\nendif",
     "description": "ifelse",
     "scope": "source.jass"
-  },
+  }, */
   "elseif": {
     "prefix": "elif",
     "body": "elseif ${1:condition} then\n\t${0:}\n",
@@ -27,13 +27,12 @@
     "description": "function",
     "scope": "source.jass"
   },
-
-  "boolexpr": {
+  /*   "boolexpr": {
     "prefix": "function_boolexpr",
     "body": "function ${1:function_name} takes ${2:nothing} returns boolean\n\treturn ${0:true}\nendfunction",
     "description": "function",
     "scope": "source.jass"
-  },
+  }, */
   "loop": {
     "prefix": "loop",
     "body": "loop\n\texitwhen ${1:condition}\n\t${0:}\nendloop",
@@ -46,7 +45,7 @@
     "description": "调用debug打印信息",
     "scope": "source.jass"
   },
-  "main": {
+  /*   "main": {
     "prefix": "main",
     "body": "function main takes nothing returns nothing\n\t${0:}\nendfunction",
     "description": "main",
@@ -57,13 +56,13 @@
     "body": "function config takes nothing returns nothing\n\t${0:}\nendfunction",
     "description": "config",
     "scope": "source.jass"
-  },
-  "library": {
+  }, 
+     "library": {
     "prefix": "library",
     "body": "library ${1:library_name} initializer ${2:init_function} requires ${3:require_libs}\n\tprivate function ${2:initializer_name} takes nothing returns nothing\n\t\t${0:}\n\tendfunction\nendlibrary\n",
     "description": "library",
     "scope": "source.jass"
-  },
+  }, */
   "method": {
     "prefix": "method",
     "body": "method ${1:method_name} takes ${2:nothing} returns ${3:nothing}\n\t${0:}\nendmethod",
@@ -76,24 +75,30 @@
     "description": "struct",
     "scope": "source.jass"
   },
-  "inject": {
+  /*   "inject": {
     "prefix": "inject",
     "body": "//! inject main\n\t//! dovjassinit\n\t${0:}\n//! endinject",
     "description": "inject",
     "scope": "source.jass"
-  },
+  }, */
   "textmacro": {
     "prefix": "textmacro",
     "body": "//! textmacro textmacro_name takes args\n\t${0:\\$args\\$}\n//! endtextmacro",
     "description": "文本宏",
     "scope": "source.jass"
   },
-  "region": {
+  "runtextmacro": {
+    "prefix": "runtextmacro",
+    "body": "//! runtextmacro ${1:TextMacroName}(\"${2:1}\")",
+    "description": "运行文本宏",
+    "scope": "source.jass"
+  },
+  /*   "region": {
     "prefix": "region",
     "body": "//region\n${0}\n//endregion",
     "description": "折叠块",
     "scope": "source.jass"
-  },
+  }, */
   "for": {
     "prefix": "for",
     "body": "for (${2:0} <= ${1:index} < ${3:10}) {${0:}}",
@@ -106,20 +111,18 @@
     "description": "while循环",
     "scope": "source.jass"
   },
-  "debug": {
+  /*   "debug": {
     "prefix": "debug",
     "body": "debug {${0:}}",
     "description": "debug",
     "scope": "source.jass"
   },
-
   "interface": {
     "prefix": "interface",
     "body": "interface ${1:interface_name}\n${0:}\nendinterface",
     "description": "vjass接口",
     "scope": "source.jass"
-  },
-
+  }, */
   "block-zinc": {
     "prefix": "zinc",
     "body": "//! zinc\n  ${0:}\n//! endzinc",
