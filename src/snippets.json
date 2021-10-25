@@ -162,13 +162,15 @@
   },
   "function-VJ": {
     "prefix": "function",
-    "body": "${1:private }function ${2:function_name} takes ${3:nothing} returns ${4:nothing}\n\t${0:}\nendfunction",
+    "body": [
+      "${1:private }function ${2:function_name} takes ${3:nothing} returns ${4:nothing}\n\t${0:}\nendfunction",
+    ],
     "description": "function",
-    "scope": "source.jass"
+    "scope": "jass"
   },
   "loop-VJ": {
     "prefix": "loop",
-    "body": "local integer ${1:i} = 1\nloop\n\texitwhen ${1} > ${2:1}\n\t${0:// body...}\n\tset ${1} = ${1} +1\nendloop",
+    "body": "${3|local integer ,set |}${1:i} = 1\nloop\n\texitwhen ${1} > ${2:1}\n\t${0:// body...}\n\tset ${1} = ${1} +1\nendloop",
     "description": "loop循环",
     "scope": "source.jass"
   },
