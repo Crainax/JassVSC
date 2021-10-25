@@ -1,4 +1,16 @@
 {
+  "if-zinc": {
+    "prefix": "if",
+    "body": "if (${1:condition}) {${0}\n}",
+    "description": "if-zinc",
+    "scope": "source.jass"
+  },
+  "elseif-zinc": {
+    "prefix": "elseif",
+    "body": "else if (${1:condition}) {${0}\n}",
+    "description": "elseif-zinc",
+    "scope": "source.jass"
+  },
   "for": {
     "prefix": "for",
     "body": "for (${2:0} <= ${1:index} < ${3:10}) {${0:}}",
@@ -53,21 +65,21 @@
     "description": "zinc method 模板",
     "scope": "source.jass"
   },
-  "public-zinc": {
+  "public-block": {
     "prefix": "public",
     "body": "public {\n${0:}\n}",
-    "description": "zinc public 模板",
+    "description": "zinc public 模块",
     "scope": "source.jass"
   },
-  "private-zinc": {
+  "private-block": {
     "prefix": "private",
     "body": "private {\n${0:}\n}",
-    "description": "zinc private 模板",
+    "description": "zinc private 模块",
     "scope": "source.jass"
   },
   "Print-zinc": {
     "prefix": "sout",
-    "body": "BJDebugMsg(\"${0}\")",
+    "body": "BJDebugMsg(\"${0}\");",
     "description": "调用debug打印信息",
     "scope": "source.jass"
   },
