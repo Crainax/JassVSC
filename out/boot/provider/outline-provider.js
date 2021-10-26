@@ -37,8 +37,8 @@ class DocumentSymbolProvider {
                     symbols.push(new vscode.DocumentSymbol(name, "", vscode.SymbolKind.Struct, lineText.range, selectRange));
                 }
             }
-            else if (/^\s*library\s*[a-zA-Z][a-zA-Z\d_]*\b/.test(text)) {
-                const result = text.match(/^\s*library\s*(?<name>[a-zA-Z][a-zA-Z\d_]*)/);
+            else if (/^\s*library(_once)?\s*[a-zA-Z][a-zA-Z\d_]*\b/.test(text)) {
+                const result = text.match(/^\s*library(_once)?\s*(?<name>[a-zA-Z][a-zA-Z\d_]*)/);
                 if (result && result.groups) {
                     const name = result.groups["name"];
                     const nameIndex = result.indexOf(name);

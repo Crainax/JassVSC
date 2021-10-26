@@ -63,6 +63,11 @@ const FoldingOptions = [
         kind: vscode.FoldingRangeKind.Imports
     },
     {
+        start: "^\\s*library_once\\b",
+        end: "^\\s*endlibrary\\b",
+        kind: vscode.FoldingRangeKind.Imports
+    },
+    {
         start: "^\\s*/\\*",
         end: "^\\s*\\*/",
         kind: vscode.FoldingRangeKind.Comment
