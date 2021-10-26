@@ -1,13 +1,13 @@
 {
   "if-zinc": {
     "prefix": "if",
-    "body": "if (${1:condition}) {${0}\n}",
+    "body": "if (${1:condition}) {\n${0}}",
     "description": "if-zinc",
     "scope": "source.jass"
   },
   "elseif-zinc": {
     "prefix": "elseif",
-    "body": "else if (${1:condition}) {${0}\n}",
+    "body": "else if (${1:condition}) {\n${0}}",
     "description": "elseif-zinc",
     "scope": "source.jass"
   },
@@ -29,12 +29,6 @@
     "description": "zinc-block",
     "scope": "source.jass"
   },
-  "library-zinc": {
-    "prefix": "library",
-    "body": "library ${1:library_name} ${2:requires ${3:require_librarys}} {\n${0:}\n}",
-    "description": "zinc library 模板",
-    "scope": "source.jass"
-  },
   "interface-zinc": {
     "prefix": "interface",
     "body": "interface ${1:interface_name} {\n${0:}\n}",
@@ -43,7 +37,7 @@
   },
   "struct-zinc": {
     "prefix": "struct",
-    "body": "struct ${1:struct_name} ${2:extends ${3:extends_name}} {\n${0:}\n}",
+    "body": "${1:public }struct ${2:struct_name} ${3:extends ${4:extends_name}} {\n${0:}\n}",
     "description": "zinc struct 模板",
     "scope": "source.jass"
   },
@@ -55,13 +49,13 @@
   },
   "function-zinc": {
     "prefix": "function",
-    "body": "function ${1:function_name} (${2}) ${3| -> nothing, , -> |} {\n\t${0:}\n}",
+    "body": "${1:public }function ${2:function_name} (${3})${5:  -> ${4:nothing}} {\n\t${0:}\n}",
     "description": "zinc function 模板",
     "scope": "source.jass"
   },
   "method-zinc": {
     "prefix": "method",
-    "body": "method ${1:function_name} (${2}) ${3| -> nothing, , -> |} {\n\t${0:}\n}",
+    "body": "${1:public }method ${2:function_name} (${3})${5:  -> ${4:nothing}} {\n\t${0:}\n}",
     "description": "zinc method 模板",
     "scope": "source.jass"
   },
@@ -79,7 +73,7 @@
   },
   "Print-zinc": {
     "prefix": "sout",
-    "body": "BJDebugMsg(\"${0}\");",
+    "body": "BJDebugMsg(\"${1}\");",
     "description": "调用debug打印信息",
     "scope": "source.jass"
   },

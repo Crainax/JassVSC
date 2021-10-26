@@ -45,6 +45,7 @@ class DocumentFormattingSortEditProvider {
             //Zinc有关的前缩(已经把|while|for| 转到这里)
             else if (/.*\{+$/.test(text)) {
                 //两次匹配,这里匹配开头
+                //目前这样有问题: {}
                 if (!(/^\s*\//.test(text))) {
                     if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                         textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
