@@ -44,9 +44,8 @@ class DocumentFormattingSortEditProvider {
             //原理:按最后一个字符是否为{来看,最前面的字符不是/
             //Zinc有关的前缩(已经把|while|for| 转到这里)
             else if (/.*\{+$/.test(text)) {
-                //两次匹配,这里匹配开头
-                //目前这样有问题: {}
-                if (!(/^\s*\//.test(text))) {
+                //两次匹配,第二次匹配开头 : 不能以/ 或 } 开头
+                if (!(/^\s*[\/\}]/.test(text))) {
                     if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                         textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
                     }
@@ -77,7 +76,12 @@ class DocumentFormattingSortEditProvider {
             //else if (str="{}}{{}{}{}")            匹配失败
             //else XXXXX;                           匹配失败
             //else                                  匹配成功
-            else if (/^\s*(else\s*|elseif\b.*then\s*)$/.test(text)) {
+            //后面新加:
+            //elseif   ()  then //XXXXXX            匹配成功
+            //else  //XXXXXX                        匹配成功
+            //elseif   ()  //then XXXXXX            匹配失败
+            //^\s*(else|elseif\b.*then\b)\s*(//.*)?$
+            else if (/^\s*(else|elseif\b.*then\b)\s*(\/\/.*)?$/.test(text)) {
                 if (indent > 0) {
                     if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent - 1 == 0) {
                         textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
@@ -96,33 +100,35 @@ class DocumentFormattingSortEditProvider {
                 }
             }
         }
-        for (let line = 0; line < document.lineCount; line++) {
-            const lineText = document.lineAt(line);
-            if (lineText.isEmptyOrWhitespace) {
-                continue;
-            }
-            const text = lineText.text;
-            const ts = tokens_1.tokens(text);
-            ts.reduce((previousValue, currentValue, currentIndex, array) => {
-                if (currentValue.isOp() && NeedAddSpaceOps.includes(currentValue.value) && (previousValue.isId() || previousValue.isInt() || previousValue.isReal() || previousValue.isString() || previousValue.isMark())) {
-                    if (currentValue.position - previousValue.end != 1) {
-                        textEdits.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(lineText.lineNumber, previousValue.end), new vscode.Position(lineText.lineNumber, currentValue.position)), " "));
-                    }
-                }
-                else if ((currentValue.isId() || currentValue.isInt() || currentValue.isReal() || currentValue.isString() || currentValue.isMark()) &&
-                    previousValue.isOp() && NeedAddSpaceOps.includes(previousValue.value)) {
-                    if (currentValue.position - previousValue.end != 1) {
-                        textEdits.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(lineText.lineNumber, previousValue.end), new vscode.Position(lineText.lineNumber, currentValue.position)), " "));
-                    }
-                }
-                else if (currentValue.isId() && previousValue.isId()) {
-                    if (currentValue.position - previousValue.end != 1) {
-                        textEdits.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(lineText.lineNumber, previousValue.end), new vscode.Position(lineText.lineNumber, currentValue.position)), " "));
-                    }
-                }
-                return currentValue;
-            });
-        }
+
+        //注释看看,效果还不错,有了Align后这个其实不需要了
+        // for (let line = 0; line < document.lineCount; line++) {
+        //     const lineText = document.lineAt(line);
+        //     if (lineText.isEmptyOrWhitespace) {
+        //         continue;
+        //     }
+        //     const text = lineText.text;
+        //     const ts = tokens_1.tokens(text);
+        //     ts.reduce((previousValue, currentValue, currentIndex, array) => {
+        //         if (currentValue.isOp() && NeedAddSpaceOps.includes(currentValue.value) && (previousValue.isId() || previousValue.isInt() || previousValue.isReal() || previousValue.isString() || previousValue.isMark())) {
+        //             if (currentValue.position - previousValue.end != 1) {
+        //                 textEdits.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(lineText.lineNumber, previousValue.end), new vscode.Position(lineText.lineNumber, currentValue.position)), " "));
+        //             }
+        //         }
+        //         else if ((currentValue.isId() || currentValue.isInt() || currentValue.isReal() || currentValue.isString() || currentValue.isMark()) &&
+        //             previousValue.isOp() && NeedAddSpaceOps.includes(previousValue.value)) {
+        //             if (currentValue.position - previousValue.end != 1) {
+        //                 textEdits.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(lineText.lineNumber, previousValue.end), new vscode.Position(lineText.lineNumber, currentValue.position)), " "));
+        //             }
+        //         }
+        //         else if (currentValue.isId() && previousValue.isId()) {
+        //             if (currentValue.position - previousValue.end != 1) {
+        //                 textEdits.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(lineText.lineNumber, previousValue.end), new vscode.Position(lineText.lineNumber, currentValue.position)), " "));
+        //             }
+        //         }
+        //         return currentValue;
+        //     });
+        // }
         return textEdits;
     }
 }
