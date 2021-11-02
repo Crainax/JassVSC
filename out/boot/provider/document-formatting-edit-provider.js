@@ -25,26 +25,30 @@ class DocumentFormattingSortEditProvider {
             if (/^\s*((library|library_once)|scope|struct|interface|globals|(?:(?:private|public)\s+)?(?:static\s+)?function(?!\s+interface\b)|(?:(?:private|public)\s+)?(?:static\s+)?(?:stub\s+)?method|loop|module|\/\/!\s+(?:textmacro|nov[Jj]ass|inject))\b[^\(\)\{]*$/.test(text)) {
                 if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                     textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
-                }
-                else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
+                } else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
                     textEdits.push(vscode.TextEdit.replace(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex), genString(indent, indentChar)));
                 }
                 indent++;
             }
             //VJ的if如果有then也缩进 (?:static\s+)?if
-            else if (/^\s*(?:static\s+)?if\b.*then\s*$/.test(text)) {
+            //if()                匹配失败(没有then)
+            //if() then           匹配成功
+            //if() then  //XXXX   匹配成功
+            else if (/^\s*(?:static\s+)?if\b.*then\s*(\/\/.*)?$/.test(text)) {
                 if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                     textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
-                }
-                else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
+                } else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
                     textEdits.push(vscode.TextEdit.replace(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex), genString(indent, indentChar)));
                 }
                 indent++;
             }
-            //原理:按最后一个字符是否为{来看,最前面的字符不是/
+            //原理:按最后一个字符是否为{来看,最前面的字符不是/且不是}
             //Zinc有关的前缩(已经把|while|for| 转到这里)
             else if (/.*\{+$/.test(text)) {
-                //两次匹配,第二次匹配开头 : 不能以/ 或 } 开头
+                //两次匹配,第二次匹配开头
+                // XXXXX {       匹配成功
+                // // XXXX {     匹配失败
+                // } XXXX {      匹配失败
                 if (!(/^\s*[\/\}]/.test(text))) {
                     if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                         textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
