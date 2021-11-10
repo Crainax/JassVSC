@@ -42,24 +42,40 @@ class DocumentFormattingSortEditProvider {
                 }
                 indent++;
             }
-            //原理:按最后一个字符是否为{来看,最前面的字符不是/且不是}
             //Zinc有关的前缩(已经把|while|for| 转到这里)
-            else if (/.*\{+$/.test(text)) {
+            //原理:按最后一个字符是否为{来看,最前面的字符不是/且不是}
+            else if (/.*\{+\s*(\/\/.*)?$/.test(text) && (!(/^\s*[\/\}]/.test(text)))) {
+                // else if (/.*\{+$/.test(text)) {
                 //两次匹配,第二次匹配开头
-                // XXXXX {       匹配成功
-                // // XXXX {     匹配失败
-                // } XXXX {      匹配失败
-                if (!(/^\s*[\/\}]/.test(text))) {
-                    if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
-                        textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
-                    }
-                    else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
-                        textEdits.push(vscode.TextEdit.replace(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex), genString(indent, indentChar)));
-                    }
-                    indent++;
+                // XXXXX {               匹配成功
+                // // XXXX {            匹配失败
+                // } XXXX {              匹配失败
+                //二次更新: XXXXX {  //XX     匹配成功
+                if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
+                    textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
+                }
+                else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
+                    textEdits.push(vscode.TextEdit.replace(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex), genString(indent, indentChar)));
+                }
+                indent++;
+            }
+
+            else if (indent > 0 && /^\s*(?:(endlibrary|endscope|endstruct|endinterface|endglobals|endfunction|endmethod|endif|endloop|endmodule|\/\/!\s+(?:endtextmacro|endnov[Jj]ass|endinject))\b)/.test(text)) {
+                indent--;
+                if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
+                    textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
+                }
+                else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
+                    textEdits.push(vscode.TextEdit.replace(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex), genString(indent, indentChar)));
                 }
             }
-            else if (indent > 0 && /^\s*(?:(endlibrary|endscope|endstruct|endinterface|endglobals|endfunction|endmethod|endif|endloop|endmodule|\/\/!\s+(?:endtextmacro|endnov[Jj]ass|endinject))\b|})/.test(text)) {
+            //在}后加:\s*(\/\/.*)?$
+            //} else {             捕获失败
+            //} else {    //XXX    捕获失败
+            //}                    捕获成功
+            //}    //////          捕获成功
+            //}));                 捕获成功
+            else if (indent > 0 && /^\s*\}/.test(text) && (!(/\{+\s*(\/\/.*)?$/.test(text)))) {
                 indent--;
                 if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                     textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
@@ -84,7 +100,6 @@ class DocumentFormattingSortEditProvider {
             //elseif   ()  then //XXXXXX            匹配成功
             //else  //XXXXXX                        匹配成功
             //elseif   ()  //then XXXXXX            匹配失败
-            //^\s*(else|elseif\b.*then\b)\s*(//.*)?$
             else if (/^\s*(else|elseif\b.*then\b)\s*(\/\/.*)?$/.test(text)) {
                 if (indent > 0) {
                     if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent - 1 == 0) {
@@ -95,6 +110,22 @@ class DocumentFormattingSortEditProvider {
                     }
                 }
             }
+            //第三次新加:[这里只影响本行前缩]
+            //} else {                              匹配成功
+            //} else if (XXXX) {                    匹配成功
+            //} else {      //XXXXX                 匹配成功
+            //} else if (XXXX) {      //XXXXX       匹配成功
+            else if (/^\s*\}\s*else\b/.test(text) && /\{+\s*(\/\/.*)?$/.test(text)) {
+                if (indent > 0) {
+                    if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent - 1 == 0) {
+                        textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
+                    }
+                    else if (lineText.firstNonWhitespaceCharacterIndex != indent - 1) {
+                        textEdits.push(vscode.TextEdit.replace(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex), genString(indent - 1, indentChar)));
+                    }
+                }
+            }
+
             else if (!lineText.isEmptyOrWhitespace) {
                 if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                     textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
