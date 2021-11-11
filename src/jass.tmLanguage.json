@@ -79,6 +79,7 @@
             {"include": "#block-comment"},
             {"include": "#jass-comment"},
             {"include": "#jass-string"},
+            {"include": "#struct-method-specify"},
             {"include": "#zinc-keyword"},
             {"include": "#zinc-keyword-control"},
             {"include": "#jass-keyword-operator"},
@@ -176,6 +177,7 @@
         { "include": "#vjass-variable-macro" },
         { "include": "#vjass-other" },
         {"include": "#jass-keyword"},
+        {"include": "#struct-method-specify"},
         { "include": "#vjass-keyword" },
         {"include": "#jass-keyword-control"},
         {"include": "#jass-const"},
@@ -230,9 +232,13 @@
       "name": "support.variable",
       "match": "[a-zA-Z][a-zA-Z0-9_]*"
     },
+    "struct-method-specify": {
+      "name": "entity.name.class.jass",
+      "match": "((?<=\\.)execute|evaluate|create|destroy|allocate|deallocate)\\b"
+    },
     "vjass-keyword": {
       "name": "keyword",
-      "match": "\\b(library|library_once|initializer|needs|uses|requires|endlibrary|scope|endscope|private|public|static|interface|endinterface|extends|struct|endstruct|method|endmethod|this|delegate|operator|module|endmodule|implement|optional|stub|key|thistype|onInit|onDestroy|hook|defaults)\\b|((?<=\\.)execute|evaluate|create|destroy|allocate|deallocate)\\b"
+      "match": "\\b(library|library_once|initializer|needs|uses|requires|endlibrary|scope|endscope|private|public|static|interface|endinterface|extends|struct|endstruct|method|endmethod|this|delegate|operator|module|endmodule|implement|optional|stub|key|thistype|onInit|onDestroy|hook|defaults)\\b"
     },
     "vjass-variable-macro": {
       "name": "string.regexp",
