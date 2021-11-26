@@ -250,7 +250,7 @@
     },
     "cpp-macro": {
       "name": "comment.line.number-sign",
-      "match": "(#ifndef|#ifdef|#if|#define|#endif|#include|#else|#[a-zA-z]+)\\s*[a-zA-Z1-9_]*"
+      "match": "(#ifndef|#ifdef|#if|#define|#endif|#include|#else|#[a-zA-z]+)\\s*[a-zA-Z0-9_]*"
     },
     "zinc-keyword": {
       "name": "keyword",
