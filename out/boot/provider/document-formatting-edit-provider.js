@@ -22,7 +22,7 @@ class DocumentFormattingSortEditProvider {
             const text = lineText.text;
             //如果要实现function() 不前缩,还得在这里做非匹配  目前只有if,while与for需要括号,其他的都不
             //这里都以vjass为主,要前缩就不能有括号
-            if (/^\s*((library|library_once)|scope|struct|interface|globals|(?:(?:private|public)\s+)?(?:static\s+)?function(?!\s+interface\b)|(?:(?:private|public)\s+)?(?:static\s+)?(?:stub\s+)?method|loop|module|\/\/!\s+(?:textmacro|nov[Jj]ass|inject))\b[^\(\)\{]*$/.test(text)) {
+            if (/^\s*((library|library_once)|scope|struct|interface|globals|(?:(?:private|public)\s+)?(?:static\s+)?function(?!\s+interface\b)|(?:(?:private|public)\s+)?(?:static\s+)?(?:stub\s+)?method|loop|\/\/!\s+(?:textmacro|nov[Jj]ass|inject))\b[^\(\)\{]*$/.test(text)) {
                 if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                     textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
                 } else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
