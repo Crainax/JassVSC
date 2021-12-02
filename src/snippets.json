@@ -43,7 +43,7 @@
   },
   "module-zinc": {
     "prefix": "module",
-    "body": "module ${1:module_name} {\n${0:}\n}",
+    "body": "public module ${1:module_name} {\n${0:}\n}",
     "description": "zinc module 模板",
     "scope": "source.jass"
   },
@@ -119,7 +119,7 @@
     "body": "function config takes nothing returns nothing\n\t${0:}\nendfunction",
     "description": "config",
     "scope": "source.jass"
-  }, 
+  },
      "library": {
     "prefix": "library",
     "body": "library ${1:library_name} initializer ${2:init_function} requires ${3:require_libs}\n\tprivate function ${2:initializer_name} takes nothing returns nothing\n\t\t${0:}\n\tendfunction\nendlibrary\n",
