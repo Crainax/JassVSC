@@ -154,7 +154,7 @@
     "prefix": "globals",
     "body": "globals\n\t${0:}\nendglobals"
   },
-  "if": {
+  "if-vj": {
     "prefix": "if",
     "body": "if ${1:condition} then\n\t${0:}\nendif",
     "description": "if",
