@@ -63,9 +63,6 @@
     "zinc": {
       "patterns": [
         {
-          "include": "#zinc-macro"
-        },
-        {
           "begin": "//!\\s+zinc\\s*$",
           "end": "//!\\s+endzinc\\s*$",
           "beginCaptures": {
@@ -82,6 +79,7 @@
             {"include": "#block-comment"},
             {"include": "#jass-comment"},
             {"include": "#jass-string"},
+            {"include": "#struct-method-specify"},
             {"include": "#zinc-keyword"},
             {"include": "#zinc-keyword-control"},
             {"include": "#jass-keyword-operator"},
@@ -90,6 +88,8 @@
             {"include": "#jass-class"},
             {"include": "#jass-entity-name-function"},
             {"include": "#jass-number"},
+            {"include": "#cpp-macro"},
+            {"include": "#all-constant"},
             {"include": "#jass-variable"}
           ]
         }
@@ -114,7 +114,7 @@
         }
       ]
     },
-  
+
     "jass-comment": {
       "name": "comment.line.double-slash",
       "begin": "//",
@@ -177,6 +177,7 @@
         { "include": "#vjass-variable-macro" },
         { "include": "#vjass-other" },
         {"include": "#jass-keyword"},
+        {"include": "#struct-method-specify"},
         { "include": "#vjass-keyword" },
         {"include": "#jass-keyword-control"},
         {"include": "#jass-const"},
@@ -185,6 +186,8 @@
         {"include": "#jass-class"},
         {"include": "#jass-entity-name-function"},
         {"include": "#jass-number"},
+        {"include": "#cpp-macro"},
+        {"include": "#all-constant"},
         {"include": "#jass-variable"}
       ]
     },
@@ -211,7 +214,10 @@
         {"include": "#jass-class"},
         {"include": "#jass-entity-name-function"},
         {"include": "#jass-number"},
+        {"include": "#cpp-macro"},
+        {"include": "#all-constant"},
         {"include": "#jass-variable"}
+
       ]
     },
     "jass-number": {
@@ -226,21 +232,29 @@
       "name": "support.variable",
       "match": "[a-zA-Z][a-zA-Z0-9_]*"
     },
+    "struct-method-specify": {
+      "name": "entity.name.class.jass",
+      "match": "((?<=\\.)execute|evaluate|create|destroy|allocate|deallocate)\\b"
+    },
     "vjass-keyword": {
       "name": "keyword",
-      "match": "\\b(library|initializer|needs|uses|requires|endlibrary|scope|endscope|private|public|static|interface|endinterface|extends|struct|endstruct|method|endmethod|this|delegate|operator|module|endmodule|implement|optional|stub|key|thistype|onInit|onDestroy|hook|defaults)\\b|((?<=\\.)execute|evaluate|create|destroy|allocate|deallocate)\\b"
+      "match": "\\b(library|library_once|initializer|needs|uses|requires|endlibrary|scope|endscope|private|public|static|interface|endinterface|extends|struct|endstruct|method|endmethod|this|delegate|operator|module|endmodule|implement|optional|stub|key|thistype|onInit|onDestroy|hook|defaults)\\b"
     },
     "vjass-variable-macro": {
       "name": "string.regexp",
       "match": "\\$[a-zA-Z][a-zA-Z0-9_]*\\$"
     },
-    "zinc-macro": {
+    "all-constant": {
+      "name": "support.constant",
+      "match": "\\b([0-9A-Z]*)_([0-9A-Z_]*)\\b"
+    },
+    "cpp-macro": {
       "name": "comment.line.number-sign",
-      "match": "#ifndef|#ifdef|#if|#define|#endif|#include|#else|#[a-zA-z]+"
+      "match": "(#ifndef|#ifdef|#if|#define|#endif|#include|#else|#[a-zA-z]+)\\s*[a-zA-Z0-9_]*"
     },
     "zinc-keyword": {
       "name": "keyword",
-      "match": "\\b(library|function|constant|onInit|struct|public|private|static|requires|optional|interface|struct|method|operator|module|type|extends|delegate|not|do|this)\\b"
+      "match": "\\b(library|function|constant|onInit|struct|public|private|static|requires|optional|interface|struct|method|operator|module|type|extends|delegate|not|do|this|thistype|onInit)\\b"
     },
     "zinc-keyword-control": {
       "name": "keyword.control",

@@ -293,6 +293,16 @@ class Program {
                 scopeField = 0;
                 inStruct = false;
             }
+            else if (/^\s*library_once\b/.test(line.text)) {
+                const library = (_a = this._handleLibrary(line.text)) !== null && _a !== void 0 ? _a : new Library("");
+                this.librarys.push(library);
+                descHandle(line, library);
+                inLibrary = true;
+                inGlobals = false;
+                inFunc = false;
+                scopeField = 0;
+                inStruct = false;
+            }
             else if (/^\s*endlibrary\b/.test(line.text)) {
                 inLibrary = false;
                 inGlobals = false;
