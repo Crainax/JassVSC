@@ -58,7 +58,12 @@ const FoldingOptions = [
         kind: vscode.FoldingRangeKind.Imports
     },
     {
-        start: "^\\s*(?:library|library_once)\\b",
+        start: "^\\s*library\\b",
+        end: "^\\s*endlibrary\\b",
+        kind: vscode.FoldingRangeKind.Imports
+    },
+    {
+        start: "^\\s*library_once\\b",
         end: "^\\s*endlibrary\\b",
         kind: vscode.FoldingRangeKind.Imports
     },
@@ -123,6 +128,22 @@ const FoldingOptions = [
         kind: vscode.FoldingRangeKind.Imports
     }
 ];
+const globalStartRegExp = new RegExp(`^\\s*globals\\b`);
+const globalEndRegExp = new RegExp(`^\\s*endglobals\\b`);
+const functionStartRegExp = new RegExp(`^\\s*((private|public|static)\\s+)?function\\b`);
+const functionEndRegExp = new RegExp(`^\\s*endfunction\\b`);
+const libraryStartRegExp = new RegExp(`^\\s*library\\b`);
+const libraryEndRegExp = new RegExp(`^\\s*endlibrary\\b`);
+const ifStartRegExp = new RegExp(`^\\s*if\\b`);
+const elseRegExp = new RegExp(`^\\s*else\\b`);
+const elseIfRegExp = new RegExp(`^\\s*elseif\\b`);
+const ifEndRegExp = new RegExp(`^\\s*endif\\b`);
+const loopStartRegExp = new RegExp(`^\\s*loop\\b`);
+const loopEndRegExp = new RegExp(`^\\s*endloop\\b`);
+const regionStartRegExp = new RegExp(`^\\s*//\\s*region\\b`);
+const endRegionRegExp = new RegExp(`^\\s*//\\s*endregion\\b`);
+const methodStartRegExp = new RegExp(`^\\s*method\\b`);
+const endMethodionRegExp = new RegExp(`^\\s*endmethod\\b`);
 class ElseIf {
     constructor(line) {
         this.line = line;

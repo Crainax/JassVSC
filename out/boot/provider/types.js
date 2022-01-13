@@ -49,16 +49,6 @@ exports.StatementTypes = StatementTypes;
 const Types = types(defaultVersion, true);
 exports.Types = Types;
 const TypeExtends = {
-    "boolean": [],
-    "int": [],
-    "real": [
-        "int"
-    ],
-    "string": [],
-    "code": [
-        "nothing"
-    ],
-    "handle": [],
     "agent": [
         "handle"
     ],

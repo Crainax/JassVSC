@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Parser = exports.parse = void 0;
+exports.parse = void 0;
 const common_1 = require("../common");
 const tool_1 = require("../tool");
 const ast_1 = require("./ast");
-const scanner_1 = require("./scanner");
 const tokens_1 = require("./tokens");
 class JassOption {
     constructor() {
@@ -728,33 +727,4 @@ if (false) {
 	a/*
 	a
 	*/a`, true));
-    console.log(new Parser(`
-
-	module
-
-	aa
-
-library c
-
-struct
-
-module
-
-
-// endmodule
-scope
-module
-endmodule
-endscope
-scope
-endscope
-module
-endlibrary
-scope
-module
-endmodule
-endscope
-module
-endmodule
-	`));
 }

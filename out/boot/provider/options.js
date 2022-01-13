@@ -46,14 +46,5 @@ class Options {
     static get isJassDiagnostic() {
         return this.configuration["diagnostic"];
     }
-    static get workspaces() {
-        if (vscode.workspace.workspaceFolders) {
-            return vscode.workspace.workspaceFolders.map((floder) => {
-                const files = tool_1.resolvePaths([floder.uri.fsPath]);
-                return files;
-            }).flat();
-        }
-        return [];
-    }
 }
 exports.Options = Options;

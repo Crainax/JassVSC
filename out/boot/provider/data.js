@@ -1,244 +1,256 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseZincContent = exports.parseContent = void 0;
+exports.findGlobalExcludeReturns = exports.findFunctionExcludeReturns = exports.getGlobalVariables = exports.findLocals = exports.findTakes = exports.findFunctionByName = exports.VjassMap = exports.ZincMap = exports.JassMap = exports.dzApiJProgram = exports.blizzardJProgram = exports.commonAiProgram = exports.commonJProgram = void 0;
 const options_1 = require("./options");
 const fs = require("fs");
 const vscode = require("vscode");
 const tool_1 = require("../tool");
-const ast_1 = require("../jass/ast");
-const parser_1 = require("../jass/parser");
-class Pair {
-    constructor(key, value) {
-        this.key = key;
-        this.value = value;
-    }
-}
-class DataMap {
-    constructor() {
-        this.pairs = [];
-    }
-    put(key, value) {
-        const index = this.pairs.findIndex((pair) => tool_1.compare(pair.key, key));
-        if (index == -1) {
-            this.pairs.push(new Pair(key, value));
-        }
-        else {
-            this.pairs[index].value = value;
-        }
-    }
-    remove(key) {
-        const index = this.pairs.findIndex((pair) => tool_1.compare(pair.key, key));
-        if (index != -1) {
-            if (index == 0) {
-                this.pairs.shift();
-            }
-            else if (index == this.pairs.length - 1) {
-                this.pairs.pop();
-            }
-            else {
-                this.pairs.splice(index, 1);
-            }
-        }
-    }
-    get(key) {
-        return this.pairs.find((pair) => tool_1.compare(pair.key, key));
-    }
-    keys() {
-        return this.pairs.map((pair) => pair.key);
-    }
-    values() {
-        return this.pairs.map((pair) => pair.value);
-    }
-    forEach(callback) {
-        this.pairs.forEach((pair) => callback(pair.key, pair.value));
-    }
-}
-const dataMap = new DataMap();
-const zincDataMap = new DataMap();
-function getFileContent(filePath) {
-    return fs.readFileSync(filePath, {
-        encoding: "utf8"
-    }).toString();
-}
-function setSource(filePath, program) {
-    function set(n) {
-        if (n instanceof ast_1.Program) {
-            n.natives.forEach(x => {
-                x.source = filePath;
-            });
-            n.functions.forEach(x => {
-                x.source = filePath;
-            });
-            n.globals.forEach(x => {
-                x.source = filePath;
-            });
-            n.structs.forEach(x => {
-                x.source = filePath;
-            });
-            n.librarys.forEach(x => {
-                x.source = filePath;
-            });
-        }
-        else if (n instanceof ast_1.Func) {
-            n.getGlobals().forEach(x => {
-                x.source = filePath;
-            });
-            n.locals.forEach(x => {
-                x.source = filePath;
-            });
-        }
-        else if (n instanceof ast_1.Library) {
-            n.functions.forEach(x => {
-                x.source = filePath;
-            });
-            n.globals.forEach(x => {
-                x.source = filePath;
-            });
-            n.structs.forEach(x => {
-                x.source = filePath;
-            });
-        }
-        else if (n instanceof ast_1.Struct) {
-            n.members.forEach(x => {
-                x.source = filePath;
-            });
-            n.methods.forEach(x => {
-                x.source = filePath;
-            });
-        }
-    }
-    [program, program.globals, program.functions, program.natives, program.librarys, program.structs,
-        program.librarys.map((lib) => lib.globals).flat(),
-        program.librarys.map((lib) => lib.functions).flat(),
-        program.librarys.map((lib) => lib.structs).flat(),
-        program.structs.map((struct) => struct.members).flat(),
-        program.structs.map((struct) => struct.methods).flat(),
-        program.librarys.map((lib) => lib.structs).flat().map((struct) => struct.members).flat(),
-        program.librarys.map((lib) => lib.structs).flat().map((struct) => struct.methods).flat(),
-        program.functions.map((func) => func.getGlobals()).flat(),
-        program.librarys.map((lib) => lib.functions).flat().map((func) => func.getGlobals()).flat(),
-        program.librarys.map((lib) => lib.functions).flat().map((func) => func.locals).flat(),
-        program.functions.flat().map((func) => func.locals).flat(),
-        program.librarys.map((lib) => lib.structs).flat().map((struct) => struct.methods).flat().map((method) => method.locals).flat(),
-    ].flat().forEach(x => {
-        x.source = filePath;
-    });
-}
-function parseContent(filePath, content) {
-    const program = new parser_1.Parser(content).parsing();
-    setSource(filePath, program);
-    dataMap.put(filePath, program);
-}
-exports.parseContent = parseContent;
-function parsePath(...filePaths) {
-    filePaths.forEach((filePath) => {
-        const content = getFileContent(filePath);
-        parseContent(filePath, content);
-    });
-}
-function parseZincContent(filePath, content) {
-    const program = new parser_1.Parser(content).zincing();
-    setSource(filePath, program);
-    zincDataMap.put(filePath, program);
-}
-exports.parseZincContent = parseZincContent;
-function parseZincPath(...filePaths) {
-    filePaths.forEach((filePath) => {
-        const content = getFileContent(filePath);
-        parseZincContent(filePath, content);
-    });
-}
-vscode.workspace.onDidChangeConfiguration((event) => {
-    parsePath(options_1.Options.commonJPath);
+const jassParse = require("../jass/parse");
+const zincParse = require("../zinc/parse");
+const vjassParse = require("../vjass/parse");
+const commonJProgram = jassParse.parse(fs.readFileSync(options_1.Options.commonJPath).toString(), {
+    needParseNative: true
 });
-parsePath(options_1.Options.commonJPath);
-parsePath(options_1.Options.blizzardJPath);
-parsePath(options_1.Options.dzApiJPath);
-parsePath(options_1.Options.commonAiPath);
-parsePath(...options_1.Options.includes);
-parsePath(...options_1.Options.workspaces);
+exports.commonJProgram = commonJProgram;
+const commonAiProgram = jassParse.parse(fs.readFileSync(options_1.Options.commonAiPath).toString(), {
+    needParseNative: false
+});
+exports.commonAiProgram = commonAiProgram;
+const blizzardJProgram = jassParse.parse(fs.readFileSync(options_1.Options.blizzardJPath).toString(), {
+    needParseNative: false
+});
+exports.blizzardJProgram = blizzardJProgram;
+const dzApiJProgram = jassParse.parse(fs.readFileSync(options_1.Options.dzApiJPath).toString(), {
+    needParseNative: true
+});
+exports.dzApiJProgram = dzApiJProgram;
+const JassMap = new Map();
+exports.JassMap = JassMap;
+const ZincMap = new Map();
+exports.ZincMap = ZincMap;
+const VjassMap = new Map();
+exports.VjassMap = VjassMap;
+function parseWorkspaceFiles(floders = vscode.workspace.workspaceFolders) {
+    if (!floders) {
+        return;
+    }
+    floders.forEach((floder) => {
+        const files = tool_1.resolvePaths([floder.uri.fsPath]);
+        files.forEach((filePath) => {
+            const content = fs.readFileSync(filePath).toString();
+            if (tool_1.isJFile(filePath)) {
+                const jassProgram = jassParse.parse(content, {
+                    needParseLocal: true
+                });
+                JassMap.set(filePath, jassProgram);
+                const vjassProgram = vjassParse.parse(content);
+                VjassMap.set(filePath, vjassProgram);
+                const zincProgram = zincParse.parse(content);
+                ZincMap.set(filePath, zincProgram);
+            }
+            else if (tool_1.isAiFile(filePath)) {
+                const jassProgram = jassParse.parse(content, {
+                    needParseLocal: true
+                });
+                JassMap.set(filePath, jassProgram);
+                const vjassProgram = vjassParse.parse(content);
+                VjassMap.set(filePath, vjassProgram);
+                const zincProgram = zincParse.parse(content);
+                ZincMap.set(filePath, zincProgram);
+            }
+            else if (tool_1.isZincFile(filePath)) {
+                const zincProgram = zincParse.parse(content, true);
+                ZincMap.set(filePath, zincProgram);
+            }
+        });
+    });
+}
+parseWorkspaceFiles();
 function startWatch() {
     const watcher = vscode.workspace.createFileSystemWatcher("**/*{.j,.ai,.jass}", false, false, false);
     watcher.onDidCreate((event) => {
-        parsePath(event.fsPath);
+        const content = fs.readFileSync(event.fsPath).toString();
+        const program = jassParse.parse(content, {
+            needParseLocal: true
+        });
+        JassMap.set(event.fsPath, program);
+        const vjassProgram = vjassParse.parse(content);
+        VjassMap.set(event.fsPath, vjassProgram);
+        const zincProgram = zincParse.parse(content);
+        ZincMap.set(event.fsPath, zincProgram);
     });
     watcher.onDidDelete((event) => {
-        dataMap.remove(event.fsPath);
+        JassMap.delete(event.fsPath);
+        VjassMap.delete(event.fsPath);
+        ZincMap.delete(event.fsPath);
     });
     watcher.onDidChange((event) => {
-        parsePath(event.fsPath);
+        const content = fs.readFileSync(event.fsPath).toString();
+        const program = jassParse.parse(content, {
+            needParseLocal: true
+        });
+        JassMap.set(event.fsPath, program);
+        const vjassProgram = vjassParse.parse(content);
+        VjassMap.set(event.fsPath, vjassProgram);
+        const zincProgram = zincParse.parse(content);
+        ZincMap.set(event.fsPath, zincProgram);
     });
     const zincWatcher = vscode.workspace.createFileSystemWatcher("**/*.zn", false, false, false);
     zincWatcher.onDidCreate((event) => {
-        parseZincPath(event.fsPath);
+        const zincProgram = zincParse.parse(fs.readFileSync(event.fsPath).toString());
+        ZincMap.set(event.fsPath, zincProgram);
     });
     zincWatcher.onDidDelete((event) => {
-        zincDataMap.remove(event.fsPath);
+        ZincMap.delete(event.fsPath);
     });
     zincWatcher.onDidChange((event) => {
-        parseZincPath(event.fsPath);
+        const zincProgram = zincParse.parse(fs.readFileSync(event.fsPath).toString());
+        ZincMap.set(event.fsPath, zincProgram);
     });
     vscode.workspace.onDidChangeTextDocument((event) => {
     });
 }
 startWatch();
-class Data {
-    static programs() {
-        return [...dataMap.values()];
+function findFunctionByName(name) {
+    return [...commonJProgram.natives, ...commonJProgram.functions,
+        ...blizzardJProgram.natives, ...blizzardJProgram.functions,
+        ...commonAiProgram.natives, ...commonAiProgram.functions,
+        ...dzApiJProgram.natives, ...dzApiJProgram.functions,
+        ...[...JassMap.values()].flatMap((program) => [...program.natives, ...program.functions]),
+        ...[...VjassMap.values()].flatMap((program) => [...program.librarys.flatMap((library) => library.functions)]),
+    ].find(func => func.name == name);
+}
+exports.findFunctionByName = findFunctionByName;
+function findFunctionByLine(key, line) {
+    const program = JassMap.get(key);
+    if (program) {
+        const func = program.functions.find((func) => func.loc.start.line < line && func.loc.end.line > line);
+        if (func) {
+            return func;
+        }
     }
-    static natives() {
-        return this.programs().map((program) => program.natives).flat();
-    }
-    static functions() {
-        return this.programs().map((program) => program.functions).flat();
-    }
-    static globals() {
-        return this.programs().map((program) => program.globals).flat();
-    }
-    static structs() {
-        return this.programs().map((program) => program.structs).flat();
-    }
-    static globalVariables() {
-        return this.globals().filter((global) => !global.isConstant);
-    }
-    static globalConstants() {
-        return this.globals().filter((global) => global.isConstant);
-    }
-    static globalArrays() {
-        return this.globals().filter((global) => global.isArray);
-    }
-    static librarys() {
-        return this.programs().map((program) => program.librarys).flat();
-    }
-    static libraryGlobals() {
-        return this.librarys().map((library) => library.globals).flat();
-    }
-    static libraryGlobalVariables() {
-        return this.libraryGlobals().filter((global) => !global.isConstant);
-    }
-    static libraryGlobalConstants() {
-        return this.libraryGlobals().filter((global) => global.isConstant);
-    }
-    static libraryGlobalArrays() {
-        return this.libraryGlobals().filter((global) => global.isArray);
-    }
-    static libraryFunctions() {
-        return this.librarys().map((library) => library.functions).flat();
-    }
-    static libraryStructs() {
-        return this.librarys().map((library) => library.structs).flat();
-    }
-    static zincPrograms() {
-        return [...zincDataMap.values()];
-    }
-    static zincLibrarys() {
-        return this.zincPrograms().map((program) => program.librarys).flat();
-    }
-    static zincLibraryFunctions() {
-        return this.zincLibrarys().map((library) => library.functions).flat();
-    }
-    static zincLibraryStructs() {
-        return this.zincLibrarys().map((library) => library.structs).flat();
+    const vprogram = VjassMap.get(key);
+    if (vprogram) {
+        return vprogram.librarys.flatMap((library) => library.functions).find((func) => func.loc.start.line < line && func.loc.end.line > line);
     }
 }
-exports.default = Data;
+function findTakes(key, line) {
+    var _a;
+    return (_a = findFunctionByLine(key, line)) === null || _a === void 0 ? void 0 : _a.takes;
+}
+exports.findTakes = findTakes;
+function findLocals(key, line) {
+    var _a;
+    return (_a = findFunctionByLine(key, line)) === null || _a === void 0 ? void 0 : _a.locals;
+}
+exports.findLocals = findLocals;
+function getGlobalVariables() {
+    const VariableFilter = (global) => {
+        return !global.isConstant;
+    };
+    const globals = [];
+    const commonJGlobals = commonJProgram.globals.filter(VariableFilter);
+    const commonAiGlobals = commonAiProgram.globals.filter(VariableFilter);
+    const blizzardJGlobals = blizzardJProgram.globals.filter(VariableFilter);
+    const dzApiJGlobals = dzApiJProgram.globals.filter(VariableFilter);
+    globals.push(...commonJGlobals, ...commonAiGlobals, ...blizzardJGlobals, ...dzApiJGlobals);
+    JassMap.forEach((program, key) => {
+        globals.push(...program.globals.filter(VariableFilter));
+    });
+    VjassMap.forEach((program, key) => {
+        program.librarys.forEach((library) => {
+            globals.push(...library.globals.filter(VariableFilter));
+        });
+    });
+    return globals;
+}
+exports.getGlobalVariables = getGlobalVariables;
+function findFunctionExcludeReturns(...types) {
+    const nothing = types.some((type) => type === null);
+    return [...commonJProgram.natives, ...commonJProgram.functions,
+        ...blizzardJProgram.natives, ...blizzardJProgram.functions,
+        ...commonAiProgram.natives, ...commonAiProgram.functions,
+        ...dzApiJProgram.natives, ...dzApiJProgram.functions,
+        ...[...JassMap.values()].flatMap((program) => [...program.natives, ...program.functions]),
+        ...[...VjassMap.values()].flatMap((program) => [...program.librarys.flatMap((library) => library.functions)]),
+    ].filter(func => {
+        if (nothing) {
+            return func.returns !== null && !types.includes(func.returns);
+        }
+        else {
+            return !types.includes(func.returns);
+        }
+    });
+}
+exports.findFunctionExcludeReturns = findFunctionExcludeReturns;
+function findGlobalExcludeReturns(...types) {
+    return [...commonJProgram.globals,
+        ...blizzardJProgram.globals,
+        ...commonAiProgram.globals,
+        ...dzApiJProgram.globals,
+        ...[...JassMap.values()].flatMap((program) => program.globals),
+        ...[...VjassMap.values()].flatMap((program) => [...program.librarys.flatMap((library) => library.globals)]),
+    ].filter(func => {
+        return !types.includes(func.type);
+    });
+}
+exports.findGlobalExcludeReturns = findGlobalExcludeReturns;
+class Data {
+    constructor() {
+        this.is = false;
+        this._programs = [
+            commonJProgram,
+            blizzardJProgram,
+            dzApiJProgram,
+            commonAiProgram,
+            ...Data.map.values()
+        ].flat();
+        if (this.is == false) {
+            this.is = true;
+        }
+    }
+    initData() {
+        const filePaths = [options_1.Options.commonJPath, options_1.Options.commonAiPath, options_1.Options.blizzardJPath, options_1.Options.dzApiJPath];
+        filePaths.forEach((filePath) => {
+            const program = jassParse.parse(fs.readFileSync(filePath).toString());
+            program.filePath = filePath;
+            Data.map.set(filePath, program);
+        });
+    }
+    findGlobalsByType(option) {
+        const programs = option.key
+            ? Array.isArray(option.key) ? option.key.map(filePath => Data.map.get(filePath)).filter(x => x) : [Data.map.get(option.key)].filter(x => x)
+            : [...Data.map.values()];
+        const globals = programs.map(x => {
+            let globals = [];
+            if (option.jass === undefined || option) {
+                globals.push(...x.globals);
+            }
+            if (option.modifier) {
+                globals = globals.filter(global => option.modifier == "constant" ? global.isConstant : !global.isConstant);
+            }
+            if (option.array) {
+                globals = globals.filter(global => global.isArray);
+            }
+            if (option.type) {
+                globals = globals.filter(global => global.type == option.type);
+            }
+            if (option.name) {
+                globals = globals.filter(global => global.name == option.name);
+            }
+            return globals;
+        }).flat();
+        return globals;
+    }
+    findFunctionsByType(option) {
+        const functions = [];
+        JassMap.forEach((program, key) => {
+            console.log(key);
+            functions.push(...program.natives, ...program.functions);
+        });
+        return functions;
+    }
+}
+Data.map = new Map();
+const data = new Data();
+exports.default = data;

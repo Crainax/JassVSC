@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tokenize = exports.tokens = exports.Token = void 0;
 const tool_1 = require("../tool");
+const range_1 = require("./range");
 class Token {
     constructor(type, value, line, position) {
         this.type = type;
@@ -45,6 +46,40 @@ class Token {
     }
 }
 exports.Token = Token;
+class VToken {
+    constructor(type, value) {
+        this.loc = new range_1.Location();
+        this.type = type;
+        this.value = value;
+    }
+    isId() {
+        return this.type === "id";
+    }
+    isOp() {
+        return this.type === "op";
+    }
+    isInt() {
+        return this.type === "int";
+    }
+    isReal() {
+        return this.type === "real";
+    }
+    isString() {
+        return this.type === "string";
+    }
+    isComment() {
+        return this.type === "comment";
+    }
+    isBlockComment() {
+        return this.type === "block_comment";
+    }
+    isMacro() {
+        return this.type === "macro";
+    }
+    isOther() {
+        return this.type === "other";
+    }
+}
 function _isLetter(char) {
     if (!char) {
         return false;
@@ -77,6 +112,13 @@ function _isSpace(char) {
         return false;
     }
     return /\s/.test(char);
+}
+class TokenOption {
+    constructor() {
+        this.needParseNewHex = true;
+        this.needParseZincReturnOp = false;
+        this.ignoreZinc = true;
+    }
 }
 function tokens(content) {
     const tokens = [];
@@ -143,7 +185,18 @@ function tokens(content) {
             }
             else if (char == "\"") {
                 push(char);
-                state = 5;
+                if (nextChar && nextChar == "\"") {
+                    state = 4;
+                }
+                else if (nextChar && nextChar == "\\") {
+                    state = 5;
+                }
+                else if (nextChar && tool_1.isNotNewLine(nextChar)) {
+                    state = 6;
+                }
+                else {
+                    bad();
+                }
             }
             else if (tool_1.is1_9(char)) {
                 push(char);
@@ -161,10 +214,6 @@ function tokens(content) {
                 push(char);
                 if (nextChar && tool_1.isNumber(nextChar)) {
                     state = 10;
-                }
-                else if (nextChar && tool_1.isLetter(nextChar)) {
-                    pushToken("op");
-                    state = 0;
                 }
                 else {
                     pushToken("op");
@@ -295,15 +344,6 @@ function tokens(content) {
                     bad();
                 }
             }
-            else if (char == "#") {
-                push(char);
-                if (nextChar && tool_1.isLetter(nextChar)) {
-                    state = 24;
-                }
-                else {
-                    bad();
-                }
-            }
             else if (char == "\n") {
                 push(char);
                 pushToken("op");
@@ -351,26 +391,41 @@ function tokens(content) {
         }
         else if (state == 5) {
             push(char);
-            if (tool_1.isNewLine(char)) {
-                bad();
+            if (nextChar && nextChar == "\"") {
+                state = 7;
             }
-            else if (char == "\"") {
-                pushToken("string");
-            }
-            else if (char == "\\") {
+            else if (nextChar && tool_1.isNotNewLine(nextChar)) {
                 state = 6;
+            }
+            else {
+                bad();
             }
         }
         else if (state == 6) {
             push(char);
-            if (tool_1.isNewLine(char)) {
-                bad();
+            if (nextChar && nextChar == "\"") {
+                state = 4;
+            }
+            else if (nextChar && nextChar == "\\") {
+                state = 5;
+            }
+            else if (nextChar && tool_1.isNotNewLine(nextChar)) {
             }
             else {
-                state = 5;
+                bad();
             }
         }
         else if (state == 7) {
+            push(char);
+            if (nextChar && nextChar == "\"") {
+                state = 4;
+            }
+            else if (nextChar && tool_1.isNotNewLine(nextChar)) {
+                state = 6;
+            }
+            else {
+                bad();
+            }
         }
         else if (state == 8) {
             push(char);
@@ -475,12 +530,6 @@ function tokens(content) {
         else if (state == 23) {
             push(char);
             pushToken("block_comment");
-        }
-        else if (state == 24) {
-            push(char);
-            if (!tool_1.isLetter(nextChar)) {
-                pushToken("macro");
-            }
         }
         if (char == "\n") {
             lineNumber++;

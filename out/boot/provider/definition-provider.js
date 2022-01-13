@@ -5,8 +5,6 @@ const keyword_1 = require("./keyword");
 const types_1 = require("./types");
 const data_1 = require("./data");
 const options_1 = require("./options");
-const tool_1 = require("../tool");
-const tool_2 = require("./tool");
 const toVsPosition = (any) => {
     const range = new vscode.Range(any.loc.start.line, any.loc.start.position, any.loc.end.line, any.loc.end.position);
     return range !== null && range !== void 0 ? range : new vscode.Position(any.loc.start.line, any.loc.start.position);
@@ -25,6 +23,109 @@ vscode.languages.registerDefinitionProvider("jass", new class NewDefinitionProvi
             }
         };
     }
+    programToLocation(key, uri, program) {
+        let location = null;
+        const currentFunc = program.functions.find(func => func.name == key);
+        if (currentFunc) {
+            location = new vscode.Location(uri, toVsPosition(currentFunc));
+        }
+        else {
+            const currentGlobal = program.globals.find(global => global.name == key);
+            if (currentGlobal) {
+                location = new vscode.Location(uri, toVsPosition(currentGlobal));
+            }
+            else {
+                const currentNative = program.natives.find(global => global.name == key);
+                if (currentNative) {
+                    location = new vscode.Location(uri, toVsPosition(currentNative));
+                }
+                else {
+                    return null;
+                }
+            }
+        }
+        return location;
+    }
+    all(document, position, key) {
+        const contents = [];
+        const locations = new Array();
+        contents.push(...data_1.commonJProgram.natives, ...data_1.commonJProgram.functions, ...data_1.commonJProgram.globals);
+        contents.push(...data_1.commonAiProgram.natives, ...data_1.commonAiProgram.functions, ...data_1.commonAiProgram.globals);
+        contents.push(...data_1.blizzardJProgram.natives, ...data_1.blizzardJProgram.functions, ...data_1.blizzardJProgram.globals);
+        contents.push(...data_1.dzApiJProgram.natives, ...data_1.dzApiJProgram.functions, ...data_1.dzApiJProgram.globals);
+        data_1.JassMap.forEach((program, path) => {
+            contents.push(...program.natives, ...program.functions, ...program.globals);
+            if (path == document.uri.fsPath) {
+                program.functions.forEach((func) => {
+                    if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                        contents.push(...func.locals);
+                        contents.push(...func.takes);
+                    }
+                });
+            }
+        });
+        data_1.VjassMap.forEach((program, path) => {
+            program.librarys.forEach((library) => {
+                contents.push(...library.functions);
+                contents.push(...library.globals);
+                library.structs.forEach((struct) => {
+                    contents.push(struct);
+                    contents.push(...struct.methods);
+                });
+                if (path == document.uri.fsPath) {
+                    library.functions.forEach((func) => {
+                        if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                            contents.push(...func.locals);
+                            contents.push(...func.takes);
+                        }
+                    });
+                    library.structs.forEach((struct) => {
+                        if (new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position).contains(position)) {
+                            contents.push(...struct.members);
+                            contents.push(...struct.methods);
+                            struct.methods.forEach((method) => {
+                                if (new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position).contains(position)) {
+                                    contents.push(...method.locals);
+                                    contents.push(...method.takes);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        data_1.ZincMap.forEach((program, path) => {
+            program.librarys.forEach((library) => {
+                contents.push(...library.functions);
+                contents.push(...library.globals);
+                library.structs.forEach((struct) => {
+                    contents.push(struct);
+                    contents.push(...struct.methods);
+                });
+                if (path == document.uri.fsPath) {
+                    library.functions.forEach((func) => {
+                        if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                            contents.push(...func.locals);
+                            contents.push(...func.takes);
+                        }
+                    });
+                    library.structs.forEach((struct) => {
+                        if (new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position).contains(position)) {
+                            contents.push(...struct.members);
+                            contents.push(...struct.methods);
+                            struct.methods.forEach((method) => {
+                                if (new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position).contains(position)) {
+                                    contents.push(...method.locals);
+                                    contents.push(...method.takes);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        return locations;
+    }
     provideDefinition(document, position, token) {
         const key = document.getText(document.getWordRangeAtPosition(position));
         console.log(key);
@@ -41,229 +142,218 @@ vscode.languages.registerDefinitionProvider("jass", new class NewDefinitionProvi
         if (type) {
             return null;
         }
-        console.log(key);
-        const fsPath = document.uri.fsPath;
-        const isZincExt = tool_1.isZincFile(fsPath);
-        if (!isZincExt) {
-            data_1.parseContent(fsPath, document.getText());
-            if (!options_1.Options.isOnlyJass) {
-                if (options_1.Options.supportZinc) {
-                    data_1.parseZincContent(fsPath, document.getText());
+        let location = null;
+        const commonJLocation = this.programToLocation(key, vscode.Uri.file(options_1.Options.commonJPath), data_1.commonJProgram);
+        if (commonJLocation) {
+            location = commonJLocation;
+        }
+        else {
+            const blizzardJLocation = this.programToLocation(key, vscode.Uri.file(options_1.Options.blizzardJPath), data_1.blizzardJProgram);
+            if (blizzardJLocation) {
+                location = blizzardJLocation;
+            }
+            else {
+                const dzApiJLocation = this.programToLocation(key, vscode.Uri.file(options_1.Options.dzApiJPath), data_1.dzApiJProgram);
+                if (dzApiJLocation) {
+                    location = dzApiJLocation;
+                }
+                else {
+                    const commonAiLocation = this.programToLocation(key, vscode.Uri.file(options_1.Options.commonAiPath), data_1.commonAiProgram);
+                    if (commonAiLocation) {
+                        location = commonAiLocation;
+                    }
+                    else {
+                    }
                 }
             }
         }
-        const fieldLibrarys = () => {
-            const librarys = [];
-            if (!options_1.Options.isOnlyJass) {
-                librarys.push(...data_1.default.librarys());
-                if (options_1.Options.supportZinc) {
-                    librarys.push(...data_1.default.zincLibrarys());
-                }
-            }
-            return librarys;
-        };
-        const fieldFunctions = () => {
-            const funcs = data_1.default.functions();
-            if (!options_1.Options.isOnlyJass) {
-                const requires = [];
-                data_1.default.librarys().filter((library) => {
-                    if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                        requires.push(...library.requires);
-                        funcs.push(...library.functions);
-                        return false;
-                    }
-                    return true;
-                }).forEach((library) => {
-                    if (requires.includes(library.name)) {
-                        funcs.push(...library.functions.filter((func) => func.tag != "private"));
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibrarys().filter((library) => {
-                        if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                            requires.push(...library.requires);
-                            funcs.push(...library.functions);
-                            return false;
-                        }
-                        return true;
-                    }).forEach((library) => {
-                        if (requires.includes(library.name)) {
-                            funcs.push(...library.functions.filter((func) => func.tag != "private"));
-                        }
-                    });
-                }
-            }
-            return funcs;
-        };
-        const fieldGlobals = () => {
-            const globals = data_1.default.globals();
-            data_1.default.functions().forEach((func) => {
-                if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                    globals.push(...func.getGlobals());
-                }
-            });
-            if (!options_1.Options.isOnlyJass) {
-                const requires = [];
-                data_1.default.librarys().filter((library) => {
-                    if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                        requires.push(...library.requires);
-                        globals.push(...library.globals);
-                        return false;
-                    }
-                    return true;
-                }).forEach((library) => {
-                    if (requires.includes(library.name)) {
-                        globals.push(...library.globals.filter((func) => func.tag != "private"));
-                    }
-                });
-                data_1.default.libraryFunctions().forEach((func) => {
-                    if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                        globals.push(...func.getGlobals());
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibrarys().filter((library) => {
-                        if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                            requires.push(...library.requires);
-                            globals.push(...library.globals);
-                            return false;
-                        }
-                        return true;
-                    }).forEach((library) => {
-                        if (requires.includes(library.name)) {
-                            globals.push(...library.globals.filter((func) => func.tag != "private"));
-                        }
-                    });
-                    data_1.default.zincLibraryFunctions().forEach((func) => {
-                        if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                            globals.push(...func.getGlobals());
-                        }
-                    });
-                }
-            }
-            return globals;
-        };
-        const fieldTakes = () => {
-            const takes = [];
-            data_1.default.functions().forEach((func) => {
-                if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                    takes.push(...func.takes.map((take) => {
-                        return { take, func };
-                    }));
-                }
-            });
-            if (!options_1.Options.isOnlyJass) {
-                data_1.default.libraryFunctions().forEach((func) => {
-                    if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                        takes.push(...func.takes.map((take) => {
-                            return { take, func };
-                        }));
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibraryFunctions().forEach((func) => {
-                        if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                            takes.push(...func.takes.map((take) => {
-                                return { take, func };
-                            }));
-                        }
-                    });
-                }
-            }
-            return takes;
-        };
-        const fieldLocals = () => {
-            const locals = [];
-            data_1.default.functions().forEach((func) => {
-                if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                    locals.push(...func.locals);
-                }
-            });
-            if (!options_1.Options.isOnlyJass) {
-                data_1.default.libraryFunctions().forEach((func) => {
-                    if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                        locals.push(...func.locals);
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibraryFunctions().forEach((func) => {
-                        if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                            locals.push(...func.locals);
-                        }
-                    });
-                }
-            }
-            return locals;
-        };
-        const fieldStructs = () => {
-            const structs = data_1.default.structs();
-            if (!options_1.Options.isOnlyJass) {
-                const requires = [];
-                data_1.default.librarys().filter((library) => {
-                    if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                        requires.push(...library.requires);
-                        structs.push(...library.structs);
-                        return false;
-                    }
-                    return true;
-                }).forEach((library) => {
-                    if (requires.includes(library.name)) {
-                        structs.push(...library.structs.filter((struct) => struct.tag != "private"));
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibrarys().filter((library) => {
-                        if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                            requires.push(...library.requires);
-                            structs.push(...library.structs);
-                            return false;
-                        }
-                        return true;
-                    }).forEach((library) => {
-                        if (requires.includes(library.name)) {
-                            structs.push(...library.structs.filter((struct) => struct.tag != "private"));
-                        }
-                    });
-                }
-            }
-            return structs;
-        };
+        if (location) {
+            return location;
+        }
+        console.log(key);
         const locations = new Array();
-        [...fieldFunctions(), ...data_1.default.natives()].forEach((func) => {
-            if (func.name == key) {
-                const location = new vscode.Location(vscode.Uri.file(func.source), toVsPosition(func));
-                locations.push(location);
-            }
+        data_1.JassMap.forEach((program, path) => {
+            program.natives.forEach((native) => {
+                if (native.name == key) {
+                    const range = new vscode.Range(native.loc.start.line, native.loc.start.position, native.loc.end.line, native.loc.end.position);
+                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                }
+            });
+            program.functions.forEach((func) => {
+                if (func.name == key) {
+                    const range = new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position);
+                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                }
+                if (path == document.uri.fsPath) {
+                    program.functions.forEach((func) => {
+                        if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                            func.takes.forEach(take => {
+                                if (take.name == key) {
+                                    const range = new vscode.Range(take.loc.start.line, take.loc.start.position, take.loc.end.line, take.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                            func.locals.forEach(local => {
+                                if (local.name == key) {
+                                    const range = new vscode.Range(local.loc.start.line, local.loc.start.position, local.loc.end.line, local.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            program.globals.forEach((global) => {
+                if (global.name == key) {
+                    const range = new vscode.Range(global.loc.start.line, global.loc.start.position, global.loc.end.line, global.loc.end.position);
+                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                }
+            });
         });
-        fieldGlobals().forEach((global) => {
-            if (global.name == key) {
-                const location = new vscode.Location(vscode.Uri.file(global.source), toVsPosition(global));
-                locations.push(location);
-            }
+        data_1.VjassMap.forEach((program, path) => {
+            program.librarys.forEach((library) => {
+                library.functions.forEach((func) => {
+                    if (func.name == key) {
+                        const range = new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position);
+                        locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                    }
+                });
+                library.globals.forEach((global) => {
+                    if (global.name == key) {
+                        const range = new vscode.Range(global.loc.start.line, global.loc.start.position, global.loc.end.line, global.loc.end.position);
+                        locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                    }
+                });
+                library.structs.forEach((struct) => {
+                    if (struct.name == key) {
+                        const range = new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position);
+                        locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                    }
+                    struct.methods.forEach((method) => {
+                        if (method.name == key) {
+                            const range = new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position);
+                            locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                        }
+                    });
+                });
+                if (path == document.uri.fsPath) {
+                    library.functions.forEach((func) => {
+                        if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                            func.takes.forEach(take => {
+                                if (take.name == key) {
+                                    const range = new vscode.Range(take.loc.start.line, take.loc.start.position, take.loc.end.line, take.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                            func.locals.forEach(local => {
+                                if (local.name == key) {
+                                    const range = new vscode.Range(local.loc.start.line, local.loc.start.position, local.loc.end.line, local.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                        }
+                    });
+                    library.structs.forEach((struct) => {
+                        if (new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position).contains(position)) {
+                            struct.members.forEach(member => {
+                                if (member.name == key) {
+                                    const range = new vscode.Range(member.loc.start.line, member.loc.start.position, member.loc.end.line, member.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                            struct.methods.forEach((method) => {
+                                if (new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position).contains(position)) {
+                                    method.takes.forEach(take => {
+                                        if (take.name == key) {
+                                            const range = new vscode.Range(take.loc.start.line, take.loc.start.position, take.loc.end.line, take.loc.end.position);
+                                            locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                        }
+                                    });
+                                    method.locals.forEach(local => {
+                                        if (local.name == key) {
+                                            const range = new vscode.Range(local.loc.start.line, local.loc.start.position, local.loc.end.line, local.loc.end.position);
+                                            locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         });
-        fieldLocals().forEach((local) => {
-            if (local.name == key) {
-                const location = new vscode.Location(vscode.Uri.file(local.source), toVsPosition(local));
-                locations.push(location);
-            }
-        });
-        fieldTakes().forEach((funcTake) => {
-            if (funcTake.take.name == key) {
-                const location = new vscode.Location(vscode.Uri.file(funcTake.func.source), toVsPosition(funcTake.take));
-                locations.push(location);
-            }
-        });
-        fieldStructs().forEach((struct) => {
-            if (struct.name == key) {
-                const location = new vscode.Location(vscode.Uri.file(struct.source), toVsPosition(struct));
-                locations.push(location);
-            }
-        });
-        fieldLibrarys().forEach((library) => {
-            if (library.name == key) {
-                const location = new vscode.Location(vscode.Uri.file(library.source), toVsPosition(library));
-                locations.push(location);
-            }
+        data_1.ZincMap.forEach((program, path) => {
+            program.librarys.forEach((library) => {
+                library.functions.forEach((func) => {
+                    if (func.name == key) {
+                        const range = new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position);
+                        locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                    }
+                });
+                library.globals.forEach((global) => {
+                    if (global.name == key) {
+                        const range = new vscode.Range(global.loc.start.line, global.loc.start.position, global.loc.end.line, global.loc.end.position);
+                        locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                    }
+                });
+                library.structs.forEach((struct) => {
+                    if (struct.name == key) {
+                        const range = new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position);
+                        locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                    }
+                    struct.methods.forEach((method) => {
+                        if (method.name == key) {
+                            const range = new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position);
+                            locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                        }
+                    });
+                });
+                if (path == document.uri.fsPath) {
+                    library.functions.forEach((func) => {
+                        if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                            func.takes.forEach(take => {
+                                if (take.name == key) {
+                                    const range = new vscode.Range(take.loc.start.line, take.loc.start.position, take.loc.end.line, take.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                            func.locals.forEach(local => {
+                                if (local.name == key) {
+                                    const range = new vscode.Range(local.loc.start.line, local.loc.start.position, local.loc.end.line, local.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                        }
+                    });
+                    library.structs.forEach((struct) => {
+                        if (new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position).contains(position)) {
+                            struct.members.forEach(member => {
+                                if (member.name == key) {
+                                    const range = new vscode.Range(member.loc.start.line, member.loc.start.position, member.loc.end.line, member.loc.end.position);
+                                    locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                }
+                            });
+                            struct.methods.forEach((method) => {
+                                if (new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position).contains(position)) {
+                                    method.takes.forEach(take => {
+                                        if (take.name == key) {
+                                            const range = new vscode.Range(take.loc.start.line, take.loc.start.position, take.loc.end.line, take.loc.end.position);
+                                            locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                        }
+                                    });
+                                    console.log(method);
+                                    method.locals.forEach(local => {
+                                        if (local.name == key) {
+                                            const range = new vscode.Range(local.loc.start.line, local.loc.start.position, local.loc.end.line, local.loc.end.position);
+                                            locations.push(new vscode.Location(vscode.Uri.file(path), range));
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         });
         return locations;
     }

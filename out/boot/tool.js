@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.compare = exports.getPathFileName = exports.isZincFile = exports.isAiFile = exports.isJFile = exports.resolvePaths = exports.removeComment = exports.retainVjassBlock = exports.unique = exports.retainZincBlock = exports.isSpace = exports.isNumber = exports.isNotNewLine = exports.isNewLine = exports.isLetter = exports.is1_9 = exports.is0_7 = exports.is0_16 = void 0;
+exports.getPathFileName = exports.isZincFile = exports.isAiFile = exports.isJFile = exports.resolvePaths = exports.removeComment = exports.retainVjassBlock = exports.unique = exports.retainZincBlock = exports.isSpace = exports.isNumber = exports.isNotNewLine = exports.isNewLine = exports.isLetter = exports.is1_9 = exports.is0_7 = exports.is0_16 = void 0;
 const fs = require("fs");
 const path = require("path");
 const letterRegExp = new RegExp(/[a-zA-Z]/);
@@ -424,9 +424,3 @@ function getPathFileName(filePath) {
     return path.parse(filePath).base;
 }
 exports.getPathFileName = getPathFileName;
-function compare(key, key2) {
-    const keyParsedPath = path.parse(key);
-    const key2ParsedPath = path.parse(key2);
-    return keyParsedPath.root == key2ParsedPath.root && keyParsedPath.dir == key2ParsedPath.dir && keyParsedPath.base == key2ParsedPath.base;
-}
-exports.compare = compare;

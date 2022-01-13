@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Language="en-US" Id="jass" Version="1.6.1" Publisher="jass"  />
+    <Identity Language="en-US" Id="jass" Version="1.5.15" Publisher="jass"  />
     <DisplayName>jass</DisplayName>
     <Description xml:space="preserve">目标是扩展成为主流的jass插件。
 QQ群：137199441，提出你宝贵的建议。</Description>

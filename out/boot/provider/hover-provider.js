@@ -1,12 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const data_1 = require("./data");
+const jassAst = require("../jass/ast");
 const types_1 = require("./types");
 const keyword_1 = require("./keyword");
-const options_1 = require("./options");
-const data_1 = require("./data");
-const tool_1 = require("../tool");
-const tool_2 = require("./tool");
 class HoverProvider {
     constructor() {
         this._maxLength = 526;
@@ -20,6 +18,85 @@ class HoverProvider {
                 return false;
             }
         };
+    }
+    all(document, position) {
+        const contents = [];
+        contents.push(...data_1.commonJProgram.natives, ...data_1.commonJProgram.functions, ...data_1.commonJProgram.globals);
+        contents.push(...data_1.commonAiProgram.natives, ...data_1.commonAiProgram.functions, ...data_1.commonAiProgram.globals);
+        contents.push(...data_1.blizzardJProgram.natives, ...data_1.blizzardJProgram.functions, ...data_1.blizzardJProgram.globals);
+        contents.push(...data_1.dzApiJProgram.natives, ...data_1.dzApiJProgram.functions, ...data_1.dzApiJProgram.globals);
+        data_1.JassMap.forEach((program, path) => {
+            contents.push(...program.natives, ...program.functions, ...program.globals);
+            if (path == document.uri.fsPath) {
+                program.functions.forEach((func) => {
+                    if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                        contents.push(...func.locals);
+                        contents.push(...func.takes);
+                    }
+                });
+            }
+        });
+        data_1.VjassMap.forEach((program, path) => {
+            program.librarys.forEach((library) => {
+                contents.push(...library.functions);
+                contents.push(...library.globals);
+                library.structs.forEach((struct) => {
+                    contents.push(struct);
+                    contents.push(...struct.methods);
+                });
+                if (path == document.uri.fsPath) {
+                    library.functions.forEach((func) => {
+                        if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                            contents.push(...func.locals);
+                            contents.push(...func.takes);
+                        }
+                    });
+                    library.structs.forEach((struct) => {
+                        if (new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position).contains(position)) {
+                            contents.push(...struct.members);
+                            contents.push(...struct.methods);
+                            struct.methods.forEach((method) => {
+                                if (new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position).contains(position)) {
+                                    contents.push(...method.locals);
+                                    contents.push(...method.takes);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        data_1.ZincMap.forEach((program, path) => {
+            program.librarys.forEach((library) => {
+                contents.push(...library.functions);
+                contents.push(...library.globals);
+                library.structs.forEach((struct) => {
+                    contents.push(struct);
+                    contents.push(...struct.methods);
+                });
+                if (path == document.uri.fsPath) {
+                    library.functions.forEach((func) => {
+                        if (new vscode.Range(func.loc.start.line, func.loc.start.position, func.loc.end.line, func.loc.end.position).contains(position)) {
+                            contents.push(...func.locals);
+                            contents.push(...func.takes);
+                        }
+                    });
+                    library.structs.forEach((struct) => {
+                        if (new vscode.Range(struct.loc.start.line, struct.loc.start.position, struct.loc.end.line, struct.loc.end.position).contains(position)) {
+                            contents.push(...struct.members);
+                            contents.push(...struct.methods);
+                            struct.methods.forEach((method) => {
+                                if (new vscode.Range(method.loc.start.line, method.loc.start.position, method.loc.end.line, method.loc.end.position).contains(position)) {
+                                    contents.push(...method.locals);
+                                    contents.push(...method.takes);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        return contents;
     }
     provideHover(document, position, token) {
         const key = document.getText(document.getWordRangeAtPosition(position));
@@ -37,276 +114,17 @@ class HoverProvider {
             const markdownString = new vscode.MarkdownString().appendCodeblock(type);
             return new vscode.Hover(markdownString);
         }
-        const fsPath = document.uri.fsPath;
-        const isZincExt = tool_1.isZincFile(fsPath);
-        if (!isZincExt) {
-            data_1.parseContent(fsPath, document.getText());
-            if (!options_1.Options.isOnlyJass) {
-                if (options_1.Options.supportZinc) {
-                    data_1.parseZincContent(fsPath, document.getText());
-                }
-            }
-        }
         const hovers = [];
-        const fieldLibrarys = () => {
-            const librarys = [];
-            if (!options_1.Options.isOnlyJass) {
-                librarys.push(...data_1.default.librarys());
-                if (options_1.Options.supportZinc) {
-                    librarys.push(...data_1.default.zincLibrarys());
+        this.all(document, position).forEach(expr => {
+            if (key == expr.name) {
+                const ms = new vscode.MarkdownString(expr.name);
+                if (expr instanceof jassAst.Take) {
+                    ms.appendText("");
                 }
-            }
-            return librarys;
-        };
-        const fieldFunctions = () => {
-            const funcs = data_1.default.functions();
-            if (!options_1.Options.isOnlyJass) {
-                const requires = [];
-                data_1.default.librarys().filter((library) => {
-                    if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                        requires.push(...library.requires);
-                        funcs.push(...library.functions);
-                        return false;
-                    }
-                    return true;
-                }).forEach((library) => {
-                    if (requires.includes(library.name)) {
-                        funcs.push(...library.functions.filter((func) => func.tag != "private"));
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibrarys().filter((library) => {
-                        if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                            requires.push(...library.requires);
-                            funcs.push(...library.functions);
-                            return false;
-                        }
-                        return true;
-                    }).forEach((library) => {
-                        if (requires.includes(library.name)) {
-                            funcs.push(...library.functions.filter((func) => func.tag != "private"));
-                        }
-                    });
+                else {
+                    ms.appendText("\n" + expr.text);
                 }
-            }
-            return funcs;
-        };
-        const fieldGlobals = () => {
-            const globals = data_1.default.globals();
-            data_1.default.functions().forEach((func) => {
-                if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                    globals.push(...func.getGlobals());
-                }
-            });
-            if (!options_1.Options.isOnlyJass) {
-                const requires = [];
-                data_1.default.librarys().filter((library) => {
-                    if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                        requires.push(...library.requires);
-                        globals.push(...library.globals);
-                        return false;
-                    }
-                    return true;
-                }).forEach((library) => {
-                    if (requires.includes(library.name)) {
-                        globals.push(...library.globals.filter((func) => func.tag != "private"));
-                    }
-                });
-                data_1.default.libraryFunctions().forEach((func) => {
-                    if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                        globals.push(...func.getGlobals());
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibrarys().filter((library) => {
-                        if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                            requires.push(...library.requires);
-                            globals.push(...library.globals);
-                            return false;
-                        }
-                        return true;
-                    }).forEach((library) => {
-                        if (requires.includes(library.name)) {
-                            globals.push(...library.globals.filter((func) => func.tag != "private"));
-                        }
-                    });
-                    data_1.default.zincLibraryFunctions().forEach((func) => {
-                        if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                            globals.push(...func.getGlobals());
-                        }
-                    });
-                }
-            }
-            return globals;
-        };
-        const fieldTakes = () => {
-            const takes = [];
-            data_1.default.functions().forEach((func) => {
-                if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                    takes.push(...func.takes.map((take) => {
-                        return { take, func };
-                    }));
-                }
-            });
-            if (!options_1.Options.isOnlyJass) {
-                data_1.default.libraryFunctions().forEach((func) => {
-                    if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                        takes.push(...func.takes.map((take) => {
-                            return { take, func };
-                        }));
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibraryFunctions().forEach((func) => {
-                        if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                            takes.push(...func.takes.map((take) => {
-                                return { take, func };
-                            }));
-                        }
-                    });
-                }
-            }
-            return takes;
-        };
-        const fieldLocals = () => {
-            const locals = [];
-            data_1.default.functions().forEach((func) => {
-                if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                    locals.push(...func.locals);
-                }
-            });
-            if (!options_1.Options.isOnlyJass) {
-                data_1.default.libraryFunctions().forEach((func) => {
-                    if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                        locals.push(...func.locals);
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibraryFunctions().forEach((func) => {
-                        if (tool_1.compare(func.source, fsPath) && func.loc.contains(tool_2.convertPosition(position))) {
-                            locals.push(...func.locals);
-                        }
-                    });
-                }
-            }
-            return locals;
-        };
-        const fieldStructs = () => {
-            const structs = data_1.default.structs();
-            if (!options_1.Options.isOnlyJass) {
-                const requires = [];
-                data_1.default.librarys().filter((library) => {
-                    if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                        requires.push(...library.requires);
-                        structs.push(...library.structs);
-                        return false;
-                    }
-                    return true;
-                }).forEach((library) => {
-                    if (requires.includes(library.name)) {
-                        structs.push(...library.structs.filter((struct) => struct.tag != "private"));
-                    }
-                });
-                if (options_1.Options.supportZinc) {
-                    data_1.default.zincLibrarys().filter((library) => {
-                        if (tool_1.compare(library.source, fsPath) && library.loc.contains(tool_2.convertPosition(position))) {
-                            requires.push(...library.requires);
-                            structs.push(...library.structs);
-                            return false;
-                        }
-                        return true;
-                    }).forEach((library) => {
-                        if (requires.includes(library.name)) {
-                            structs.push(...library.structs.filter((struct) => struct.tag != "private"));
-                        }
-                    });
-                }
-            }
-            return structs;
-        };
-        [...fieldFunctions(), ...data_1.default.natives()].forEach((func) => {
-            if (key == func.name) {
-                const ms = new vscode.MarkdownString();
-                ms.appendMarkdown(`#### ${func.name}`);
-                ms.appendText("\n");
-                func.getContents().forEach((content) => {
-                    ms.appendText(content);
-                });
-                func.getParams().forEach((param) => {
-                    if (func.takes.findIndex((take) => take.name == param.id) != -1) {
-                        ms.appendText("\n");
-                        ms.appendMarkdown(`***@param*** **${param.id}** *${param.descript}*`);
-                    }
-                });
-                ms.appendText("\n");
-                ms.appendCodeblock(func.origin);
-                hovers.push(ms);
-            }
-        });
-        fieldGlobals().forEach((global) => {
-            if (key == global.name) {
-                const ms = new vscode.MarkdownString();
-                ms.appendMarkdown(`#### ${global.name}`);
-                ms.appendText("\n");
-                global.getContents().forEach((content) => {
-                    ms.appendText(content);
-                });
-                ms.appendText("\n");
-                ms.appendCodeblock(global.origin);
-                hovers.push(ms);
-            }
-        });
-        fieldLocals().forEach((local) => {
-            if (key == local.name) {
-                const ms = new vscode.MarkdownString();
-                ms.appendMarkdown(`#### ${local.name}`);
-                ms.appendText("\n");
-                local.getContents().forEach((content) => {
-                    ms.appendText(content);
-                });
-                ms.appendText("\n");
-                ms.appendCodeblock(local.origin);
-                hovers.push(ms);
-            }
-        });
-        fieldTakes().forEach((funcTake) => {
-            if (key == funcTake.take.name) {
-                const ms = new vscode.MarkdownString();
-                ms.appendMarkdown(`#### ${funcTake.take.name}`);
-                ms.appendText("\n");
-                funcTake.func.getParams().forEach((param) => {
-                    if (param.id == funcTake.take.name) {
-                        ms.appendText(param.descript);
-                    }
-                });
-                ms.appendText("\n");
-                ms.appendCodeblock(funcTake.take.origin);
-                hovers.push(ms);
-            }
-        });
-        fieldStructs().forEach((struct) => {
-            if (key == struct.name) {
-                const ms = new vscode.MarkdownString();
-                ms.appendMarkdown(`#### ${struct.name}`);
-                ms.appendText("\n");
-                struct.getContents().forEach((content) => {
-                    ms.appendText(content);
-                });
-                ms.appendText("\n");
-                ms.appendCodeblock(struct.origin);
-                hovers.push(ms);
-            }
-        });
-        fieldLibrarys().forEach((library) => {
-            if (key == library.name) {
-                const ms = new vscode.MarkdownString();
-                ms.appendMarkdown(`#### ${library.name}`);
-                ms.appendText("\n");
-                library.getContents().forEach((content) => {
-                    ms.appendText(content);
-                });
-                ms.appendText("\n");
-                ms.appendCodeblock(library.origin);
+                ms.appendCodeblock(expr.origin);
                 hovers.push(ms);
             }
         });

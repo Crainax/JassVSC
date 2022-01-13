@@ -3,21 +3,19 @@
 [GitHub源碼](https://github.com/naichabaobao/jass)
 [Q群,點擊加入](https://shang.qq.com/wpa/qunwpa?idkey=56ca07f1d46b310f878eb4ccf4e153697d85aac546385fab0e31b569d3b0a79e)
 
-***vscode最低版本1.37***
+vscode最低版本1.37
+common.j 為1.32.7
 
-***common.j 為1.32.7***
-
-### 使用步骤
 1. 下载安装 visual studio  Code
+
 2.  visual studio  Code   安装 Jass插件
+
 3.  WE触发器    自定义脚本区    #include  "Main.j"
 
-
-### "Main.j"  内容
+"Main.j"  内容
 
 --------------------------------------------------------
-
-```cpp
+```jass
 // 友情提供: 枫舞
 #include  "****.j"    //这是引入的其他j文件
 
@@ -28,6 +26,8 @@
 //Main  为触发器名字
 //MainAction  为动作函数名 对应T的动作
 //MainEvent   为触发函数名 对应T的事件
+
+
 library Main initializer MainEvent
   function MainAction takes nothing returns nothing
           
@@ -41,7 +41,7 @@ endlibrary
 ```
 --------------------------------------------------------
 
-![param](https://gitee.com/naichabaobao/jass/raw/master/static/images/comment-param.png)
-![param-display](https://gitee.com/naichabaobao/jass/raw/master/static/images/comment-param-display.png)
 
-```---star一下吧！---```
+
+
+star一下吧！

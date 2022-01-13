@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = void 0;
 const tokens_1 = require("../jass/tokens");
+const ast_1 = require("./ast");
 const common_1 = require("../common");
-const ast_1 = require("../jass/ast");
+const ast_2 = require("../jass/ast");
 function parse(content) {
     const comments = [];
     const matchText = (line) => {
@@ -216,7 +217,7 @@ function parse(content) {
             }
             else if (token.isId() && token.value == "local") {
                 resetLocal();
-                local = new ast_1.Local("", "");
+                local = new ast_2.Local("", "");
                 local.loc.start = new common_1.Position(token.line, token.position);
                 local.text = matchText(token.line);
                 inLocal = true;
@@ -257,7 +258,7 @@ function parse(content) {
             }
             else if (funcState == 1) {
                 if (token.isId()) {
-                    take = new ast_1.Take(token.value, "");
+                    take = new ast_2.Take(token.value, "");
                     take.loc.start = new common_1.Position(token.line, token.position);
                     funcState = 2;
                 }

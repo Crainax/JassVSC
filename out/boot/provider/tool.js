@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertPosition = exports.functionKey = exports.Key = void 0;
-const common_1 = require("../common");
+exports.functionKey = exports.Key = void 0;
 const tokens_1 = require("../jass/tokens");
 class Key {
     constructor() {
@@ -68,7 +67,3 @@ function functionKey(document, position) {
     return key;
 }
 exports.functionKey = functionKey;
-const convertPosition = (position) => {
-    return new common_1.Position(position.line, position.character);
-};
-exports.convertPosition = convertPosition;

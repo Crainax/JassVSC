@@ -4,7 +4,7 @@
 	"description": "目标是扩展成为主流的jass插件。\nQQ群：137199441，提出你宝贵的建议。",
 	"publisher": "jass",
 	"icon": "static/jass.png",
-	"version": "1.6.1",
+	"version": "1.5.15",
 	"keywords": [
 		"jass",
 		"warcraft"
@@ -128,7 +128,6 @@
 		"@types/vscode": "^1.37.0",
 		"tslint": "^5.20.0",
 		"typescript": "^3.7.4",
-		"vsce": "^1.103.1",
 		"vscode-test": "^1.2.2"
 	},
 	"bugs": {
@@ -141,7 +140,6 @@
 		"id": "195d08a0-5f8d-4fde-91db-d3962aab74b4",
 		"publisherId": "f7c4b2f6-fcc2-4e08-8c1e-002be87f83d6",
 		"publisherDisplayName": "家貓hoo",
-		"isPreReleaseVersion": false,
-		"installedTimestamp": 1641814233390
+		"installedTimestamp": 1635245740021
 	}
 }
