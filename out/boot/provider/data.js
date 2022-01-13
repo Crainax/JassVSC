@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseZincContent = exports.parseContent = void 0;
+exports.parseContent = void 0;
 const options_1 = require("./options");
 const fs = require("fs");
 const vscode = require("vscode");
 const tool_1 = require("../tool");
 const ast_1 = require("../jass/ast");
 const parser_1 = require("../jass/parser");
+const parse_1 = require("../zinc/parse");
 class Pair {
     constructor(key, value) {
         this.key = key;
@@ -125,27 +126,28 @@ function setSource(filePath, program) {
     });
 }
 function parseContent(filePath, content) {
-    const program = new parser_1.Parser(content).parsing();
-    setSource(filePath, program);
-    dataMap.put(filePath, program);
+    if (tool_1.isZincFile(filePath)) {
+        const program = parse_1.parse(content, true);
+        setSource(filePath, program);
+        zincDataMap.put(filePath, program);
+    }
+    else {
+        const parser = new parser_1.Parser(content);
+        if (options_1.Options.supportZinc) {
+            const program = parser.zincing();
+            setSource(filePath, program);
+            zincDataMap.put(filePath, program);
+        }
+        const program = parser.parsing();
+        setSource(filePath, program);
+        dataMap.put(filePath, program);
+    }
 }
 exports.parseContent = parseContent;
 function parsePath(...filePaths) {
     filePaths.forEach((filePath) => {
         const content = getFileContent(filePath);
         parseContent(filePath, content);
-    });
-}
-function parseZincContent(filePath, content) {
-    const program = new parser_1.Parser(content).zincing();
-    setSource(filePath, program);
-    zincDataMap.put(filePath, program);
-}
-exports.parseZincContent = parseZincContent;
-function parseZincPath(...filePaths) {
-    filePaths.forEach((filePath) => {
-        const content = getFileContent(filePath);
-        parseZincContent(filePath, content);
     });
 }
 vscode.workspace.onDidChangeConfiguration((event) => {
@@ -164,19 +166,20 @@ function startWatch() {
     });
     watcher.onDidDelete((event) => {
         dataMap.remove(event.fsPath);
+        zincDataMap.remove(event.fsPath);
     });
     watcher.onDidChange((event) => {
         parsePath(event.fsPath);
     });
     const zincWatcher = vscode.workspace.createFileSystemWatcher("**/*.zn", false, false, false);
     zincWatcher.onDidCreate((event) => {
-        parseZincPath(event.fsPath);
+        parsePath(event.fsPath);
     });
     zincWatcher.onDidDelete((event) => {
         zincDataMap.remove(event.fsPath);
     });
     zincWatcher.onDidChange((event) => {
-        parseZincPath(event.fsPath);
+        parsePath(event.fsPath);
     });
     vscode.workspace.onDidChangeTextDocument((event) => {
     });

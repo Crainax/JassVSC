@@ -38,14 +38,29 @@ function parseByTokens(tokens, isZincFile = false) {
         for (let index = line; index > 0; index--) {
             let comment = undefined;
             if ((comment = comments.find((token) => token.line == index - 1))) {
-                const text = comment.value.replace("//", "");
-                texts.push(text);
+                const lineComment = new ast_1.LineComment(comment.value);
+                lineComment.loc.setRange(new common_1.Range(new common_1.Position(comment.line, comment.position), new common_1.Position(comment.line, comment.end)));
             }
             else {
                 break;
             }
         }
         return texts.reverse().join("\n");
+    };
+    const findLineComments = (line) => {
+        const lineComments = [];
+        for (let index = line; index > 0; index--) {
+            let comment = undefined;
+            if ((comment = comments.find((token) => token.line == index - 1))) {
+                const lineComment = new ast_1.LineComment(comment.value);
+                lineComment.loc.setRange(new common_1.Range(new common_1.Position(comment.line, comment.position), new common_1.Position(comment.line, comment.end)));
+                lineComments.push(lineComment);
+            }
+            else {
+                break;
+            }
+        }
+        return lineComments;
     };
     let inZinc = false;
     tokens = tokens.filter((token, index, ts) => {
@@ -263,12 +278,14 @@ function parseByTokens(tokens, isZincFile = false) {
                         lastLocal().name = token.value;
                         lastLocal().nameToken = token;
                         lastLocal().text = matchText(token.line);
+                        lastLocal().lineComments.push(...findLineComments(token.line));
                     }
                     else {
                         const local = new ast_1.Local("", token.value);
                         local.option.style = "zinc";
                         local.nameToken = token;
                         local.text = matchText(token.line);
+                        lastLocal().lineComments.push(...findLineComments(token.line));
                         locals.push(local);
                     }
                     localState = 2;
@@ -563,12 +580,14 @@ function parseByTokens(tokens, isZincFile = false) {
                         lastMember().name = token.value;
                         lastMember().nameToken = token;
                         lastMember().text = matchText(token.line);
+                        lastMember().lineComments.push(...findLineComments(token.line));
                     }
                     else {
                         const member = new ast_1.Member("", token.value);
                         member.option.style = "zinc";
                         member.nameToken = token;
                         member.text = matchText(token.line);
+                        member.lineComments.push(...findLineComments(token.line));
                         members.push(member);
                     }
                     memberState = 2;
@@ -634,6 +653,7 @@ function parseByTokens(tokens, isZincFile = false) {
                         global.tag = lastModifierType().type;
                     }
                     global.loc.start = new common_1.Position(token.line, token.position);
+                    global.lineComments.push(...findLineComments(token.line));
                     globalState = 1;
                 }
                 else {
@@ -726,6 +746,7 @@ function parseByTokens(tokens, isZincFile = false) {
                     g.name = token.value;
                     g.loc.end = new common_1.Position(token.line, token.end);
                     globals.push(g);
+                    g.lineComments.push(...findLineComments(token.line));
                     globalState = 2;
                 }
                 else {
@@ -740,6 +761,7 @@ function parseByTokens(tokens, isZincFile = false) {
                 method = new ast_1.Method("");
                 method.option.style = "zinc";
                 method.text = matchText(token.line);
+                method.lineComments.push(...findLineComments(token.line));
                 if (modifierType) {
                     method.tag = modifierType;
                 }
@@ -834,6 +856,7 @@ function parseByTokens(tokens, isZincFile = false) {
             inLibrary = true;
             libraryState = 0;
             library = new ast_1.Library("");
+            library.lineComments.push(...findLineComments(token.line));
             library.option.style = "zinc";
             library.loc.start = new common_1.Position(token.line, token.position);
             program.librarys.push(library);
@@ -845,6 +868,7 @@ function parseByTokens(tokens, isZincFile = false) {
                     struct = new ast_1.Struct("");
                     struct.option.style = "zinc";
                     struct.text = matchText(token.line);
+                    struct.lineComments.push(...findLineComments(token.line));
                     if (modifierType) {
                         struct.tag = modifierType;
                     }
@@ -866,6 +890,7 @@ function parseByTokens(tokens, isZincFile = false) {
                     func = new ast_1.Func("");
                     func.option.style = "zinc";
                     func.text = matchText(token.line);
+                    func.lineComments.push(...findLineComments(token.line));
                     if (modifierType) {
                         func.tag = modifierType;
                     }
@@ -959,29 +984,29 @@ exports.parseZincBlock = parseZincBlock;
 function parseZincFile(path) {
 }
 exports.parseZincFile = parseZincFile;
-const testString = JSON.stringify(parse(`
-//! zinc
-  library library_name requires require_librarys ,,-,cccccc ccc, ccc {
-	public {
-		struct a {
-			public {
-				// 奶茶
-				private static integer a[2],
-				// 宝宝
-				b = 12 , 17;
-
-				integer c;
-
-				method operator [] () {}
-			}
-		}
-		function assasa(integer ass) {
-			int aaa[3], hahah;
-		}
-	} 
-  }
-//! endzinc
-`).librarys, null, 2);
 if (false) {
+    const testString = JSON.stringify(parse(`
+	//! zinc
+	  library library_name requires require_librarys ,,-,cccccc ccc, ccc {
+		public {
+			struct a {
+				public {
+					// 奶茶
+					private static integer a[2],
+					// 宝宝
+					b = 12 , 17;
+	
+					integer c;
+	
+					method operator [] () {}
+				}
+			}
+			function assasa(integer ass) {
+				int aaa[3], hahah;
+			}
+		} 
+	  }
+	//! endzinc
+	`).librarys, null, 2);
     console.log(testString);
 }

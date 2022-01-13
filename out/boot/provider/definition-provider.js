@@ -43,15 +43,7 @@ vscode.languages.registerDefinitionProvider("jass", new class NewDefinitionProvi
         }
         console.log(key);
         const fsPath = document.uri.fsPath;
-        const isZincExt = tool_1.isZincFile(fsPath);
-        if (!isZincExt) {
-            data_1.parseContent(fsPath, document.getText());
-            if (!options_1.Options.isOnlyJass) {
-                if (options_1.Options.supportZinc) {
-                    data_1.parseZincContent(fsPath, document.getText());
-                }
-            }
-        }
+        data_1.parseContent(fsPath, document.getText());
         const fieldLibrarys = () => {
             const librarys = [];
             if (!options_1.Options.isOnlyJass) {

@@ -42,7 +42,10 @@ function completionItem(label, option = {
             ms.appendText("\n");
         }
         if (Array.isArray(option.documentation)) {
-            option.documentation.forEach((documentation) => {
+            option.documentation.forEach((documentation, index) => {
+                if (index != 0) {
+                    ms.appendText("\n");
+                }
                 ms.appendMarkdown(documentation);
             });
         }
@@ -187,7 +190,7 @@ function funcToCompletionItem(func, option) {
             const contents = func.getContents();
             func.getParams().forEach((param) => {
                 if (func.takes.findIndex((take) => take.name == param.id) != -1) {
-                    contents.push(`\n***@param*** **${param.id}** *${param.descript}*`);
+                    contents.push(`***@param*** **${param.id}** *${param.descript}*`);
                 }
             });
             return contents;
@@ -206,7 +209,7 @@ function methodToCompletionItem(func, option) {
             const contents = func.getContents();
             func.getParams().forEach((param) => {
                 if (func.takes.findIndex((take) => take.name == param.id) != -1) {
-                    contents.push(`\n***@param*** **${param.id}** *${param.descript}*`);
+                    contents.push(`***@param*** **${param.id}** *${param.descript}*`);
                 }
             });
             return contents;
@@ -270,6 +273,9 @@ function structToCompletionItem(struct, option) {
         detial: (_e = option === null || option === void 0 ? void 0 : option.detial) !== null && _e !== void 0 ? _e : struct.name
     });
 }
+function toItems(handle, option, ...datas) {
+    return datas.map(x => handle(x, option));
+}
 vscode.languages.registerCompletionItemProvider("jass", new class JassComplation {
     provideCompletionItems(document, position, token, context) {
         const items = new Array();
@@ -277,11 +283,6 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
         const isZincExt = tool_1.isZincFile(fsPath);
         if (!isZincExt) {
             data_1.parseContent(fsPath, document.getText());
-            if (!options_1.Options.isOnlyJass) {
-                if (options_1.Options.supportZinc) {
-                    data_1.parseZincContent(fsPath, document.getText());
-                }
-            }
         }
         const fieldLibrarys = () => {
             const librarys = [];
@@ -490,10 +491,14 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
             }
             return funcs.filter((func) => func.name == name);
         };
-        function structTypeItems() {
-            return [...data_1.default.structs(), ...data_1.default.libraryStructs(), ...data_1.default.zincLibraryStructs()].map((struct) => {
-                return structToCompletionItem(struct);
-            });
+        function fieldLocalItems() {
+            items.push(...toItems(localToCompletionItem, undefined, ...fieldLocals()));
+        }
+        function fieldStructTypeItems() {
+            items.push(...toItems(structToCompletionItem, undefined, ...data_1.default.structs(), ...data_1.default.libraryStructs(), ...data_1.default.zincLibraryStructs()));
+        }
+        function fieldLibraryItems() {
+            items.push(...toItems(libraryToCompletionItem, undefined, ...fieldLibrarys()));
         }
         const type = PositionTool.is(document, position);
         switch (type) {
@@ -504,12 +509,8 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
             case PositionType.LocalNaming:
                 items.push(ArrayKeywordItem);
             case PositionType.Set:
-                fieldGlobals().filter((global) => !global.isConstant).forEach((global) => {
-                    items.push(globalToCompletionItem(global));
-                });
-                fieldLocals().forEach((local) => {
-                    items.push(localToCompletionItem(local));
-                });
+                items.push(...toItems(globalToCompletionItem, undefined, ...fieldGlobals().filter((global) => !global.isConstant)));
+                fieldLocalItems();
                 fieldTakes().forEach((funcTake, index) => {
                     items.push(takeToCompletionItem(funcTake.take, {
                         source: funcTake.func.source,
@@ -524,19 +525,23 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
                 });
                 break;
             case PositionType.Returns:
-                items.push(...typeItems, NothingItem, ...structTypeItems());
+                items.push(...typeItems, NothingItem);
+                fieldStructTypeItems();
                 return items;
             case PositionType.LocalType:
-                items.push(...typeItems, ...structTypeItems());
+                items.push(...typeItems);
+                fieldStructTypeItems();
                 break;
             case PositionType.ConstantType:
                 items.push(...typeItems);
                 return items;
             case PositionType.TakesFirstType:
-                items.push(...typeItems, NothingItem, CodeItem, ...structTypeItems());
+                items.push(...typeItems, NothingItem, CodeItem);
+                fieldStructTypeItems();
                 return items;
             case PositionType.TakesOtherType:
-                items.push(...typeItems, CodeItem, ...structTypeItems());
+                items.push(...typeItems, CodeItem);
+                fieldStructTypeItems();
                 return items;
             case PositionType.TakesKeyword:
                 items.push(TakesKeywordItem);
@@ -548,9 +553,7 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
                 items.push(ReturnsKeywordItem);
                 return items;
             case PositionType.Requires:
-                fieldLibrarys().forEach((library) => {
-                    items.push(libraryToCompletionItem(library));
-                });
+                fieldLibraryItems();
                 break;
             case PositionType.Assign:
                 const lineText = document.lineAt(position.line);
@@ -558,21 +561,15 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
                 const result = /local\s+(?<type>[a-zA-Z]+[a-zA-Z0-9_]*)\b/.exec(inputText);
                 if (result && result.groups) {
                     const type = result.groups["type"];
-                    [...data_1.default.natives(), ...fieldFunctions()].filter((func) => {
+                    items.push(...toItems(funcToCompletionItem, undefined, ...[...data_1.default.natives(), ...fieldFunctions()].filter((func) => {
                         return type == func.returns || types_1.getParentTypes(type).includes(func.returns);
-                    }).forEach((func) => {
-                        items.push(funcToCompletionItem(func));
-                    });
-                    fieldGlobals().filter((global) => {
+                    })));
+                    items.push(...toItems(globalToCompletionItem, undefined, ...fieldGlobals().filter((global) => {
                         return type == global.type || types_1.getParentTypes(type).includes(global.type);
-                    }).forEach((global) => {
-                        items.push(globalToCompletionItem(global));
-                    });
-                    fieldLocals().filter((local) => {
+                    })));
+                    items.push(...toItems(localToCompletionItem, undefined, ...fieldLocals().filter((local) => {
                         return type == local.type || types_1.getParentTypes(type).includes(local.type);
-                    }).forEach((local) => {
-                        items.push(localToCompletionItem(local));
-                    });
+                    })));
                     fieldTakes().filter((funcTake) => {
                         return type == funcTake.take.type || types_1.getParentTypes(type).includes(funcTake.take.type);
                     }).forEach((funcTake, index) => {
@@ -590,9 +587,7 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
                 }
                 break;
             case PositionType.Call:
-                [...data_1.default.natives(), ...fieldFunctions()].forEach((func) => {
-                    items.push(funcToCompletionItem(func));
-                });
+                items.push(...toItems(funcToCompletionItem, undefined, ...data_1.default.natives(), ...fieldFunctions()));
                 break;
             case PositionType.Args:
                 const key = tool_2.functionKey(document, position);
@@ -600,21 +595,15 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
                 funcs.forEach((func) => {
                     if (func.takes[key.takeIndex]) {
                         const type = func.takes[key.takeIndex].type;
-                        [...data_1.default.natives(), ...fieldFunctions()].filter((func) => {
+                        items.push(...toItems(funcToCompletionItem, undefined, ...[...data_1.default.natives(), ...fieldFunctions()].filter((func) => {
                             return type == func.returns || types_1.getParentTypes(type).includes(func.returns);
-                        }).forEach((func) => {
-                            items.push(funcToCompletionItem(func));
-                        });
-                        fieldGlobals().filter((global) => {
+                        })));
+                        items.push(...toItems(globalToCompletionItem, undefined, ...fieldGlobals().filter((global) => {
                             return type == global.type || types_1.getParentTypes(type).includes(global.type);
-                        }).forEach((global) => {
-                            items.push(globalToCompletionItem(global));
-                        });
-                        fieldLocals().filter((local) => {
+                        })));
+                        items.push(...toItems(localToCompletionItem, undefined, ...fieldLocals().filter((local) => {
                             return type == local.type || types_1.getParentTypes(type).includes(local.type);
-                        }).forEach((local) => {
-                            items.push(localToCompletionItem(local));
-                        });
+                        })));
                         fieldTakes().filter((funcTake) => {
                             return type == funcTake.take.type || types_1.getParentTypes(type).includes(funcTake.take.type);
                         }).forEach((funcTake, index) => {
@@ -633,10 +622,24 @@ vscode.languages.registerCompletionItemProvider("jass", new class JassComplation
                 });
                 break;
             default:
-                items.push(...typeItems, ...structTypeItems());
+                items.push(...typeItems);
                 items.push(...keywordItems);
-                [...data_1.default.natives(), ...fieldFunctions()].forEach((func) => {
-                    items.push(funcToCompletionItem(func));
+                fieldStructTypeItems();
+                fieldLocalItems();
+                fieldLibraryItems();
+                items.push(...toItems(funcToCompletionItem, undefined, ...data_1.default.natives(), ...fieldFunctions()));
+                items.push(...toItems(globalToCompletionItem, undefined, ...fieldGlobals()));
+                fieldTakes().forEach((funcTake, index) => {
+                    items.push(takeToCompletionItem(funcTake.take, {
+                        source: funcTake.func.source,
+                        documentation: funcTake.func.getParams().map((param) => {
+                            if (param.id == funcTake.take.name) {
+                                return `*${param.descript}*`;
+                            }
+                            return `*${param.descript}*`;
+                        }),
+                        orderString: `${index}`
+                    }));
                 });
         }
         if (!isZincExt) {

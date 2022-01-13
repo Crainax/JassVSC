@@ -38,15 +38,6 @@ class HoverProvider {
             return new vscode.Hover(markdownString);
         }
         const fsPath = document.uri.fsPath;
-        const isZincExt = tool_1.isZincFile(fsPath);
-        if (!isZincExt) {
-            data_1.parseContent(fsPath, document.getText());
-            if (!options_1.Options.isOnlyJass) {
-                if (options_1.Options.supportZinc) {
-                    data_1.parseZincContent(fsPath, document.getText());
-                }
-            }
-        }
         const hovers = [];
         const fieldLibrarys = () => {
             const librarys = [];
