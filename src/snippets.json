@@ -3,50 +3,50 @@
     "prefix": "globals",
     "body": "globals\n\t${0:}\nendglobals"
   },
-  "if-vj": {
-    "prefix": "if",
-    "body": "if ${1:condition} then\n\t${0:}\nendif",
-    "description": "if",
-    "scope": "source.jass"
-  },
-  "elseif": {
-    "prefix": "elseif",
-    "body": "elseif ${1:condition} then\n\t${0:}\n",
-    "description": "elseif",
-    "scope": "source.jass"
-  },
-  "function-VJ": {
-    "prefix": "function",
-    "body": [
-      "${1:private }function ${2:function_name} takes ${3:nothing} returns ${4:nothing}\n\t${0:}\nendfunction",
-    ],
-    "description": "function",
-    "scope": "jass"
-  },
-  "loop-VJ": {
-    "prefix": "loop",
-    "body": "${3|local integer ,set |}${1:i} = 1\nloop\n\texitwhen ${1} > ${2:1}\n\t${0:// body...}\n\tset ${1} = ${1} +1\nendloop",
-    "description": "loop循环",
-    "scope": "source.jass"
-  },
-  "Print-VJ": {
-    "prefix": "sout",
-    "body": "call BJDebugMsg(\"${0}\")",
-    "description": "调用debug打印信息",
-    "scope": "source.jass"
-  },
-  "method-VJ": {
-    "prefix": "method",
-    "body": "${1:private }${2:static }method ${3:method_name} takes ${4:nothing} returns ${5:nothing}\n\t${0:// body...}\nendmethod",
-    "description": "method",
-    "scope": "source.jass"
-  },
-  "struct-VJ": {
-    "prefix": "struct",
-    "body": "${1:private }struct ${2:struct_name} ${3:extends array}\n\t${0:// body...}\nendstruct",
-    "description": "struct",
-    "scope": "source.jass"
-  },
+  // "if-vj": {
+  //   "prefix": "if",
+  //   "body": "if ${1:condition} then\n\t${0:}\nendif",
+  //   "description": "if",
+  //   "scope": "source.jass"
+  // },
+  // "elseif": {
+  //   "prefix": "elseif",
+  //   "body": "elseif ${1:condition} then\n\t${0:}\n",
+  //   "description": "elseif",
+  //   "scope": "source.jass"
+  // },
+  // "function-VJ": {
+  //   "prefix": "function",
+  //   "body": [
+  //     "${1:private }function ${2:function_name} takes ${3:nothing} returns ${4:nothing}\n\t${0:}\nendfunction",
+  //   ],
+  //   "description": "function",
+  //   "scope": "jass"
+  // },
+  // "loop-VJ": {
+  //   "prefix": "loop",
+  //   "body": "${3|local integer ,set |}${1:i} = 1\nloop\n\texitwhen ${1} > ${2:1}\n\t${0:// body...}\n\tset ${1} = ${1} +1\nendloop",
+  //   "description": "loop循环",
+  //   "scope": "source.jass"
+  // },
+  // "Print-VJ": {
+  //   "prefix": "sout",
+  //   "body": "call BJDebugMsg(\"${0}\")",
+  //   "description": "调用debug打印信息",
+  //   "scope": "source.jass"
+  // },
+  // "method-VJ": {
+  //   "prefix": "method",
+  //   "body": "${1:private }${2:static }method ${3:method_name} takes ${4:nothing} returns ${5:nothing}\n\t${0:// body...}\nendmethod",
+  //   "description": "method",
+  //   "scope": "source.jass"
+  // },
+  // "struct-VJ": {
+  //   "prefix": "struct",
+  //   "body": "${1:private }struct ${2:struct_name} ${3:extends array}\n\t${0:// body...}\nendstruct",
+  //   "description": "struct",
+  //   "scope": "source.jass"
+  // },
   "if-zinc": {
     "prefix": "if",
     "body": "if (${1:condition}) {${0}}",
@@ -144,6 +144,7 @@
     "description": "运行文本宏",
     "scope": "source.jass"
   },
+  //下面是废弃的不用的,上面的注释掉的才是VJ用的
   /*   "ifelse": {
     "prefix": "ifelse",
     "body": "if ${1:condition} then\n\t${2:}\nelse\n\t${0:}\nendif",

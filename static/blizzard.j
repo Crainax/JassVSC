@@ -56,7 +56,7 @@ globals
     constant integer   bj_MAX_STOCK_ITEM_SLOTS          =  11
     constant integer   bj_MAX_STOCK_UNIT_SLOTS          =  11
     constant integer   bj_MAX_ITEM_LEVEL                =  10
-    
+
     // Auto Save constants
     constant integer   bj_MAX_CHECKPOINTS               =  5
 
@@ -396,7 +396,7 @@ globals
 	constant integer   bj_GAMECACHE_REAL                    = 2
 	constant integer   bj_GAMECACHE_UNIT                    = 3
 	constant integer   bj_GAMECACHE_STRING                  = 4
-	
+
 	// Hashtable value types
 	constant integer   bj_HASHTABLE_BOOLEAN                 = 0
 	constant integer   bj_HASHTABLE_INTEGER                 = 1
@@ -421,7 +421,7 @@ globals
     constant integer   bj_MINIMAPPINGSTYLE_SIMPLE  = 0
     constant integer   bj_MINIMAPPINGSTYLE_FLASHY  = 1
     constant integer   bj_MINIMAPPINGSTYLE_ATTACK  = 2
-	
+
     // Campaign Minimap icon styles
     constant integer   bj_CAMPPINGSTYLE_PRIMARY			= 0
     constant integer   bj_CAMPPINGSTYLE_PRIMARY_GREEN   = 1
@@ -834,7 +834,7 @@ function DistanceBetweenPoints takes location locA, location locB returns real
 endfunction
 
 
-// 点向方向 位移 
+// 点向方向 位移
 function PolarProjectionBJ takes location source, real dist, real angle returns location
     local real x = GetLocationX(source) + dist * Cos(angle * bj_DEGTORAD)
     local real y = GetLocationY(source) + dist * Sin(angle * bj_DEGTORAD)
@@ -1788,8 +1788,8 @@ endfunction
 // 切割字符串
 function SubStringBJ takes string source, integer start, integer end returns string
     return SubString(source, start-1, end)
-endfunction  
-  
+endfunction
+
 // 获取句柄整数地址
 function GetHandleIdBJ takes handle h returns integer
     return GetHandleId(h)
@@ -2352,7 +2352,7 @@ function UseTimeOfDayBJ takes boolean flag returns nothing
 endfunction
 
 
-// 设置 迷雾 
+// 设置 迷雾
 function SetTerrainFogExBJ takes integer style, real zstart, real zend, real density, real red, real green, real blue returns nothing
     call SetTerrainFogEx(style, zstart, zend, density, red * 0.01, green * 0.01, blue * 0.01)
 endfunction
@@ -3172,7 +3172,7 @@ endfunction
 function UnitAddItemByIdSwapped takes integer itemId, unit whichHero returns item
     // Create the item at the hero's feet first, and then give it to him.
     // This is to ensure that the item will be left at the hero's feet if
-    // his inventory is full. 
+    // his inventory is full.
     set bj_lastCreatedItem = CreateItem(itemId, GetUnitX(whichHero), GetUnitY(whichHero))
     call UnitAddItem(whichHero, bj_lastCreatedItem)
     return bj_lastCreatedItem
@@ -3617,7 +3617,7 @@ endfunction
 // 将字符串转换为命令
 function String2OrderIdBJ takes string orderIdString returns integer
     local integer orderId
-    
+
     // Check to see if it's a generic order.
     set orderId = OrderId(orderIdString)
     if (orderId != 0) then
@@ -4233,13 +4233,13 @@ function DoesUnitGenerateAlarms takes unit whichUnit returns boolean
 endfunction
 
 
-// Pause all units 
+// Pause all units
 function PauseAllUnitsBJEnum takes nothing returns nothing
     call PauseUnit( GetEnumUnit(), bj_pauseAllUnitsFlag )
 endfunction
 
 
-// Pause all units 
+// Pause all units
 function PauseAllUnitsBJ takes boolean pause returns nothing
     local integer index
     local player  indexPlayer
@@ -5361,7 +5361,7 @@ function CountUnitsInGroup takes group g returns integer
     return bj_groupCountUnits
 endfunction
 
-// 
+//
 function CountPlayersInForceEnum takes nothing returns nothing
     set bj_forceCountPlayers = bj_forceCountPlayers + 1
 endfunction
@@ -5737,7 +5737,7 @@ function PlayersAreCoAllied takes player playerA, player playerB returns boolean
 endfunction
 
 
-// Force (whichPlayer) AI player to share vision and advanced unit control 
+// Force (whichPlayer) AI player to share vision and advanced unit control
 // with all AI players of its allies.
 //
 // 同队共享视野与单位控制权
@@ -5786,7 +5786,7 @@ endfunction
 
 // Creates a 'Neutral Victim' player slot.  This slot is passive towards all
 // other players, but all other players are aggressive towards him/her.
-// 
+//
 function ConfigureNeutralVictim takes nothing returns nothing
     local integer index
     local player indexPlayer
@@ -7151,7 +7151,7 @@ function PingMinimapForForceEx takes force whichForce, real x, real y, real dura
         else
             // Unrecognized ping style - ignore the request.
         endif
-        
+
         //call StartSound(bj_pingMinimapSound)
     endif
 endfunction
@@ -9206,7 +9206,7 @@ endfunction
 
 function MeleeClearNearbyUnits takes real x, real y, real range returns nothing
     local group nearbyUnits
-    
+
     set nearbyUnits = CreateGroup()
     call GroupEnumUnitsInRange(nearbyUnits, x, y, range, null)
     call ForGroup(nearbyUnits, function MeleeClearExcessUnit)
@@ -9370,7 +9370,7 @@ function MeleeStartingUnitsHuman takes player whichPlayer, location startLoc, bo
     if (nearestMine != null) then
         // Spawn Town Hall at the start location.
         set townHall = CreateUnitAtLoc(whichPlayer, 'htow', startLoc, bj_UNIT_FACING)
-        
+
         // Spawn Peasants near the mine.
         set nearMineLoc = MeleeGetProjectedLoc(GetUnitLoc(nearestMine), startLoc, 320, 0)
         set peonX = GetLocationX(nearMineLoc)
@@ -9386,7 +9386,7 @@ function MeleeStartingUnitsHuman takes player whichPlayer, location startLoc, bo
     else
         // Spawn Town Hall at the start location.
         set townHall = CreateUnitAtLoc(whichPlayer, 'htow', startLoc, bj_UNIT_FACING)
-        
+
         // Spawn Peasants directly south of the town hall.
         set peonX = GetLocationX(startLoc)
         set peonY = GetLocationY(startLoc) - 224.00
@@ -9444,7 +9444,7 @@ function MeleeStartingUnitsOrc takes player whichPlayer, location startLoc, bool
     if (nearestMine != null) then
         // Spawn Great Hall at the start location.
         call CreateUnitAtLoc(whichPlayer, 'ogre', startLoc, bj_UNIT_FACING)
-        
+
         // Spawn Peons near the mine.
         set nearMineLoc = MeleeGetProjectedLoc(GetUnitLoc(nearestMine), startLoc, 320, 0)
         set peonX = GetLocationX(nearMineLoc)
@@ -9460,7 +9460,7 @@ function MeleeStartingUnitsOrc takes player whichPlayer, location startLoc, bool
     else
         // Spawn Great Hall at the start location.
         call CreateUnitAtLoc(whichPlayer, 'ogre', startLoc, bj_UNIT_FACING)
-        
+
         // Spawn Peons directly south of the town hall.
         set peonX = GetLocationX(startLoc)
         set peonY = GetLocationY(startLoc) - 224.00
@@ -9519,7 +9519,7 @@ function MeleeStartingUnitsUndead takes player whichPlayer, location startLoc, b
     if (nearestMine != null) then
         // Spawn Necropolis at the start location.
         call CreateUnitAtLoc(whichPlayer, 'unpl', startLoc, bj_UNIT_FACING)
-        
+
         // Replace the nearest gold mine with a blighted version.
         set nearestMine = BlightGoldMineForPlayerBJ(nearestMine, whichPlayer)
 
@@ -9545,7 +9545,7 @@ function MeleeStartingUnitsUndead takes player whichPlayer, location startLoc, b
     else
         // Spawn Necropolis at the start location.
         call CreateUnitAtLoc(whichPlayer, 'unpl', startLoc, bj_UNIT_FACING)
-        
+
         // Spawn Acolytes and Ghoul directly south of the Necropolis.
         set peonX = GetLocationX(startLoc)
         set peonY = GetLocationY(startLoc) - 224.00
@@ -9719,7 +9719,7 @@ function MeleeStartingUnits takes nothing returns nothing
         set index = index + 1
         exitwhen index == bj_MAX_PLAYERS
     endloop
-    
+
 endfunction
 
 
@@ -9876,7 +9876,7 @@ function MeleeGetAllyStructureCount takes player whichPlayer returns integer
         if (PlayersAreCoAllied(whichPlayer, indexPlayer)) then
             set buildingCount = buildingCount + GetPlayerStructureCount(indexPlayer, true)
         endif
-            
+
         set playerIndex = playerIndex + 1
         exitwhen playerIndex == bj_MAX_PLAYERS
     endloop
@@ -9927,7 +9927,7 @@ function MeleeGetAllyKeyStructureCount takes player whichPlayer returns integer
         if (PlayersAreCoAllied(whichPlayer, indexPlayer)) then
             set keyStructs = keyStructs + BlzGetPlayerTownHallCount(indexPlayer)
         endif
-            
+
         set playerIndex = playerIndex + 1
         exitwhen playerIndex == bj_MAX_PLAYERS
     endloop
@@ -9993,7 +9993,7 @@ endfunction
 
 
 // Remove all observers
-// 
+//
 function MeleeRemoveObservers takes nothing returns nothing
     local integer    playerIndex
     local player     indexPlayer
@@ -10097,7 +10097,7 @@ function MeleeCheckForLosersAndVictors takes nothing returns nothing
                 set bj_meleeDefeated[playerIndex] = true
             endif
         endif
-            
+
         set playerIndex = playerIndex + 1
         exitwhen playerIndex == bj_MAX_PLAYERS
     endloop
@@ -10333,7 +10333,7 @@ function MeleeCheckForCrippledPlayers takes nothing returns nothing
             call MeleeExposePlayer(indexPlayer, false)
 
         endif
-            
+
         set playerIndex = playerIndex + 1
         exitwhen playerIndex == bj_MAX_PLAYERS
     endloop
@@ -10420,7 +10420,7 @@ function MeleeTriggerActionPlayerLeft takes nothing returns nothing
 
     call CachePlayerHeroData(thePlayer)
 
-    // This is the same as defeat except the player generates the message 
+    // This is the same as defeat except the player generates the message
     // "player left the game" as opposed to "player was defeated".
 
     if (MeleeGetAllyCount(thePlayer) > 0) then
@@ -11223,7 +11223,7 @@ endfunction
 //*
 //*  - RandomDistChoose will use the current distribution list to choose
 //*    one of the objects randomly based on the chance distribution
-//*  
+//*
 //*  Note that the chances are effectively normalized by their sum,
 //*  so only the relative values of each chance are important
 //*
@@ -11465,7 +11465,7 @@ function BlzRemoveAbilityStringLevelArrayFieldBJ takes ability whichAbility, abi
     set bj_lastInstObjFuncSuccessful = BlzRemoveAbilityStringLevelArrayField(whichAbility, whichField, level, value)
 endfunction
 
-// Item 
+// Item
 //=============================================================
 function BlzItemAddAbilityBJ takes item whichItem, integer abilCode returns nothing
     set bj_lastInstObjFuncSuccessful = BlzItemAddAbility(whichItem, abilCode)
@@ -11497,7 +11497,7 @@ function BlzSetItemStringFieldBJ takes item whichItem, itemstringfield whichFiel
 endfunction
 
 
-// Unit 
+// Unit
 
 function BlzSetUnitBooleanFieldBJ takes unit whichUnit, unitbooleanfield whichField, boolean value returns nothing
     set bj_lastInstObjFuncSuccessful = BlzSetUnitBooleanField(whichUnit, whichField, value)

@@ -312,11 +312,11 @@ constant native GetPlayerNeutralPassive takes nothing returns integer
 constant native GetPlayerNeutralAggressive takes nothing returns integer
 
 globals
-	
+
 	//===================================================
 	// Game Constants
 	//===================================================
-	
+
 	// false
  constant boolean FALSE                           = false
  // true
@@ -375,19 +375,19 @@ globals
 	constant playercolor PLAYER_COLOR_EMERALD            = ConvertPlayerColor(22)
 	// PEANUT玩家 [PEANUT]
 	constant playercolor PLAYER_COLOR_PEANUT             = ConvertPlayerColor(23)
-	
+
 	constant race RACE_HUMAN                      = ConvertRace(1)
 	constant race RACE_ORC                        = ConvertRace(2)
 	constant race RACE_UNDEAD                     = ConvertRace(3)
 	constant race RACE_NIGHTELF                   = ConvertRace(4)
 	constant race RACE_DEMON                      = ConvertRace(5)
 	constant race RACE_OTHER                      = ConvertRace(7)
-	
+
 	constant playergameresult PLAYER_GAME_RESULT_VICTORY      = ConvertPlayerGameResult(0)
 	constant playergameresult PLAYER_GAME_RESULT_DEFEAT       = ConvertPlayerGameResult(1)
 	constant playergameresult PLAYER_GAME_RESULT_TIE          = ConvertPlayerGameResult(2)
 	constant playergameresult PLAYER_GAME_RESULT_NEUTRAL      = ConvertPlayerGameResult(3)
-	
+
 	constant alliancetype ALLIANCE_PASSIVE                = ConvertAllianceType(0)
 	constant alliancetype ALLIANCE_HELP_REQUEST           = ConvertAllianceType(1)
 	constant alliancetype ALLIANCE_HELP_RESPONSE          = ConvertAllianceType(2)
@@ -398,10 +398,10 @@ globals
 	constant alliancetype ALLIANCE_SHARED_ADVANCED_CONTROL= ConvertAllianceType(7)
 	constant alliancetype ALLIANCE_RESCUABLE              = ConvertAllianceType(8)
 	constant alliancetype ALLIANCE_SHARED_VISION_FORCED   = ConvertAllianceType(9)
-	
+
 	constant version VERSION_REIGN_OF_CHAOS          = ConvertVersion(0)
 	constant version VERSION_FROZEN_THRONE           = ConvertVersion(1)
-	
+
 	constant attacktype ATTACK_TYPE_NORMAL              = ConvertAttackType(0)
 	constant attacktype ATTACK_TYPE_MELEE               = ConvertAttackType(1)
 	constant attacktype ATTACK_TYPE_PIERCE              = ConvertAttackType(2)
@@ -409,7 +409,7 @@ globals
 	constant attacktype ATTACK_TYPE_MAGIC               = ConvertAttackType(4)
 	constant attacktype ATTACK_TYPE_CHAOS               = ConvertAttackType(5)
 	constant attacktype ATTACK_TYPE_HERO                = ConvertAttackType(6)
-	
+
 	constant damagetype DAMAGE_TYPE_UNKNOWN             = ConvertDamageType(0)
 	constant damagetype DAMAGE_TYPE_NORMAL              = ConvertDamageType(4)
 	constant damagetype DAMAGE_TYPE_ENHANCED            = ConvertDamageType(5)
@@ -432,7 +432,7 @@ globals
 	constant damagetype DAMAGE_TYPE_SPIRIT_LINK         = ConvertDamageType(24)
 	constant damagetype DAMAGE_TYPE_SHADOW_STRIKE       = ConvertDamageType(25)
 	constant damagetype DAMAGE_TYPE_UNIVERSAL           = ConvertDamageType(26)
-	
+
 	constant weapontype WEAPON_TYPE_WHOKNOWS            = ConvertWeaponType(0)
 	constant weapontype WEAPON_TYPE_METAL_LIGHT_CHOP    = ConvertWeaponType(1)
 	constant weapontype WEAPON_TYPE_METAL_MEDIUM_CHOP   = ConvertWeaponType(2)
@@ -457,7 +457,7 @@ globals
 	constant weapontype WEAPON_TYPE_CLAW_HEAVY_SLICE    = ConvertWeaponType(21)
 	constant weapontype WEAPON_TYPE_AXE_MEDIUM_CHOP     = ConvertWeaponType(22)
 	constant weapontype WEAPON_TYPE_ROCK_HEAVY_BASH     = ConvertWeaponType(23)
-	
+
 	constant pathingtype PATHING_TYPE_ANY                = ConvertPathingType(0)
 	constant pathingtype PATHING_TYPE_WALKABILITY        = ConvertPathingType(1)
 	constant pathingtype PATHING_TYPE_FLYABILITY         = ConvertPathingType(2)
@@ -472,7 +472,7 @@ globals
 	constant mousebuttontype MOUSE_BUTTON_TYPE_MIDDLE        = ConvertMouseButtonType(2)
 	// 右键
 	constant mousebuttontype MOUSE_BUTTON_TYPE_RIGHT         = ConvertMouseButtonType(3)
-	
+
 	constant animtype ANIM_TYPE_BIRTH                 = ConvertAnimType(0)
 	constant animtype ANIM_TYPE_DEATH                 = ConvertAnimType(1)
 	constant animtype ANIM_TYPE_DECAY                 = ConvertAnimType(2)
@@ -484,7 +484,7 @@ globals
 	constant animtype ANIM_TYPE_SLEEP                 = ConvertAnimType(8)
 	constant animtype ANIM_TYPE_SPELL                 = ConvertAnimType(9)
 	constant animtype ANIM_TYPE_PORTRAIT              = ConvertAnimType(10)
-	
+
 	constant subanimtype SUBANIM_TYPE_ROOTED             = ConvertSubAnimType(11)
 	constant subanimtype SUBANIM_TYPE_ALTERNATE_EX       = ConvertSubAnimType(12)
 	constant subanimtype SUBANIM_TYPE_LOOPING            = ConvertSubAnimType(13)
@@ -537,11 +537,11 @@ globals
 	constant subanimtype SUBANIM_TYPE_SWIM               = ConvertSubAnimType(60)
 	constant subanimtype SUBANIM_TYPE_ENTANGLE           = ConvertSubAnimType(61)
 	constant subanimtype SUBANIM_TYPE_BERSERK            = ConvertSubAnimType(62)
-	
+
 	//===================================================
 	// Map Setup Constants
 	//===================================================
-	
+
 	constant racepreference RACE_PREF_HUMAN                     = ConvertRacePref(1)
 	constant racepreference RACE_PREF_ORC                       = ConvertRacePref(2)
 	constant racepreference RACE_PREF_NIGHTELF                  = ConvertRacePref(4)
@@ -549,14 +549,14 @@ globals
 	constant racepreference RACE_PREF_DEMON                     = ConvertRacePref(16)
 	constant racepreference RACE_PREF_RANDOM                    = ConvertRacePref(32)
 	constant racepreference RACE_PREF_USER_SELECTABLE           = ConvertRacePref(64)
-	
+
 	constant mapcontrol MAP_CONTROL_USER                    = ConvertMapControl(0)
 	constant mapcontrol MAP_CONTROL_COMPUTER                = ConvertMapControl(1)
 	constant mapcontrol MAP_CONTROL_RESCUABLE               = ConvertMapControl(2)
 	constant mapcontrol MAP_CONTROL_NEUTRAL                 = ConvertMapControl(3)
 	constant mapcontrol MAP_CONTROL_CREEP                   = ConvertMapControl(4)
 	constant mapcontrol MAP_CONTROL_NONE                    = ConvertMapControl(5)
-	
+
 	constant gametype GAME_TYPE_MELEE                     = ConvertGameType(1)
 	constant gametype GAME_TYPE_FFA                       = ConvertGameType(2)
 	constant gametype GAME_TYPE_USE_MAP_SETTINGS          = ConvertGameType(4)
@@ -565,66 +565,66 @@ globals
 	constant gametype GAME_TYPE_TWO_TEAM_PLAY             = ConvertGameType(32)
 	constant gametype GAME_TYPE_THREE_TEAM_PLAY           = ConvertGameType(64)
 	constant gametype GAME_TYPE_FOUR_TEAM_PLAY            = ConvertGameType(128)
-	
+
 	constant mapflag MAP_FOG_HIDE_TERRAIN                = ConvertMapFlag(1)
 	constant mapflag MAP_FOG_MAP_EXPLORED                = ConvertMapFlag(2)
 	constant mapflag MAP_FOG_ALWAYS_VISIBLE              = ConvertMapFlag(4)
-	
+
 	constant mapflag MAP_USE_HANDICAPS                   = ConvertMapFlag(8)
 	constant mapflag MAP_OBSERVERS                       = ConvertMapFlag(16)
 	constant mapflag MAP_OBSERVERS_ON_DEATH              = ConvertMapFlag(32)
-	
+
 	constant mapflag MAP_FIXED_COLORS                    = ConvertMapFlag(128)
-	
+
 	constant mapflag MAP_LOCK_RESOURCE_TRADING           = ConvertMapFlag(256)
 	constant mapflag MAP_RESOURCE_TRADING_ALLIES_ONLY    = ConvertMapFlag(512)
-	
+
 	constant mapflag MAP_LOCK_ALLIANCE_CHANGES           = ConvertMapFlag(1024)
 	constant mapflag MAP_ALLIANCE_CHANGES_HIDDEN         = ConvertMapFlag(2048)
-	
+
 	constant mapflag MAP_CHEATS                          = ConvertMapFlag(4096)
 	constant mapflag MAP_CHEATS_HIDDEN                   = ConvertMapFlag(8192)
-	
+
 	constant mapflag MAP_LOCK_SPEED                      = ConvertMapFlag(8192*2)
 	constant mapflag MAP_LOCK_RANDOM_SEED                = ConvertMapFlag(8192*4)
 	constant mapflag MAP_SHARED_ADVANCED_CONTROL         = ConvertMapFlag(8192*8)
 	constant mapflag MAP_RANDOM_HERO                     = ConvertMapFlag(8192*16)
 	constant mapflag MAP_RANDOM_RACES                    = ConvertMapFlag(8192*32)
 	constant mapflag MAP_RELOADED                        = ConvertMapFlag(8192*64)
-	
+
 	constant placement MAP_PLACEMENT_RANDOM                = ConvertPlacement(0)   // random among all slots
 	constant placement MAP_PLACEMENT_FIXED                 = ConvertPlacement(1)   // player 0 in start loc 0...
 	constant placement MAP_PLACEMENT_USE_MAP_SETTINGS      = ConvertPlacement(2)   // whatever was specified by the script
 	constant placement MAP_PLACEMENT_TEAMS_TOGETHER        = ConvertPlacement(3)   // random with allies next to each other
-	
+
 	constant startlocprio MAP_LOC_PRIO_LOW                    = ConvertStartLocPrio(0)
 	constant startlocprio MAP_LOC_PRIO_HIGH                   = ConvertStartLocPrio(1)
 	constant startlocprio MAP_LOC_PRIO_NOT                    = ConvertStartLocPrio(2)
-	
+
 	constant mapdensity MAP_DENSITY_NONE                    = ConvertMapDensity(0)
 	constant mapdensity MAP_DENSITY_LIGHT                   = ConvertMapDensity(1)
 	constant mapdensity MAP_DENSITY_MEDIUM                  = ConvertMapDensity(2)
 	constant mapdensity MAP_DENSITY_HEAVY                   = ConvertMapDensity(3)
-	
+
 	constant gamedifficulty MAP_DIFFICULTY_EASY                 = ConvertGameDifficulty(0)
 	constant gamedifficulty MAP_DIFFICULTY_NORMAL               = ConvertGameDifficulty(1)
 	constant gamedifficulty MAP_DIFFICULTY_HARD                 = ConvertGameDifficulty(2)
 	constant gamedifficulty MAP_DIFFICULTY_INSANE               = ConvertGameDifficulty(3)
-	
+
 	constant gamespeed MAP_SPEED_SLOWEST                   = ConvertGameSpeed(0)
 	constant gamespeed MAP_SPEED_SLOW                      = ConvertGameSpeed(1)
 	constant gamespeed MAP_SPEED_NORMAL                    = ConvertGameSpeed(2)
 	constant gamespeed MAP_SPEED_FAST                      = ConvertGameSpeed(3)
 	constant gamespeed MAP_SPEED_FASTEST                   = ConvertGameSpeed(4)
-	
+
 	constant playerslotstate PLAYER_SLOT_STATE_EMPTY             = ConvertPlayerSlotState(0)
 	constant playerslotstate PLAYER_SLOT_STATE_PLAYING           = ConvertPlayerSlotState(1)
 	constant playerslotstate PLAYER_SLOT_STATE_LEFT              = ConvertPlayerSlotState(2)
-	
+
 	//===================================================
 	// Sound Constants
 	//===================================================
-	
+
  constant volumegroup SOUND_VOLUMEGROUP_UNITMOVEMENT      = ConvertVolumeGroup(0)
 	constant volumegroup SOUND_VOLUMEGROUP_UNITSOUNDS        = ConvertVolumeGroup(1)
 	constant volumegroup SOUND_VOLUMEGROUP_COMBAT            = ConvertVolumeGroup(2)
@@ -633,21 +633,21 @@ globals
 	constant volumegroup SOUND_VOLUMEGROUP_MUSIC             = ConvertVolumeGroup(5)
 	constant volumegroup SOUND_VOLUMEGROUP_AMBIENTSOUNDS     = ConvertVolumeGroup(6)
 	constant volumegroup SOUND_VOLUMEGROUP_FIRE              = ConvertVolumeGroup(7)
-	
-	
+
+
 	//===================================================
 	// Game, Player, and Unit States
 	//
 	// For use with TriggerRegister<X>StateEvent
 	//
 	//===================================================
-	
+
 	constant igamestate GAME_STATE_DIVINE_INTERVENTION          = ConvertIGameState(0)
 	constant igamestate GAME_STATE_DISCONNECTED                 = ConvertIGameState(1)
 	constant fgamestate GAME_STATE_TIME_OF_DAY                  = ConvertFGameState(2)
-	
+
 	constant playerstate PLAYER_STATE_GAME_RESULT               = ConvertPlayerState(0)
-	
+
 	// current resource levels
 	//
 	constant playerstate PLAYER_STATE_RESOURCE_GOLD             = ConvertPlayerState(1)
@@ -656,35 +656,35 @@ globals
 	constant playerstate PLAYER_STATE_RESOURCE_FOOD_CAP         = ConvertPlayerState(4)
 	constant playerstate PLAYER_STATE_RESOURCE_FOOD_USED        = ConvertPlayerState(5)
 	constant playerstate PLAYER_STATE_FOOD_CAP_CEILING          = ConvertPlayerState(6)
-	
+
 	constant playerstate PLAYER_STATE_GIVES_BOUNTY              = ConvertPlayerState(7)
 	constant playerstate PLAYER_STATE_ALLIED_VICTORY            = ConvertPlayerState(8)
 	constant playerstate PLAYER_STATE_PLACED                    = ConvertPlayerState(9)
 	constant playerstate PLAYER_STATE_OBSERVER_ON_DEATH         = ConvertPlayerState(10)
 	constant playerstate PLAYER_STATE_OBSERVER                  = ConvertPlayerState(11)
 	constant playerstate PLAYER_STATE_UNFOLLOWABLE              = ConvertPlayerState(12)
-	
+
 	// taxation rate for each resource
 	//
 	constant playerstate PLAYER_STATE_GOLD_UPKEEP_RATE          = ConvertPlayerState(13)
 	constant playerstate PLAYER_STATE_LUMBER_UPKEEP_RATE        = ConvertPlayerState(14)
-	
+
 	// cumulative resources collected by the player during the mission
 	//
 	constant playerstate PLAYER_STATE_GOLD_GATHERED             = ConvertPlayerState(15)
 	constant playerstate PLAYER_STATE_LUMBER_GATHERED           = ConvertPlayerState(16)
-	
+
 	constant playerstate PLAYER_STATE_NO_CREEP_SLEEP            = ConvertPlayerState(25)
-	
+
 	constant unitstate UNIT_STATE_LIFE                          = ConvertUnitState(0)
 	constant unitstate UNIT_STATE_MAX_LIFE                      = ConvertUnitState(1)
 	constant unitstate UNIT_STATE_MANA                          = ConvertUnitState(2)
 	constant unitstate UNIT_STATE_MAX_MANA                      = ConvertUnitState(3)
-	
+
 	constant aidifficulty AI_DIFFICULTY_NEWBIE                  = ConvertAIDifficulty(0)
 	constant aidifficulty AI_DIFFICULTY_NORMAL                  = ConvertAIDifficulty(1)
 	constant aidifficulty AI_DIFFICULTY_INSANE                  = ConvertAIDifficulty(2)
-	
+
 	// player score values
  constant playerscore PLAYER_SCORE_UNITS_TRAINED             = ConvertPlayerScore(0)
 	constant playerscore PLAYER_SCORE_UNITS_KILLED              = ConvertPlayerScore(1)
@@ -711,7 +711,7 @@ globals
 	constant playerscore PLAYER_SCORE_HERO_TOTAL                = ConvertPlayerScore(22)
 	constant playerscore PLAYER_SCORE_RESOURCE_TOTAL            = ConvertPlayerScore(23)
 	constant playerscore PLAYER_SCORE_TOTAL                     = ConvertPlayerScore(24)
-	
+
 	//===================================================
 	// Game, Player and Unit Events
 	//
@@ -726,49 +726,49 @@ globals
 	// is changed to match.
 	//
 	//===================================================
-	
+
 	//===================================================
 	// For use with TriggerRegisterGameEvent
 	//===================================================
-	
+
 	constant gameevent EVENT_GAME_VICTORY                       = ConvertGameEvent(0)
 	constant gameevent EVENT_GAME_END_LEVEL                     = ConvertGameEvent(1)
-	
+
 	constant gameevent EVENT_GAME_VARIABLE_LIMIT                = ConvertGameEvent(2)
 	constant gameevent EVENT_GAME_STATE_LIMIT                   = ConvertGameEvent(3)
-	
+
 	constant gameevent EVENT_GAME_TIMER_EXPIRED                 = ConvertGameEvent(4)
-	
+
 	constant gameevent EVENT_GAME_ENTER_REGION                  = ConvertGameEvent(5)
 	constant gameevent EVENT_GAME_LEAVE_REGION                  = ConvertGameEvent(6)
-	
+
 	constant gameevent EVENT_GAME_TRACKABLE_HIT                 = ConvertGameEvent(7)
 	constant gameevent EVENT_GAME_TRACKABLE_TRACK               = ConvertGameEvent(8)
-	
+
 	constant gameevent EVENT_GAME_SHOW_SKILL                    = ConvertGameEvent(9)
 	constant gameevent EVENT_GAME_BUILD_SUBMENU                 = ConvertGameEvent(10)
-	
+
 	//===================================================
 	// For use with TriggerRegisterPlayerEvent
 	//===================================================
  constant playerevent EVENT_PLAYER_STATE_LIMIT               = ConvertPlayerEvent(11)
 	constant playerevent EVENT_PLAYER_ALLIANCE_CHANGED          = ConvertPlayerEvent(12)
-	
+
 	constant playerevent EVENT_PLAYER_DEFEAT                    = ConvertPlayerEvent(13)
 	constant playerevent EVENT_PLAYER_VICTORY                   = ConvertPlayerEvent(14)
 	constant playerevent EVENT_PLAYER_LEAVE                     = ConvertPlayerEvent(15)
 	constant playerevent EVENT_PLAYER_CHAT                      = ConvertPlayerEvent(16)
 	constant playerevent EVENT_PLAYER_END_CINEMATIC             = ConvertPlayerEvent(17)
-	
+
 	//===================================================
 	// For use with TriggerRegisterPlayerUnitEvent
 	//===================================================
-	
+
 	// 玩家單位被攻擊
  constant playerunitevent EVENT_PLAYER_UNIT_ATTACKED                 = ConvertPlayerUnitEvent(18)
 	// 玩家單位被救援
  constant playerunitevent EVENT_PLAYER_UNIT_RESCUED                  = ConvertPlayerUnitEvent(19)
-	
+
 	// 玩家單位死亡
  constant playerunitevent EVENT_PLAYER_UNIT_DEATH                    = ConvertPlayerUnitEvent(20)
 	// 玩家單位開始腐爛
@@ -777,31 +777,31 @@ globals
 	constant playerunitevent EVENT_PLAYER_UNIT_DETECTED                 = ConvertPlayerUnitEvent(22)
 	// 单位隐藏
 	constant playerunitevent EVENT_PLAYER_UNIT_HIDDEN                   = ConvertPlayerUnitEvent(23)
-	
+
 	// 选取单位
 	constant playerunitevent EVENT_PLAYER_UNIT_SELECTED                 = ConvertPlayerUnitEvent(24)
 	// 取消选择单位
 	constant playerunitevent EVENT_PLAYER_UNIT_DESELECTED               = ConvertPlayerUnitEvent(25)
-	
+
 	// 开始建造
 	constant playerunitevent EVENT_PLAYER_UNIT_CONSTRUCT_START          = ConvertPlayerUnitEvent(26)
 	// 取消建造
 	constant playerunitevent EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL         = ConvertPlayerUnitEvent(27)
 	// 建造完成
 	constant playerunitevent EVENT_PLAYER_UNIT_CONSTRUCT_FINISH         = ConvertPlayerUnitEvent(28)
-	
+
 	// 升级开始
 	constant playerunitevent EVENT_PLAYER_UNIT_UPGRADE_START            = ConvertPlayerUnitEvent(29)
 	// 取消升级
 	constant playerunitevent EVENT_PLAYER_UNIT_UPGRADE_CANCEL           = ConvertPlayerUnitEvent(30)
 	// 升级完成
 	constant playerunitevent EVENT_PLAYER_UNIT_UPGRADE_FINISH           = ConvertPlayerUnitEvent(31)
-	
+
 
 	constant playerunitevent EVENT_PLAYER_UNIT_TRAIN_START              = ConvertPlayerUnitEvent(32)
 	constant playerunitevent EVENT_PLAYER_UNIT_TRAIN_CANCEL             = ConvertPlayerUnitEvent(33)
 	constant playerunitevent EVENT_PLAYER_UNIT_TRAIN_FINISH             = ConvertPlayerUnitEvent(34)
-	
+
 	constant playerunitevent EVENT_PLAYER_UNIT_RESEARCH_START           = ConvertPlayerUnitEvent(35)
 	constant playerunitevent EVENT_PLAYER_UNIT_RESEARCH_CANCEL          = ConvertPlayerUnitEvent(36)
 	constant playerunitevent EVENT_PLAYER_UNIT_RESEARCH_FINISH          = ConvertPlayerUnitEvent(37)
@@ -809,12 +809,12 @@ globals
 	constant playerunitevent EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER       = ConvertPlayerUnitEvent(39)
 	constant playerunitevent EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER      = ConvertPlayerUnitEvent(40)
 	constant playerunitevent EVENT_PLAYER_UNIT_ISSUED_UNIT_ORDER        = ConvertPlayerUnitEvent(40)    // for compat
-	
+
 	constant playerunitevent EVENT_PLAYER_HERO_LEVEL                    = ConvertPlayerUnitEvent(41)
 	constant playerunitevent EVENT_PLAYER_HERO_SKILL                    = ConvertPlayerUnitEvent(42)
-	
+
 	constant playerunitevent EVENT_PLAYER_HERO_REVIVABLE                = ConvertPlayerUnitEvent(43)
-	
+
 	constant playerunitevent EVENT_PLAYER_HERO_REVIVE_START             = ConvertPlayerUnitEvent(44)
 	constant playerunitevent EVENT_PLAYER_HERO_REVIVE_CANCEL            = ConvertPlayerUnitEvent(45)
 	constant playerunitevent EVENT_PLAYER_HERO_REVIVE_FINISH            = ConvertPlayerUnitEvent(46)
@@ -822,15 +822,15 @@ globals
 	constant playerunitevent EVENT_PLAYER_UNIT_DROP_ITEM                = ConvertPlayerUnitEvent(48)
 	constant playerunitevent EVENT_PLAYER_UNIT_PICKUP_ITEM              = ConvertPlayerUnitEvent(49)
 	constant playerunitevent EVENT_PLAYER_UNIT_USE_ITEM                 = ConvertPlayerUnitEvent(50)
-	
+
 	constant playerunitevent EVENT_PLAYER_UNIT_LOADED                   = ConvertPlayerUnitEvent(51)
 	constant playerunitevent EVENT_PLAYER_UNIT_DAMAGED                  = ConvertPlayerUnitEvent(308)
 	constant playerunitevent EVENT_PLAYER_UNIT_DAMAGING                 = ConvertPlayerUnitEvent(315)
-	
+
 	//===================================================
 	// For use with TriggerRegisterUnitEvent
 	//===================================================
-	
+
 	constant unitevent EVENT_UNIT_DAMAGED                               = ConvertUnitEvent(52)
 	constant unitevent EVENT_UNIT_DAMAGING                              = ConvertUnitEvent(314)
 	constant unitevent EVENT_UNIT_DEATH                                 = ConvertUnitEvent(53)
@@ -839,78 +839,78 @@ globals
 	constant unitevent EVENT_UNIT_HIDDEN                                = ConvertUnitEvent(56)
 	constant unitevent EVENT_UNIT_SELECTED                              = ConvertUnitEvent(57)
 	constant unitevent EVENT_UNIT_DESELECTED                            = ConvertUnitEvent(58)
-	
-	constant unitevent EVENT_UNIT_STATE_LIMIT                           = ConvertUnitEvent(59)                                                                        
-	
-	// Events which may have a filter for the "other unit"              
-	//                                                                  
+
+	constant unitevent EVENT_UNIT_STATE_LIMIT                           = ConvertUnitEvent(59)
+
+	// Events which may have a filter for the "other unit"
+	//
 	constant unitevent EVENT_UNIT_ACQUIRED_TARGET                       = ConvertUnitEvent(60)
 	constant unitevent EVENT_UNIT_TARGET_IN_RANGE                       = ConvertUnitEvent(61)
 	constant unitevent EVENT_UNIT_ATTACKED                              = ConvertUnitEvent(62)
 	constant unitevent EVENT_UNIT_RESCUED                               = ConvertUnitEvent(63)
-	
+
 	constant unitevent EVENT_UNIT_CONSTRUCT_CANCEL                      = ConvertUnitEvent(64)
 	constant unitevent EVENT_UNIT_CONSTRUCT_FINISH                      = ConvertUnitEvent(65)
-	
+
 	constant unitevent EVENT_UNIT_UPGRADE_START                         = ConvertUnitEvent(66)
 	constant unitevent EVENT_UNIT_UPGRADE_CANCEL                        = ConvertUnitEvent(67)
 	constant unitevent EVENT_UNIT_UPGRADE_FINISH                        = ConvertUnitEvent(68)
-	
-	// Events which involve the specified unit performing               
-	// training of other units                                          
-	//                                                                  
+
+	// Events which involve the specified unit performing
+	// training of other units
+	//
 	constant unitevent EVENT_UNIT_TRAIN_START                           = ConvertUnitEvent(69)
 	constant unitevent EVENT_UNIT_TRAIN_CANCEL                          = ConvertUnitEvent(70)
 	constant unitevent EVENT_UNIT_TRAIN_FINISH                          = ConvertUnitEvent(71)
-	
+
 	constant unitevent EVENT_UNIT_RESEARCH_START                        = ConvertUnitEvent(72)
 	constant unitevent EVENT_UNIT_RESEARCH_CANCEL                       = ConvertUnitEvent(73)
 	constant unitevent EVENT_UNIT_RESEARCH_FINISH                       = ConvertUnitEvent(74)
-	
+
 	constant unitevent EVENT_UNIT_ISSUED_ORDER                          = ConvertUnitEvent(75)
 	constant unitevent EVENT_UNIT_ISSUED_POINT_ORDER                    = ConvertUnitEvent(76)
 	constant unitevent EVENT_UNIT_ISSUED_TARGET_ORDER                   = ConvertUnitEvent(77)
-	
+
 	constant unitevent EVENT_UNIT_HERO_LEVEL                            = ConvertUnitEvent(78)
 	constant unitevent EVENT_UNIT_HERO_SKILL                            = ConvertUnitEvent(79)
-	
+
 	constant unitevent EVENT_UNIT_HERO_REVIVABLE                        = ConvertUnitEvent(80)
 	constant unitevent EVENT_UNIT_HERO_REVIVE_START                     = ConvertUnitEvent(81)
 	constant unitevent EVENT_UNIT_HERO_REVIVE_CANCEL                    = ConvertUnitEvent(82)
 	constant unitevent EVENT_UNIT_HERO_REVIVE_FINISH                    = ConvertUnitEvent(83)
-	
+
 	constant unitevent EVENT_UNIT_SUMMON                                = ConvertUnitEvent(84)
-	
+
 	constant unitevent EVENT_UNIT_DROP_ITEM                             = ConvertUnitEvent(85)
 	constant unitevent EVENT_UNIT_PICKUP_ITEM                           = ConvertUnitEvent(86)
 	constant unitevent EVENT_UNIT_USE_ITEM                              = ConvertUnitEvent(87)
-	
+
 	constant unitevent EVENT_UNIT_LOADED                                = ConvertUnitEvent(88)
-	
+
 	constant widgetevent EVENT_WIDGET_DEATH                             = ConvertWidgetEvent(89)
-	
+
 	constant dialogevent EVENT_DIALOG_BUTTON_CLICK                      = ConvertDialogEvent(90)
 	constant dialogevent EVENT_DIALOG_CLICK                             = ConvertDialogEvent(91)
-	
+
 	//===================================================
 	// Frozen Throne Expansion Events
 	// Need to be added here to preserve compat
 	//===================================================
-	
-	//===================================================    
+
+	//===================================================
 	// For use with TriggerRegisterGameEvent
 	//===================================================
-	
+
 	constant gameevent EVENT_GAME_LOADED                       = ConvertGameEvent(256)
 	constant gameevent EVENT_GAME_TOURNAMENT_FINISH_SOON       = ConvertGameEvent(257)
 	constant gameevent EVENT_GAME_TOURNAMENT_FINISH_NOW        = ConvertGameEvent(258)
 	constant gameevent EVENT_GAME_SAVE                         = ConvertGameEvent(259)
 	constant gameevent EVENT_GAME_CUSTOM_UI_FRAME              = ConvertGameEvent(310)
-	
+
 	//===================================================
 	// For use with TriggerRegisterPlayerEvent
 	//===================================================
-	
+
 	constant playerevent EVENT_PLAYER_ARROW_LEFT_DOWN            = ConvertPlayerEvent(261)
 	constant playerevent EVENT_PLAYER_ARROW_LEFT_UP              = ConvertPlayerEvent(262)
 	constant playerevent EVENT_PLAYER_ARROW_RIGHT_DOWN           = ConvertPlayerEvent(263)
@@ -926,11 +926,11 @@ globals
 	constant playerevent EVENT_PLAYER_KEY                        = ConvertPlayerEvent(311)
 	constant playerevent EVENT_PLAYER_KEY_DOWN                   = ConvertPlayerEvent(312)
 	constant playerevent EVENT_PLAYER_KEY_UP                     = ConvertPlayerEvent(313)
-	
+
 	//===================================================
 	// For use with TriggerRegisterPlayerUnitEvent
 	//===================================================
-	
+
 	constant playerunitevent EVENT_PLAYER_UNIT_SELL                  = ConvertPlayerUnitEvent(269)
 	// 玩家單位更改所有者
  constant playerunitevent EVENT_PLAYER_UNIT_CHANGE_OWNER          = ConvertPlayerUnitEvent(270)
@@ -948,7 +948,7 @@ globals
  constant playerunitevent EVENT_PLAYER_UNIT_SPELL_ENDCAST         = ConvertPlayerUnitEvent(276)
  // 玩家單位抵押物品
 	constant playerunitevent EVENT_PLAYER_UNIT_PAWN_ITEM             = ConvertPlayerUnitEvent(277)
-	
+
 	//===================================================
 	// For use with TriggerRegisterUnitEvent
 	//===================================================
@@ -970,51 +970,51 @@ globals
 	constant unitevent EVENT_UNIT_SPELL_ENDCAST                = ConvertUnitEvent(293)
 	// 抵押物品
 	constant unitevent EVENT_UNIT_PAWN_ITEM                    = ConvertUnitEvent(294)
-	
+
 	//===================================================
 	// Limit Event API constants
-	// variable, // variable, // Limit Event API constants    
+	// variable, // variable, // Limit Event API constants
 	player state, game state, and unit state events
 	// ( do NOT change the order of these... )
 	//===================================================
-	
+
  constant limitop LESS_THAN                              = ConvertLimitOp(0)
 	constant limitop LESS_THAN_OR_EQUAL                     = ConvertLimitOp(1)
 	constant limitop EQUAL                                  = ConvertLimitOp(2)
 	constant limitop GREATER_THAN_OR_EQUAL                  = ConvertLimitOp(3)
 	constant limitop GREATER_THAN                           = ConvertLimitOp(4)
 	constant limitop NOT_EQUAL                              = ConvertLimitOp(5)
-	
+
 	//===================================================
 	// Unit Type Constants for use with IsUnitType()
 	//===================================================
-	
+
 	constant unittype UNIT_TYPE_HERO                        = ConvertUnitType(0)
 	constant unittype UNIT_TYPE_DEAD                        = ConvertUnitType(1)
 	constant unittype UNIT_TYPE_STRUCTURE                   = ConvertUnitType(2)
-	
+
 	constant unittype UNIT_TYPE_FLYING                      = ConvertUnitType(3)
 	constant unittype UNIT_TYPE_GROUND                      = ConvertUnitType(4)
-	
+
 	constant unittype UNIT_TYPE_ATTACKS_FLYING              = ConvertUnitType(5)
 	constant unittype UNIT_TYPE_ATTACKS_GROUND              = ConvertUnitType(6)
-	
+
 	constant unittype UNIT_TYPE_MELEE_ATTACKER              = ConvertUnitType(7)
 	constant unittype UNIT_TYPE_RANGED_ATTACKER             = ConvertUnitType(8)
-	
+
 	constant unittype UNIT_TYPE_GIANT                       = ConvertUnitType(9)
 	constant unittype UNIT_TYPE_SUMMONED                    = ConvertUnitType(10)
 	constant unittype UNIT_TYPE_STUNNED                     = ConvertUnitType(11)
 	constant unittype UNIT_TYPE_PLAGUED                     = ConvertUnitType(12)
 	constant unittype UNIT_TYPE_SNARED                      = ConvertUnitType(13)
-	
+
 	constant unittype UNIT_TYPE_UNDEAD                      = ConvertUnitType(14)
 	constant unittype UNIT_TYPE_MECHANICAL                  = ConvertUnitType(15)
 	constant unittype UNIT_TYPE_PEON                        = ConvertUnitType(16)
 	constant unittype UNIT_TYPE_SAPPER                      = ConvertUnitType(17)
 	constant unittype UNIT_TYPE_TOWNHALL                    = ConvertUnitType(18)
 	constant unittype UNIT_TYPE_ANCIENT                     = ConvertUnitType(19)
-	
+
 	constant unittype UNIT_TYPE_TAUREN                      = ConvertUnitType(20)
 	constant unittype UNIT_TYPE_POISONED                    = ConvertUnitType(21)
 	constant unittype UNIT_TYPE_POLYMORPHED                 = ConvertUnitType(22)
@@ -1022,11 +1022,11 @@ globals
 	constant unittype UNIT_TYPE_RESISTANT                   = ConvertUnitType(24)
 	constant unittype UNIT_TYPE_ETHEREAL                    = ConvertUnitType(25)
 	constant unittype UNIT_TYPE_MAGIC_IMMUNE                = ConvertUnitType(26)
-	
+
 	//===================================================
 	// Unit Type Constants for use with ChooseRandomItemEx()
 	//===================================================
-	
+
 	constant itemtype ITEM_TYPE_PERMANENT                   = ConvertItemType(0)
 	constant itemtype ITEM_TYPE_CHARGED                     = ConvertItemType(1)
 	constant itemtype ITEM_TYPE_POWERUP                     = ConvertItemType(2)
@@ -1036,14 +1036,14 @@ globals
 	constant itemtype ITEM_TYPE_MISCELLANEOUS               = ConvertItemType(6)
 	constant itemtype ITEM_TYPE_UNKNOWN                     = ConvertItemType(7)
 	constant itemtype ITEM_TYPE_ANY                         = ConvertItemType(8)
-	
+
 	// Deprecated, should use ITEM_TYPE_POWERUP
  constant itemtype ITEM_TYPE_TOME                        = ConvertItemType(2)
-	
+
 	//===================================================
 	// Animatable Camera Fields
 	//===================================================
-	
+
 	constant camerafield CAMERA_FIELD_TARGET_DISTANCE       = ConvertCameraField(0)
 	constant camerafield CAMERA_FIELD_FARZ                  = ConvertCameraField(1)
 	constant camerafield CAMERA_FIELD_ANGLE_OF_ATTACK       = ConvertCameraField(2)
@@ -1055,7 +1055,7 @@ globals
 	constant camerafield CAMERA_FIELD_LOCAL_PITCH           = ConvertCameraField(8)
 	constant camerafield CAMERA_FIELD_LOCAL_YAW             = ConvertCameraField(9)
 	constant camerafield CAMERA_FIELD_LOCAL_ROLL            = ConvertCameraField(10)
-	
+
 	constant blendmode BLEND_MODE_NONE                    = ConvertBlendMode(0)
 	constant blendmode BLEND_MODE_DONT_CARE               = ConvertBlendMode(0)
 	constant blendmode BLEND_MODE_KEYALPHA                = ConvertBlendMode(1)
@@ -1063,32 +1063,32 @@ globals
 	constant blendmode BLEND_MODE_ADDITIVE                = ConvertBlendMode(3)
 	constant blendmode BLEND_MODE_MODULATE                = ConvertBlendMode(4)
 	constant blendmode BLEND_MODE_MODULATE_2X             = ConvertBlendMode(5)
-	
+
 	constant raritycontrol RARITY_FREQUENT                 = ConvertRarityControl(0)
 	constant raritycontrol RARITY_RARE                     = ConvertRarityControl(1)
-	
+
 	constant texmapflags TEXMAP_FLAG_NONE                = ConvertTexMapFlags(0)
 	constant texmapflags TEXMAP_FLAG_WRAP_U              = ConvertTexMapFlags(1)
 	constant texmapflags TEXMAP_FLAG_WRAP_V              = ConvertTexMapFlags(2)
 	constant texmapflags TEXMAP_FLAG_WRAP_UV             = ConvertTexMapFlags(3)
-	
+
 	constant fogstate FOG_OF_WAR_MASKED               = ConvertFogState(1)
 	constant fogstate FOG_OF_WAR_FOGGED               = ConvertFogState(2)
 	constant fogstate FOG_OF_WAR_VISIBLE              = ConvertFogState(4)
-	
+
 	//===================================================
 	// Camera Margin constants for use with GetCameraMargin
 	//===================================================
-	
+
 	constant integer CAMERA_MARGIN_LEFT              = 0
 	constant integer CAMERA_MARGIN_RIGHT             = 1
 	constant integer CAMERA_MARGIN_TOP               = 2
 	constant integer CAMERA_MARGIN_BOTTOM            = 3
-	
+
 	//===================================================
 	// Effect API constants
 	//===================================================
-	
+
 	constant effecttype EFFECT_TYPE_EFFECT              = ConvertEffectType(0)
 	constant effecttype EFFECT_TYPE_TARGET              = ConvertEffectType(1)
 	constant effecttype EFFECT_TYPE_CASTER              = ConvertEffectType(2)
@@ -1096,14 +1096,14 @@ globals
 	constant effecttype EFFECT_TYPE_AREA_EFFECT         = ConvertEffectType(4)
 	constant effecttype EFFECT_TYPE_MISSILE             = ConvertEffectType(5)
 	constant effecttype EFFECT_TYPE_LIGHTNING           = ConvertEffectType(6)
-	
+
 	constant soundtype SOUND_TYPE_EFFECT               = ConvertSoundType(0)
 	constant soundtype SOUND_TYPE_EFFECT_LOOPED        = ConvertSoundType(1)
-	
+
 	//===================================================
 	// Custom UI API constants
 	//===================================================
-	
+
  constant originframetype ORIGIN_FRAME_GAME_UI                    = ConvertOriginFrameType(0)
 	constant originframetype ORIGIN_FRAME_COMMAND_BUTTON             = ConvertOriginFrameType(1)
 	constant originframetype ORIGIN_FRAME_HERO_BAR                   = ConvertOriginFrameType(2)
@@ -1127,7 +1127,7 @@ globals
 	constant originframetype ORIGIN_FRAME_PORTRAIT_MANA_TEXT         = ConvertOriginFrameType(20)
 	constant originframetype ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR        = ConvertOriginFrameType(21)
 	constant originframetype ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL  = ConvertOriginFrameType(22)
-	
+
 	// 左上
 	constant framepointtype FRAMEPOINT_TOPLEFT                   = ConvertFramePointType(0)
 	// 上
@@ -1146,14 +1146,14 @@ globals
 	constant framepointtype FRAMEPOINT_BOTTOM                    = ConvertFramePointType(7)
 	// 右下
 	constant framepointtype FRAMEPOINT_BOTTOMRIGHT               = ConvertFramePointType(8)
-	
+
 	constant textaligntype TEXT_JUSTIFY_TOP                     = ConvertTextAlignType(0)
 	constant textaligntype TEXT_JUSTIFY_MIDDLE                  = ConvertTextAlignType(1)
 	constant textaligntype TEXT_JUSTIFY_BOTTOM                  = ConvertTextAlignType(2)
 	constant textaligntype TEXT_JUSTIFY_LEFT                    = ConvertTextAlignType(3)
 	constant textaligntype TEXT_JUSTIFY_CENTER                  = ConvertTextAlignType(4)
 	constant textaligntype TEXT_JUSTIFY_RIGHT                   = ConvertTextAlignType(5)
-	
+
 	constant frameeventtype FRAMEEVENT_CONTROL_CLICK             = ConvertFrameEventType(1)
 	constant frameeventtype FRAMEEVENT_MOUSE_ENTER               = ConvertFrameEventType(2)
 	constant frameeventtype FRAMEEVENT_MOUSE_LEAVE               = ConvertFrameEventType(3)
@@ -1170,11 +1170,11 @@ globals
 	constant frameeventtype FRAMEEVENT_DIALOG_CANCEL             = ConvertFrameEventType(14)
 	constant frameeventtype FRAMEEVENT_DIALOG_ACCEPT             = ConvertFrameEventType(15)
 	constant frameeventtype FRAMEEVENT_EDITBOX_ENTER             = ConvertFrameEventType(16)
-	
+
 	//===================================================
 	// OS Key constants
 	//===================================================
-	
+
 	constant oskeytype OSKEY_BACKSPACE                      = ConvertOsKeyType($08)
 	constant oskeytype OSKEY_TAB                            = ConvertOsKeyType($09)
 	constant oskeytype OSKEY_CLEAR                          = ConvertOsKeyType($0C)
@@ -1364,11 +1364,11 @@ globals
 	constant oskeytype OSKEY_NONAME                         = ConvertOsKeyType($FC)
 	constant oskeytype OSKEY_PA1                            = ConvertOsKeyType($FD)
 	constant oskeytype OSKEY_OEM_CLEAR                      = ConvertOsKeyType($FE)
-	
+
 	//===================================================
 	// Instanced Object Operation API constants
 	//===================================================
-	
+
 	// Move Type
 	// Move Type
  constant movetype MOVE_TYPE_UNKNOWN               = ConvertMoveType(0)
@@ -1379,7 +1379,7 @@ globals
 	constant movetype MOVE_TYPE_FLOAT                 = ConvertMoveType(16)
 	constant movetype MOVE_TYPE_AMPHIBIOUS            = ConvertMoveType(32)
 	constant movetype MOVE_TYPE_UNBUILDABLE           = ConvertMoveType(64)
-	
+
 	// Target Flag
 	// Target Flag
  constant targetflag TARGET_FLAG_NONE                = ConvertTargetFlag(1)
@@ -1393,7 +1393,7 @@ globals
 	constant targetflag TARGET_FLAG_DEBRIS              = ConvertTargetFlag(256)
 	constant targetflag TARGET_FLAG_DECORATION          = ConvertTargetFlag(512)
 	constant targetflag TARGET_FLAG_BRIDGE              = ConvertTargetFlag(1024)
-	
+
 	// defense type
 	// defense type
  constant defensetype DEFENSE_TYPE_LIGHT              = ConvertDefenseType(0)
@@ -1404,13 +1404,13 @@ globals
 	constant defensetype DEFENSE_TYPE_HERO               = ConvertDefenseType(5)
 	constant defensetype DEFENSE_TYPE_DIVINE             = ConvertDefenseType(6)
 	constant defensetype DEFENSE_TYPE_NONE               = ConvertDefenseType(7)
-	
+
 	// Hero Attribute
 	// Hero Attribute
  constant heroattribute HERO_ATTRIBUTE_STR              = ConvertHeroAttribute(1)
 	constant heroattribute HERO_ATTRIBUTE_INT              = ConvertHeroAttribute(2)
 	constant heroattribute HERO_ATTRIBUTE_AGI              = ConvertHeroAttribute(3)
-	
+
 	// Armor Type
 	// Armor Type
  constant armortype ARMOR_TYPE_WHOKNOWS             = ConvertArmorType(0)
@@ -1419,7 +1419,7 @@ globals
 	constant armortype ARMOR_TYPE_WOOD                 = ConvertArmorType(3)
 	constant armortype ARMOR_TYPE_ETHREAL              = ConvertArmorType(4)
 	constant armortype ARMOR_TYPE_STONE                = ConvertArmorType(5)
-	
+
 	// Regeneration Type
 	// Regeneration Type
  constant regentype REGENERATION_TYPE_NONE          = ConvertRegenType(0)
@@ -1427,7 +1427,7 @@ globals
 	constant regentype REGENERATION_TYPE_BLIGHT        = ConvertRegenType(2)
 	constant regentype REGENERATION_TYPE_DAY           = ConvertRegenType(3)
 	constant regentype REGENERATION_TYPE_NIGHT         = ConvertRegenType(4)
-	
+
 	// Unit Category
 	// Unit Category
  constant unitcategory UNIT_CATEGORY_GIANT             = ConvertUnitCategory(1)
@@ -1442,7 +1442,7 @@ globals
 	constant unitcategory UNIT_CATEGORY_WARD              = ConvertUnitCategory(512)
 	constant unitcategory UNIT_CATEGORY_STANDON           = ConvertUnitCategory(1024)
 	constant unitcategory UNIT_CATEGORY_TAUREN            = ConvertUnitCategory(2048)
-	
+
 	// Pathing Flag
 	// Pathing Flag
  constant pathingflag PATHING_FLAG_UNWALKABLE             = ConvertPathingFlag(2)
@@ -1453,7 +1453,7 @@ globals
 	constant pathingflag PATHING_FLAG_UNFLOATABLE            = ConvertPathingFlag(64)
 	constant pathingflag PATHING_FLAG_UNAMPHIBIOUS           = ConvertPathingFlag(128)
 	constant pathingflag PATHING_FLAG_UNITEMPLACABLE         = ConvertPathingFlag(256)
-	
+
 endglobals
 
 //============================================================================
@@ -1525,7 +1525,7 @@ native StringHash takes string s returns integer
 
 // 本地字符串 [R]
 native GetLocalizedString takes string source returns string
-// 本地热键 
+// 本地热键
 native GetLocalizedHotkey takes string source returns integer
 
 //============================================================================
@@ -2176,9 +2176,9 @@ constant native GetSpellAbilityId takes nothing returns integer
 constant native GetSpellAbility takes nothing returns ability
 // 对其使用技能的目标点
 constant native GetSpellTargetLoc takes nothing returns location
-// 对其使用技能的目标点x	
+// 对其使用技能的目标点x
 constant native GetSpellTargetX takes nothing returns real
-// 对其使用技能的目标点y	
+// 对其使用技能的目标点y
 constant native GetSpellTargetY takes nothing returns real
 // 对其使用技能的目标可毁坏物
 constant native GetSpellTargetDestructable takes nothing returns destructable
@@ -2246,7 +2246,7 @@ constant native GetEventDamageSource takes nothing returns unit
 // Use the GetDyingUnit and GetDecayingUnit funcs above
 
 // EVENT_UNIT_DETECTED
-// EVENT_UNIT_DETECTED 
+// EVENT_UNIT_DETECTED
 // 事件检测的玩家
 constant native GetEventDetectingPlayer takes nothing returns player
 
@@ -4018,9 +4018,9 @@ native SetDoodadAnimationRect takes rect r, integer doodadID, string animName, b
 //============================================================================
 // Computer AI interface
 //
-// 启动对战 AI 
+// 启动对战 AI
 native StartMeleeAI takes player num, string script returns nothing
-// 启动战役 AI 
+// 启动战役 AI
 native StartCampaignAI takes player num, string script returns nothing
 // 发送 AI 命令
 native CommandAI takes player num, integer command, integer data returns nothing
@@ -4495,7 +4495,7 @@ native BlzBitOr takes integer x, integer y returns integer
 // 按位与
 native BlzBitAnd takes integer x, integer y returns integer
 // 按位异或
-native BlzBitXor takes integer x, integer y returns integer 
+native BlzBitXor takes integer x, integer y returns integer
 
 // Intanced Object Operations
 // Ability
@@ -4562,7 +4562,7 @@ native BlzRemoveAbilityRealLevelArrayField takes ability whichAbility, abilityre
 // 技能随等级改变的字符串类型域 - 移除值
 native BlzRemoveAbilityStringLevelArrayField takes ability whichAbility, abilitystringlevelarrayfield whichField, integer level, string value returns boolean
 
-// Item 
+// Item
 // 获取物品技能
 native BlzGetItemAbilityByIndex takes item whichItem, integer index returns ability
 native BlzGetItemAbility takes item whichItem, integer abilCode returns ability
@@ -4587,7 +4587,7 @@ native BlzSetItemStringField takes item whichItem, itemstringfield whichField, s
 // 物品移除技能
 native BlzItemRemoveAbility takes item whichItem, integer abilCode returns boolean
 
-// Unit 
+// Unit
 // 单位布尔类型域
 native BlzGetUnitBooleanField takes unit whichUnit, unitbooleanfield whichField returns boolean
 // 获取单位整数类型域
