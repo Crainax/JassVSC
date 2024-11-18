@@ -12,7 +12,8 @@ native DzAPI_Map_IsRPGLadder            takes nothing returns boolean
 // 游戏开始时间
 native DzAPI_Map_GetGameStartTime       takes nothing returns integer
 native DzAPI_Map_Stat_SetStat           takes player whichPlayer, string key, string value returns nothing
-// 匹配类型
+// 本局游戏的地图模式
+// 获取本局游戏所选择地图模式，地图模式均由作者在开发者平台进行配置（包括天梯排位赛模式、快速匹配模式、建房间时房主所选定的地图模式）。
 native DzAPI_Map_GetMatchType      		takes nothing returns integer
 // 玩家状态
 native DzAPI_Map_Ladder_SetPlayerStat   takes player whichPlayer, string key, string value returns nothing
@@ -41,8 +42,6 @@ native DzAPI_Map_MissionComplete        takes player whichPlayer, string key, st
 native DzAPI_Map_GetActivityData        takes nothing returns string
 // 地图配置
 native DzAPI_Map_GetMapConfig           takes string key returns string
-// 是否有购物中心项目
-native DzAPI_Map_HasMallItem            takes player whichPlayer, string key returns boolean
 native DzAPI_Map_SavePublicArchive      takes player whichPlayer, string key, string value returns boolean
 native DzAPI_Map_GetPublicArchive       takes player whichPlayer, string key returns string
 native DzAPI_Map_UseConsumablesItem     takes player whichPlayer, string key returns nothing
@@ -73,6 +72,7 @@ native DzSetMousePos takes integer x, integer y returns nothing
 // 注册鼠标点击触发（sync为true时，调用TriggerExecute。为false时，直接运行action函数，可以异步不掉线，action里不要有同步操作）
 native DzTriggerRegisterMouseEvent takes trigger trig, integer btn, integer status, boolean sync, string func returns nothing
 // 注册鼠标点击触发（sync为true时，调用TriggerExecute。为false时，直接运行action函数，可以异步不掉线，action里不要有同步操作）
+// DzTriggerRegisterMouseEventByCode(null, 2, 1, false, function()) //第一个参数一般为null，第二个参数为鼠标按键(1:左键|2:右键)，第三个参数为鼠标状态(1:按下|0:抬起)，第四个参数为是否同步，第五个参数为回调函数
 native DzTriggerRegisterMouseEventByCode takes trigger trig, integer btn, integer status, boolean sync, code funcHandle returns nothing
 // 注册键盘点击触发
 native DzTriggerRegisterKeyEvent takes trigger trig, integer key, integer status, boolean sync, string func returns nothing
@@ -276,10 +276,46 @@ native DzFrameGetHeight takes integer frame returns real
 native DzFrameSetTextAlignment takes integer frame, integer align returns nothing
 //  获取 Frame 的 Parent [NEW]
 native DzFrameGetParent takes integer frame returns integer
-// 设置内存大小（废物函数）
-native DzSetMemory takes integer frame,real r returns nothing
+//显示/隐藏SimpleFrame
+//native DzSimpleFrameShow takes integer frame, boolean enable returns nothing
+// 追加文字（支持TextArea）
+native DzFrameAddText takes integer frame, string text returns nothing
+// 沉默单位-禁用技能
+native DzUnitSilence takes unit whichUnit, boolean disable returns nothing
+// 禁用攻击
+native DzUnitDisableAttack takes unit whichUnit, boolean disable returns nothing
+// 禁用道具
+native DzUnitDisableInventory takes unit whichUnit, boolean disable returns nothing
+// 刷新小地图
+native DzUpdateMinimap takes nothing returns nothing
+// 修改单位alpha
+native DzUnitChangeAlpha takes unit whichUnit, integer alpha, boolean forceUpdate returns nothing
+// 设置单位是否可以选中
+native DzUnitSetCanSelect takes unit whichUnit, boolean state returns nothing
+// 修改单位是否可以被设置为目标
+native DzUnitSetTargetable takes unit whichUnit, boolean state returns nothing
+// 保存内存数据
+native DzSaveMemoryCache takes string cache returns nothing
+// 读取内存数据
+native DzGetMemoryCache takes nothing returns string
+// 设置加速倍率
+native DzSetSpeed takes real ratio returns nothing
+// 转换世界坐标为屏幕坐标-异步
+native DzConvertWorldPosition takes real x, real y, real z, code callback returns boolean
+// 转换世界坐标为幕坐标-获取转换后的X坐标
+native DzGetConvertWorldPositionX takes nothing returns real
+// 转换世界坐标为屏幕坐标-获取转换后的Y坐标
+native DzGetConvertWorldPositionY takes nothing returns real
+// 创建command button
+native DzCreateCommandButton takes integer parent, string icon, string name, string desc returns integer
+//玩家是否拥有地图商城道具
+//"获取 ",~whichPlayer," 是否拥有:",~key," 对应的地图商城道具."
+//检测玩家背包中是否拥该道具且处于有效状态。已过期的时效性道具、剩余数量为0的数量型道具均视为无效；"
+native DzAPI_Map_HasMallItem takes player whichPlayer, string key returns boolean
 
 // 获得玩家服务器值是否成功
+// 如果返回false代表读取失败,反之成功,之后游戏里平台不会再发送"服务器保存失败"的信息，
+// 所以希望地图作者在游戏开始给玩家发下信息服务器存档是否正确读取。
 function GetPlayerServerValueSuccess takes player whichPlayer returns boolean
 	if(DzAPI_Map_GetServerValueErrorCode(whichPlayer)==0)then
 		return true
@@ -289,6 +325,8 @@ function GetPlayerServerValueSuccess takes player whichPlayer returns boolean
 endfunction
 
 // 保存整数数据
+// 这是经过封装的接口，实际Key会在原Key前面加"I"，（如您的key是AA，实际key为IAA。
+// 【IAA用于开发者平台填写，在编辑器上获取和读都填写AA就可以了】）
 function DzAPI_Map_StoreInteger takes player whichPlayer, string key, integer value returns nothing
 	set key="I"+key
 	call DzAPI_Map_SaveServerValue(whichPlayer,key,I2S(value))
@@ -297,6 +335,7 @@ function DzAPI_Map_StoreInteger takes player whichPlayer, string key, integer va
 endfunction
 
 // 获取整数数据
+// 这是经过封装的接口，实际Key会在原Key前面加"I"
 function DzAPI_Map_GetStoredInteger takes player whichPlayer, string key returns integer
 	local integer value
 	set key="I"+key
@@ -307,13 +346,17 @@ function DzAPI_Map_GetStoredInteger takes player whichPlayer, string key returns
 endfunction
 
 // 保存实数数据
+// 这是经过封装的接口，实际Key会在原Key前面加"R"，（如您的key是AA，实际key为RAA。
+// 【RAA用于开发者平台填写，在编辑器上获取和读都填写AA就可以了】
 function DzAPI_Map_StoreReal takes player whichPlayer, string key, real value returns nothing
 	set key="R"+key
 	call DzAPI_Map_SaveServerValue(whichPlayer,key,R2S(value))
 	set key=null
 	set whichPlayer=null
 endfunction
+
 // 获取实数数据
+// 这是经过封装的接口，实际Key会在原Key前面加"R"
 function DzAPI_Map_GetStoredReal takes player whichPlayer, string key returns real
 	local real value
 	set key="R"+key
@@ -322,7 +365,10 @@ function DzAPI_Map_GetStoredReal takes player whichPlayer, string key returns re
 	set whichPlayer=null
 	return value
 endfunction
+
 // 保存布尔数据
+// 这是经过封装的接口，实际Key会在原Key前面加"B"，（如您的key是AA，实际key为BAA。
+// 【BAA用于开发者平台填写，在编辑器上获取和读都填写AA就可以了】）
 function DzAPI_Map_StoreBoolean takes player whichPlayer, string key, boolean value returns nothing
 	set key="B"+key
 	if(value)then
@@ -333,6 +379,7 @@ function DzAPI_Map_StoreBoolean takes player whichPlayer, string key, boolean va
 	set key=null
 	set whichPlayer=null
 endfunction
+
 // 获取布尔数据
 function DzAPI_Map_GetStoredBoolean takes player whichPlayer, string key returns boolean
 	local boolean value
@@ -347,6 +394,7 @@ function DzAPI_Map_GetStoredBoolean takes player whichPlayer, string key returns
 	set whichPlayer=null
 	return value
 endfunction
+
 // 保存字符串数据
 function DzAPI_Map_StoreString takes player whichPlayer, string key, string value returns nothing
 	set key="S"+key
@@ -354,6 +402,7 @@ function DzAPI_Map_StoreString takes player whichPlayer, string key, string valu
 	set key=null
 	set whichPlayer=null
 endfunction
+
 // 获取字符串数据
 function DzAPI_Map_GetStoredString takes player whichPlayer, string key returns string
 	return DzAPI_Map_GetServerValue(whichPlayer,"S"+key)
@@ -388,9 +437,32 @@ function DzAPI_Map_FlushStoredMission takes player whichPlayer, string key retur
 	set whichPlayer=null
 endfunction
 
+// 上报房间内显示的数据
+// 作者可以将游戏内的关键数值或结果上报给平台，用于在平台游戏房间内展示以方便玩家相互快速了解实力，数据上报后需在开发者平台进行配置后才能展示出来。比如：比如获得MVP次数、最高通关难度等。
+function DzAPI_Map_Stat_SetStat takes player whichPlayer, string key, string value returns nothing
+	call DzAPI_Map_Stat_SetStat(whichPlayer,key,value)
+endfunction
+
+// 天梯提交布尔值数据
+function DzAPI_Map_Ladder_SubmitBooleanData takes player whichPlayer, string key,boolean value  returns nothing
+	if(value)then
+		call DzAPI_Map_Ladder_SetStat(whichPlayer,key,"1")
+	else
+		call DzAPI_Map_Ladder_SetStat(whichPlayer,key,"0")
+	endif
+endfunction
+
+// 天梯提交字符串数据
+function DzAPI_Map_Ladder_SetStat takes player whichPlayer, string key, string value returns nothing
+	call DzAPI_Map_Ladder_SetStat(whichPlayer,key,value)
+endfunction
+
+// 天梯提交整数数据
 function DzAPI_Map_Ladder_SubmitIntegerData takes player whichPlayer, string key, integer value returns nothing
 	call DzAPI_Map_Ladder_SetStat(whichPlayer,key,I2S(value))
 endfunction
+
+// 天梯提交单位类型数据
 function DzAPI_Map_Stat_SubmitUnitIdData takes player whichPlayer, string key,integer value returns nothing
 	if(value==0)then
 		//call DzAPI_Map_Ladder_SetStat(whichPlayer,key,"0")
@@ -398,9 +470,8 @@ function DzAPI_Map_Stat_SubmitUnitIdData takes player whichPlayer, string key,in
 		call DzAPI_Map_Ladder_SetStat(whichPlayer,key,I2S(value))
 	endif
 endfunction
-function DzAPI_Map_Stat_SubmitUnitData takes player whichPlayer, string key,unit value returns nothing
-	call DzAPI_Map_Stat_SubmitUnitIdData(whichPlayer,key,GetUnitTypeId(value))
-endfunction
+
+// 天梯提交技能数据
 function DzAPI_Map_Ladder_SubmitAblityIdData takes player whichPlayer, string key, integer value returns nothing
 	if(value==0)then
 		//call DzAPI_Map_Ladder_SetStat(whichPlayer,key,"0")
@@ -408,6 +479,8 @@ function DzAPI_Map_Ladder_SubmitAblityIdData takes player whichPlayer, string ke
 		call DzAPI_Map_Ladder_SetStat(whichPlayer,key,I2S(value))
 	endif
 endfunction
+
+// 天梯提交物品数据
 function DzAPI_Map_Ladder_SubmitItemIdData takes player whichPlayer, string key, integer value returns nothing
 	local string S
 	if(value==0)then
@@ -420,26 +493,361 @@ function DzAPI_Map_Ladder_SubmitItemIdData takes player whichPlayer, string key,
 	set S=null
 	set whichPlayer=null
 endfunction
-function DzAPI_Map_Ladder_SubmitItemData takes player whichPlayer, string key, item value returns nothing
-	call DzAPI_Map_Ladder_SubmitItemIdData(whichPlayer,key,GetItemTypeId(value))
-endfunction
-function DzAPI_Map_Ladder_SubmitBooleanData takes player whichPlayer, string key,boolean value  returns nothing
-	if(value)then
-		call DzAPI_Map_Ladder_SetStat(whichPlayer,key,"1")
-	else
-		call DzAPI_Map_Ladder_SetStat(whichPlayer,key,"0")
-	endif
-endfunction
+
+// 天梯提交获得称号
 function DzAPI_Map_Ladder_SubmitTitle takes player whichPlayer, string value  returns nothing
 	call DzAPI_Map_Ladder_SetStat(whichPlayer,value,"1")
 endfunction
+
+// 天梯提交玩家排名
 function DzAPI_Map_Ladder_SubmitPlayerRank takes player whichPlayer, integer value returns nothing
 	call DzAPI_Map_Ladder_SetPlayerStat(whichPlayer,"RankIndex",I2S(value))
 endfunction
 
+// 天梯设置玩家额外分(最多30分)
 function DzAPI_Map_Ladder_SubmitPlayerExtraExp takes player whichPlayer, integer value returns nothing
 	call DzAPI_Map_Ladder_SetStat(whichPlayer,"ExtraExp",I2S(value))
 endfunction
+
+
+	//玩家累计游戏局数
+    function DzAPI_Map_PlayedGames takes player whichPlayer returns integer
+        return RequestExtraIntegerData(45, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+	//获取玩家的评论次数，该功能已失效，始终返回1
+    function DzAPI_Map_CommentCount takes player whichPlayer returns integer
+        return RequestExtraIntegerData(46, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+	//玩家好友数量【废弃】,该功能废弃
+    function DzAPI_Map_FriendCount takes player whichPlayer returns integer
+        return RequestExtraIntegerData(47, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+	//玩家是否平台认证的鉴赏家[废弃]
+    function DzAPI_Map_IsConnoisseur takes player whichPlayer returns boolean
+        return RequestExtraBooleanData(48, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+	//玩家是否当前地图作者
+    function DzAPI_Map_IsAuthor takes player whichPlayer returns boolean
+        return RequestExtraBooleanData(50, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    function DzAPI_Map_CommentTotalCount takes nothing returns integer
+        return RequestExtraIntegerData(51, null, null, null, false, 0, 0, 0)
+    endfunction
+
+	//上报埋点数据： ",~whichPlayer,"，埋点key：",~eventKey,"，子key：",~不填,"，次数 ",~value
+	//可以在游戏内的关键行为操作进行埋点，以便进行游戏内的玩家行为数据统计分析（比如某个英雄选择次数），上报前需先在开发者平台创建埋点。
+    function DzAPI_Map_Statistics takes player whichPlayer, string eventKey, string eventType, integer value returns nothing
+        call RequestExtraBooleanData(34, whichPlayer, eventKey, eventType, false, value, 0, 0)
+    endfunction
+
+	//是否回流/收藏过地图的用户
+	//超过7天未玩地图的用户再次登录被称为地图回流用户，地图回流BUFF会存在7天，7天后消失。平台回流用户的BUFF存在15天，15天后消失。建议设置奖励，鼓励玩家回来玩地图！
+    function DzAPI_Map_Returns takes player whichPlayer, integer label returns boolean
+        return RequestExtraBooleanData(53, whichPlayer, null, null, false, label, 0, 0)
+    endfunction
+
+
+	// ~whichPlayer," 在 ",~id," 地图的地图签到数据。"
+	// 获取玩家在指定地图的地图签到数据。
+    function DzAPI_Map_ContinuousCount takes player whichPlayer, integer id returns integer
+        return RequestExtraIntegerData(54, whichPlayer, null, null, false, id, 0, 0)
+    endfunction
+
+    // IsPlayer,                      //是否为玩家
+    function DzAPI_Map_IsPlayer takes player whichPlayer returns boolean
+        return RequestExtraBooleanData(55, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // MapsTotalPlayed,               //所有地图的总游戏时长
+    function DzAPI_Map_MapsTotalPlayed takes player whichPlayer returns integer
+        return RequestExtraIntegerData(56, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // MapsLevel,                    //指定地图的地图等级
+    function DzAPI_Map_MapsLevel takes player whichPlayer, integer mapId returns integer
+        return RequestExtraIntegerData(57, whichPlayer, null, null, false, mapId, 0, 0)
+    endfunction
+
+    // MapsConsumeGold,              //所有地图的金币消耗
+    function DzAPI_Map_MapsConsumeGold takes player whichPlayer, integer mapId returns integer
+        return RequestExtraIntegerData(58, whichPlayer, null, null, false, mapId, 0, 0)
+    endfunction
+
+    // MapsConsumeLumber,            //所有地图的木材消耗
+    function DzAPI_Map_MapsConsumeLumber takes player whichPlayer, integer mapId returns integer
+        return RequestExtraIntegerData(59, whichPlayer, null, null, false, mapId, 0, 0)
+    endfunction
+
+    // MapsConsumeLv1,               //消费 1-199
+    function DzAPI_Map_MapsConsumeLv1 takes player whichPlayer, integer mapId returns boolean
+        return RequestExtraBooleanData(60, whichPlayer, null, null, false, mapId, 0, 0)
+    endfunction
+
+    // MapsConsumeLv2,               //消费 200-499
+    function DzAPI_Map_MapsConsumeLv2 takes player whichPlayer, integer mapId returns boolean
+        return RequestExtraBooleanData(61, whichPlayer, null, null, false, mapId, 0, 0)
+    endfunction
+
+    // MapsConsumeLv3,               //消费 500~999
+    function DzAPI_Map_MapsConsumeLv3 takes player whichPlayer, integer mapId returns boolean
+        return RequestExtraBooleanData(62, whichPlayer, null, null, false, mapId, 0, 0)
+    endfunction
+
+    // MapsConsumeLv4,               //消费 1000+
+    function DzAPI_Map_MapsConsumeLv4 takes player whichPlayer, integer mapId returns boolean
+        return RequestExtraBooleanData(63, whichPlayer, null, null, false, mapId, 0, 0)
+    endfunction
+
+    // IsPlayerUsingSkin,            //检查是否装备着皮肤（skinType头像=1、边框=2、称号=3、底纹=4）
+    function DzAPI_Map_IsPlayerUsingSkin takes player whichPlayer, integer skinType, integer id returns boolean
+        return RequestExtraBooleanData(64,whichPlayer, null, null, false, skinType, id, 0)
+    endfunction
+    //获取论坛数据（0=累计获得赞数，1=精华帖数量，2=发表回复次数，3=收到的欢乐数，4=是否发过贴子，5=是否版主，6=主题数量）
+    function DzAPI_Map_GetForumData takes player whichPlayer, integer whichData returns integer
+        return RequestExtraIntegerData(65, whichPlayer, null, null, false, whichData, 0, 0)
+    endfunction
+
+    // PlayerFlags,                   //玩家标记 label（1=曾经是平台回流用户，2=当前是平台回流用户，4=曾经是地图回流用户，8=当前是地图回流用户，16=地图是否被玩家收藏）
+    function DzAPI_Map_PlayerFlags takes player whichPlayer, integer label returns boolean
+        return RequestExtraBooleanData(53, whichPlayer, null, null, false, label, 0, 0)
+    endfunction
+
+    // GetLotteryUsedCount, // 获取宝箱抽取次数
+    function DzAPI_Map_GetLotteryUsedCountEx takes player whichPlayer,integer index returns integer
+        return RequestExtraIntegerData(68, whichPlayer, null, null, false, index, 0, 0)
+    endfunction
+
+	//玩家抽取地图宝箱总次数
+    function DzAPI_Map_GetLotteryUsedCount takes player whichPlayer returns integer
+        return DzAPI_Map_GetLotteryUsedCountEx(whichPlayer,0)+DzAPI_Map_GetLotteryUsedCountEx(whichPlayer,1)+DzAPI_Map_GetLotteryUsedCountEx(whichPlayer,2)
+    endfunction
+
+	//打开地图商城道具购买界面
+	//~whichPlayer," 打开地图商城道具 ",~道具key," 购买界面"
+	//打开游戏内置商城的道具购买页面，用于作者在地图内开发引导消费场景。购买成功后可通过玩家获得平台道具事件实现在游戏内立即生效。
+    function DzAPI_Map_OpenMall takes player whichPlayer,string whichkey returns boolean
+        return RequestExtraBooleanData(66, whichPlayer, whichkey, null, false, 0, 0, 0)
+    endfunction
+
+
+    function DzAPI_Map_GameResult_CommitData takes player whichPlayer, string key, string value returns nothing
+        call RequestExtraIntegerData(69, whichPlayer, key, value, false, 0, 0, 0)
+    endfunction
+
+    //游戏结算
+    function DzAPI_Map_GameResult_CommitTitle takes player whichPlayer, string value  returns nothing
+        call DzAPI_Map_GameResult_CommitData(whichPlayer,value,"1")
+        set whichPlayer=null
+        set value=null
+    endfunction
+    function DzAPI_Map_GameResult_CommitPlayerRank takes player whichPlayer, integer value returns nothing
+        call DzAPI_Map_GameResult_CommitData(whichPlayer,"RankIndex",I2S(value))
+        set whichPlayer=null
+        set value=0
+    endfunction
+    function DzAPI_Map_GameResult_CommitGameMode takes string value returns nothing
+        call DzAPI_Map_GameResult_CommitData(GetLocalPlayer(),"InnerGameMode",value)
+        set value=null
+    endfunction
+    function DzAPI_Map_GameResult_CommitGameResult takes player whichPlayer, integer value returns nothing
+        call DzAPI_Map_GameResult_CommitData(whichPlayer,"GameResult",I2S(value))
+        set whichPlayer=null
+    endfunction
+
+    function DzAPI_Map_GameResult_CommitGameResultNoEnd takes player whichPlayer, integer value returns nothing
+        call DzAPI_Map_GameResult_CommitData(whichPlayer,"GameResultNoEnd",I2S(value))
+        set whichPlayer=null
+    endfunction
+
+    // GetSinceLastPlayedSeconds, // 获取距最后一次游戏的秒数
+    function DzAPI_Map_GetSinceLastPlayedSeconds takes player whichPlayer returns integer
+        return RequestExtraIntegerData(70, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // QuickBuy, //游戏内快速购买
+    function DzAPI_Map_QuickBuy takes player whichPlayer, string key, integer count, integer seconds returns boolean
+        return RequestExtraBooleanData(72, whichPlayer, key, null, false, count, seconds, 0)
+    endfunction
+
+    // CancelQuickBuy, //取消快速购买
+    function DzAPI_Map_CancelQuickBuy takes player whichPlayer returns boolean
+        return RequestExtraBooleanData(73, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    //判断是加载成功某个玩家的道具
+    function DzAPI_Map_PlayerLoadedItems takes player whichPlayer returns boolean
+        return RequestExtraBooleanData(77, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    function DzAPI_Map_CustomRankCount takes integer id returns integer
+        return RequestExtraIntegerData(78, null, null, null, false, id, 0, 0)
+    endfunction
+
+    // CustomRankPlayerName            // 获取排行榜上指定排名的用户名称
+    function DzAPI_Map_CustomRankPlayerName takes integer id, integer ranking returns string
+        return RequestExtraStringData(79, null, null, null, false, id, ranking, 0)
+    endfunction
+
+    // CustomRankPlayerValue           // 获取排行榜上指定排名的值
+    function DzAPI_Map_CustomRankValue takes integer id, integer ranking returns integer
+        return RequestExtraIntegerData(80, null, null, null, false, id, ranking, 0)
+    endfunction
+
+    //获取玩家在KK平台的完整昵称（基础昵称#编号）
+    function DzAPI_Map_GetPlayerUserName takes player whichPlayer returns string
+        return RequestExtraStringData(81, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // GetServerValueLimitLeft,   // 获取服务器档限制余额
+    function KKApiGetServerValueLimitLeft takes player whichPlayer, string key returns integer
+        return RequestExtraIntegerData(82, whichPlayer, key, null, false, 0, 0, 0)
+    endfunction
+
+    // RequestBackendLogic,       //请求后端逻辑生成
+    function KKApiRequestBackendLogic takes player whichPlayer, string key, string groupkey returns boolean
+        return RequestExtraBooleanData(83, whichPlayer, key, groupkey, false, 0, 0, 0)
+    endfunction
+
+    // CheckBackendLogicExists,   // 获取后端逻辑生成结果 是否存在
+    function KKApiCheckBackendLogicExists takes player whichPlayer, string key returns boolean
+        return RequestExtraBooleanData(84, whichPlayer, key, null, false, 0, 0, 0)
+    endfunction
+
+    // GetBackendLogicIntResult,  // 获取后端逻辑生成结果 整型
+    function KKApiGetBackendLogicIntResult takes player whichPlayer, string key returns integer
+        return RequestExtraIntegerData(85, whichPlayer, key, null, false, 0, 0, 0)
+    endfunction
+
+    // GetBackendLogicStrResult,  // 获取后端逻辑生成结果 字符串
+    function KKApiGetBackendLogicStrResult takes player whichPlayer, string key returns string
+        return RequestExtraStringData(86, whichPlayer, key, null, false, 0, 0, 0)
+    endfunction
+
+    // GetBackendLogicUpdateTime, // 获取后端逻辑生成时间
+    function KKApiGetBackendLogicUpdateTime takes player whichPlayer, string key returns integer
+        return RequestExtraIntegerData(87, whichPlayer, key, null, false, 0, 0, 0)
+    endfunction
+
+    // GetBackendLogicGroup,      // 获取后端逻辑生成组
+    function KKApiGetBackendLogicGroup takes player whichPlayer, string key returns string
+        return RequestExtraStringData(88, whichPlayer, key, null, false, 0, 0, 0)
+    endfunction
+
+    // RemoveBackendLogicResult,  // 删除后端逻辑生成结果
+    function KKApiRemoveBackendLogicResult takes player whichPlayer, string key returns boolean
+        return RequestExtraBooleanData(89, whichPlayer, key, null, false, 0, 0, 0)
+    endfunction
+
+    // 获取随机存档剩余次数
+    function KKApiRandomSaveGameCount takes player whichPlayer, string groupkey returns integer
+        return RequestExtraIntegerData(101, whichPlayer, groupkey, null, false, 0, 0, 0)
+    endfunction
+
+    // 注册随机存档更新事件
+    // 当玩家随机存档更新的时候触发该事件。用"当前变动的随机存档"来获取变动的随机存档key。
+    function KKApiTriggerRegisterBackendLogicUpdata takes trigger trig returns nothing
+        call DzTriggerRegisterSyncData(trig, "DZBLU", true)
+    endfunction
+
+    // 注册随机存档删除事件
+    // 当玩家随机存档删除的时候触发该事件。用"当前变动的随机存档"来获取变动的随机存档key
+    function KKApiTriggerRegisterBackendLogicDelete takes trigger trig returns nothing
+        call DzTriggerRegisterSyncData(trig, "DZBLD", true)
+    endfunction
+
+    // 获取变动的随机存档
+    // 用在注册随机存档更新和删除事件之后
+    function KKApiGetSyncBackendLogic takes nothing returns string
+        return DzGetTriggerSyncData()
+    endfunction
+
+    // 是否在平台正常游戏中
+    // 主要试用于平台运行中区分正常游戏和观战模式，返回true代表是正常游戏模式，反之为观战模式
+    function KKApiIsGameMode takes nothing returns boolean
+        return RequestExtraBooleanData(90, null, null, null, false, 0, 0, 0)
+    endfunction
+
+    // 初始化平台键位显示设置
+    // 初始化键位设置会显示在平台改键界面上，最多2套方案
+    function KKApiInitializeGameKey takes player whichPlayer,integer setIndex, string k,string data returns boolean
+        return RequestExtraBooleanData(91, whichPlayer, "[{\"name\":\""+data+"\",\"key\":\""+k+"\"}]", null, false, setIndex, 0, 0)
+    endfunction
+
+    // 获取玩家的平台ID
+    // 返回的是一个32位的字符串
+    function KKApiPlayerGUID takes player whichPlayer returns string
+        return RequestExtraStringData(93, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // 玩家地图任务状态
+    function KKApiIsTaskInProgress takes player whichPlayer,integer setIndex,integer taskstat returns boolean
+        return RequestExtraIntegerData(94, whichPlayer, null, null, false, setIndex, 0, 0)==taskstat
+    endfunction
+
+    // 玩家地图任务当前进度
+    function KKApiQueryTaskCurrentProgress takes player whichPlayer, integer setIndex returns integer
+        return RequestExtraIntegerData(95, whichPlayer, null, null, false, setIndex, 0, 0)
+    endfunction
+
+    // 玩家地图任务总进度
+    function KKApiQueryTaskTotalProgress takes player whichPlayer, integer setIndex returns integer
+        return RequestExtraIntegerData(96, whichPlayer, null, null, false, setIndex, 0, 0)
+    endfunction
+
+    // 玩家平台该地图成就是否完成
+    // 完成返回true
+    function KKApiIsAchievementCompleted takes player whichPlayer, string id returns boolean
+        return RequestExtraBooleanData(98, whichPlayer, id, null, false, 0, 0, 0)
+    endfunction
+
+    // 玩家平台该地图成就点数
+    function KKApiAchievementPoints takes player whichPlayer returns integer
+        return RequestExtraIntegerData(99, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // 判定测试大厅游戏时长区间
+    // 判断测试大厅游戏时长是否满足该区间，0表示不限制，单位为小时
+    function KKApiPlayedTime takes player whichPlayer, integer minHours, integer maxHours returns boolean
+        return RequestExtraBooleanData(100, whichPlayer, null, null, false, minHours, maxHours, 0)
+    endfunction
+
+    // 注册天梯投降事件
+    // 当玩家在天梯投降时候触发该事件。用"获取投降的队伍id"来获取。
+    function KKApiTriggerRegisterLadderSurrender takes trigger trig returns nothing
+        call DzTriggerRegisterSyncData(trig, "DZSR", true)
+    endfunction
+
+    // 获取天梯投降的队伍ID
+    // 用于天梯投降事件动作里
+    function KKApiGetLadderSurrenderTeamId takes nothing returns integer
+        return S2I(DzGetTriggerSyncData())
+    endfunction
+
+    // 获取公会等级
+    function KKApiGetGuildLevel takes player whichPlayer returns integer
+        return RequestExtraIntegerData(106, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // 获取平台宠物探险次数
+    function KKApiMapExplorationNum takes player whichPlayer returns integer
+        return RequestExtraIntegerData(107, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // 获取平台宠物探险时间
+    function KKApiMapExplorationTime takes player whichPlayer returns integer
+        return RequestExtraIntegerData(108, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // 测试大厅预约人数
+    function KKApiMapOrderNum takes nothing returns integer
+        return RequestExtraIntegerData(109, null, null, null, false, 0, 0, 0)
+    endfunction
+
 
 
 
