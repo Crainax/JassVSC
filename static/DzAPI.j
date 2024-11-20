@@ -277,7 +277,7 @@ native DzFrameSetTextAlignment takes integer frame, integer align returns nothin
 //  获取 Frame 的 Parent [NEW]
 native DzFrameGetParent takes integer frame returns integer
 //显示/隐藏SimpleFrame
-//native DzSimpleFrameShow takes integer frame, boolean enable returns nothing
+native DzSimpleFrameShow takes integer frame, boolean enable returns nothing
 // 追加文字（支持TextArea）
 native DzFrameAddText takes integer frame, string text returns nothing
 // 沉默单位-禁用技能
@@ -1293,8 +1293,67 @@ native DzItemSetModel takes item whichItem, string file returns nothing
 native DzItemSetVertexColor takes item whichItem, integer color returns nothing
 // 设置道具透明度
 native DzItemSetAlpha takes item whichItem, integer color returns nothing
+// 设置道具头像
+native DzItemSetPortrait takes item whichItem, string modelPath returns nothing
 // 解锁JASS字节码限制
 native DzUnlockOpCodeLimit takes boolean enable returns nothing
+
+//玩家消耗/使用商城道具事件
+function DzTriggerRegisterMallItemConsumeEvent takes trigger trig returns nothing
+	call DzTriggerRegisterSyncData(trig, "DZMIC", true)
+endfunction
+
+//玩家删除商城道具事件
+function DzTriggerRegisterMallItemRemoveEvent takes trigger trig returns nothing
+	call DzTriggerRegisterSyncData(trig, "DZMID", true)
+endfunction
+
+//玩家实时获得地图商城道具事件
+// 玩家背包中新获得了当前地图商城道具的回调事件，用于地图实现玩家在游戏内商城购买成功后在游戏内立即生效。可在事件内配合[事件响应-实时获得平台道具的玩家]和[事件响应-实时获得的平台道具]使用。
+function DzTriggerRegisterMallItemSyncData takes trigger trig returns nothing
+	call DzTriggerRegisterSyncData(trig, "DZMIA", true)
+endfunction
+
+//玩家消耗/使用商城道具事件
+function DzTriggerRegisterMallItemConsumeEvent takes trigger trig returns nothing
+	call DzTriggerRegisterSyncData(trig, "DZMIC", true)
+endfunction
+
+//玩家删除商城道具事件
+function DzTriggerRegisterMallItemRemoveEvent takes trigger trig returns nothing
+	call DzTriggerRegisterSyncData(trig, "DZMID", true)
+endfunction
+
+//事件响应 - 实时获得地图商城道具的玩家
+//获取是哪位玩家获得了平台道具。仅限在玩家实时获得地图商城道具事件内使用。
+function DzGetTriggerMallItemPlayer takes nothing returns player
+	return DzGetTriggerSyncPlayer()
+endfunction
+
+//事件响应 - 实时获得的地图商城道具
+//获取实时购买的地图商城道具。仅限在玩家实时获得地图商城道具事件内使用。
+function DzGetTriggerMallItem takes nothing returns string
+	return DzGetTriggerSyncData()
+endfunction
+
+// 发送云脚本数据
+function KKApiMlScriptEvent takes player whichPlayer, string eventName, string payload returns boolean
+	return RequestExtraBooleanData(110, whichPlayer, eventName, payload, false, 0, 0, 0)
+endfunction
+
+// 获取商城道具最后变动的数量（新增/删除）
+function KKApiGetMallItemUpdateCount takes player whichPlayer, string key returns integer
+	return RequestExtraIntegerData(110, whichPlayer, key, null, false, 0, 0, 0)
+endfunction
+
+// 设置剪切板内容
+native DzSetClipboard takes string content returns boolean
+
+//删除装饰物
+native DzDoodadRemove takes integer doodad returns nothing
+
+//移除科技等级
+native DzRemovePlayerTechResearched takes player whichPlayer, integer techid, integer removelevels returns nothing
 
 #endif
 
