@@ -1042,7 +1042,7 @@ native DzGetOnTargetInstantTarget takes nothing returns widget
 // 打开QQ群链接
 native DzOpenQQGroupUrl takes string url returns boolean
 
-// 启用/禁用控件裁剪区域
+// 启用/禁用控件裁剪区域,禁用后就能显示在外面了(不会锁里面)
 native DzFrameEnableClipRect takes boolean enable returns nothing
 
 // 设置单位名称
