@@ -8,6 +8,7 @@ class DocumentFormattingSortEditProvider {
         const textEdits = new Array();
         let indent = 0;
         let indentChar;
+        let chainCallBraceIndent = false;
         function genString(count, char = " ") {
             return new Array(count).fill(char).join("");
         }
@@ -32,6 +33,10 @@ class DocumentFormattingSortEditProvider {
                         ),
                         genString(indent + 1, indentChar)
                     ));
+                }
+                if (/^\s*[,\.].*\{+\s*(\/\/.*)?$/.test(text)) {
+                    indent += 2;
+                    chainCallBraceIndent = true;
                 }
             }
             //如果要实现function() 不前缩,还得在这里做非匹配  目前只有if,while与for需要括号,其他的都不
@@ -84,12 +89,22 @@ class DocumentFormattingSortEditProvider {
                 }
             }
             else if (indent > 0 && /^\s*\}/.test(text) && (!(/\{+\s*(\/\/.*)?$/.test(text)))) {
-                indent--;
+                let temp = false; // 是否需要额外减少缩进
+                if (chainCallBraceIndent) { //处理之前链式调用缩进2级,这时也要-2级
+                    indent -= 1; //先减少一级缩进,保证这行内容正常
+                    chainCallBraceIndent = false;
+                    temp = true;
+                } else {
+                    indent--;
+                }
                 if (lineText.firstNonWhitespaceCharacterIndex > 0 && indent == 0) {
                     textEdits.push(vscode.TextEdit.delete(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex)));
                 }
                 else if (lineText.firstNonWhitespaceCharacterIndex != indent) {
                     textEdits.push(vscode.TextEdit.replace(new vscode.Range(lineText.lineNumber, 0, lineText.lineNumber, lineText.firstNonWhitespaceCharacterIndex), genString(indent, indentChar)));
+                }
+                if (temp) { //本级内容-1级就行了,但是下一行内容要-2级,所以这里补偿多-1级
+                    indent--;
                 }
             }
             else if (/^\s*(else|elseif\b.*then\b)\s*(\/\/.*)?$/.test(text)) {
