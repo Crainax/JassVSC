@@ -2042,6 +2042,7 @@ native DzFrameSetTexCoord takes integer frame, real left, real top, real right, 
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 距离值
+//  = [[单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityRange takes unit Unit, integer abil_code, real value returns boolean
 
 // 技能 - 获取技能施法距离（通魔）
@@ -2055,6 +2056,7 @@ native DzGetUnitAbilityRange takes unit Unit, integer abil_code returns real
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 范围值
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityArea takes unit Unit, integer abil_code, real value returns boolean
 
 // 技能 - 获取技能施法范围（通魔）
@@ -2069,6 +2071,7 @@ native DzGetUnitAbilityArea takes unit Unit, integer abil_code returns real
 // @param abil_code 技能代码
 // @param cool 当前冷却时间
 // @param max_cool 最大冷却时间
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityCool takes unit Unit, integer abil_code, real cool, real max_cool returns boolean
 
 // 技能 - 获取技能当前冷却时间（通魔）
@@ -2088,6 +2091,7 @@ native DzGetUnitAbilityMaxCool takes unit Unit, integer abil_code returns real
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 数据值
+// 通魔的数据A是施法持续时间;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityDataA takes unit Unit, integer abil_code, real value returns boolean
 
 // 技能 - 获取技能数据A（通魔）
@@ -2101,6 +2105,7 @@ native DzGetUnitAbilityDataA takes unit Unit, integer abil_code returns real
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 数据值
+// 通魔的数据B是目标类型;0无目标;1目标单位;2目标点;3目标单位或点;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityDataB takes unit Unit, integer abil_code, real value returns boolean
 
 // 技能 - 获取技能数据B（通魔）
@@ -2114,6 +2119,7 @@ native DzGetUnitAbilityDataB takes unit Unit, integer abil_code returns real
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 数据值
+// 通魔的数据C是选项;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityDataC takes unit Unit, integer abil_code, real value returns boolean
 
 // 技能 - 获取技能数据C（通魔）
@@ -2127,6 +2133,7 @@ native DzGetUnitAbilityDataC takes unit Unit, integer abil_code returns real
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 数据值
+// 通魔的数据D是动作持续时间;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityDataD takes unit Unit, integer abil_code, real value returns boolean
 
 // 技能 - 获取技能数据D（通魔）
@@ -2140,6 +2147,7 @@ native DzGetUnitAbilityDataD takes unit Unit, integer abil_code returns real
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 数据值
+// 通魔的数据E是否使其他技能失效;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityDataE takes unit Unit, integer abil_code, real value returns boolean
 
 // 技能 - 获取技能数据E（通魔）
@@ -2154,6 +2162,7 @@ native DzGetUnitAbilityDataE takes unit Unit, integer abil_code returns real
 // @param abil_code 技能代码
 // @param x X坐标
 // @param y Y坐标
+// x轴0~3, y轴0~2且 y轴-11可以隐藏技能;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityButtonPos takes unit Unit, integer abil_code, integer x, integer y returns boolean
 
 // 技能 - 设置技能快捷键（通魔）
@@ -2161,6 +2170,7 @@ native DzSetUnitAbilityButtonPos takes unit Unit, integer abil_code, integer x, 
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param key 快捷键
+// 必须显示在按钮上的技能才有效,单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityHotkey takes unit Unit, integer abil_code, string key returns boolean
 
 // 转化 - 目标允许整数转字符串
@@ -2178,6 +2188,7 @@ native DzConvertStr2Targs takes string targs returns integer
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 目标允许值
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityTargs takes unit Unit, integer abil_code, integer value returns boolean
 
 // 技能 - 获取技能目标允许（通魔）
@@ -2191,6 +2202,7 @@ native DzGetUnitAbilityTargs takes unit Unit, integer abil_code returns integer
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 消耗值
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityCost takes unit Unit, integer abil_code, integer value returns boolean
 
 // 技能 - 获取技能魔法消耗（通魔）
@@ -2204,12 +2216,14 @@ native DzGetUnitAbilityCost takes unit Unit, integer abil_code returns integer
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 等级要求
+// 2级以上可以无视魔法免疫;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;保证通魔技能有效,其他类型的技能也可以尝试使用不保证有效, 如无效果可以升级降级技能刷新
 native DzSetUnitAbilityReqLevel takes unit Unit, integer abil_code, integer value returns boolean
 
 // 技能 - 获取技能等级要求（通魔）
 // 获取 单位${Unit} 当前拥有的技能${abil_code} 的等级要求
 // @param Unit 单位
 // @param abil_code 技能代码
+// 2级以上可以无视魔法免疫
 native DzGetUnitAbilityReqLevel takes unit Unit, integer abil_code returns integer
 
 // 技能 - 设置建造技能单位ID（象牙塔）
@@ -2217,12 +2231,14 @@ native DzGetUnitAbilityReqLevel takes unit Unit, integer abil_code returns integ
 // @param Unit 单位
 // @param abil_code 技能代码
 // @param value 单位ID
+// 用在象牙塔或变身类技能;单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除;
 native DzSetUnitAbilityUnitId takes unit Unit, integer abil_code, integer value returns boolean
 
 // 技能 - 获取建造技能单位ID（象牙塔）
 // 获取 单位${Unit} 当前拥有的技能${abil_code} 的单位ID
 // @param Unit 单位
 // @param abil_code 技能代码
+// 象牙塔或者变身类技能有效
 native DzGetUnitAbilityUnitId takes unit Unit, integer abil_code returns integer
 
 // 技能 - 设置建造技能命令ID（象牙塔）
@@ -2234,6 +2250,7 @@ native DzSetUnitAbilityBuildOrderId takes unit Unit, integer abil_code, integer 
 
 // 技能 - 获取建造技能命令ID（象牙塔）
 // 获取 单位${Unit} 当前拥有的技能${abil_code} 的命令ID
+// 象牙塔类的技能有效
 // @param Unit 单位
 // @param abil_code 技能代码
 native DzGetUnitAbilityBuildOrderId takes unit Unit, integer abil_code returns integer
@@ -2248,6 +2265,7 @@ native DzSetUnitAbilityBuildModel takes unit Unit, integer abil_code, string mod
 
 // 技能 - 判断单位是否拥有技能 (包含模版技能)
 // 单位${Unit}是否拥有技能 ${abil_code}
+// 单位拥有指定id 或者 指定模板id, 真实的模板技能id在 编辑器里units\abilitydata.slk 里面的code列里
 // @param Unit 单位
 // @param abil_code 技能ID
 native DzUnitHasAbility takes unit Unit, integer abil_code returns boolean
@@ -2255,90 +2273,152 @@ native DzUnitHasAbility takes unit Unit, integer abil_code returns boolean
 
 // 技能按钮 - 创建技能按钮控件
 // 创建技能按钮控件
+// 创建的技能按钮可以拿来绑定技能。
 native KKCreateCommandButton takes nothing returns integer
-
 // 技能按钮 - 删除技能按钮
 // 删除技能按钮${btn}
+// @param btn 技能按钮控件
+// 只能是来自"创建技能按钮控件"的控件,不能删原生哈。
 native KKDestroyCommandButton takes integer btn returns nothing
 
 // 技能按钮 - 鼠标点击技能按钮 (无目标施法 或 激活目标指示器)
 // 点击技能按钮${btn}, 按照鼠标${mouse_type}类型来点击
+// @param btn 技能按钮控件
+// @param mouse_type 鼠标类型(1是左键,4是右键)
+// 鼠标类型1是左键,4是右键,无目标技能左键之后可以释放,目标类技能左键后会激活目标指示器
 native KKCommandButtonClick takes integer btn, integer mouse_type returns nothing
 
 // 技能按钮 - 目标指示器点击目标单位
 // 鼠标${mouse_type}类型点击目标${target}
+// @param mouse_type 鼠标类型(1是左键点击目标,4是右键取消)
+// @param target 目标单位
+// 需要先激活目标指示器后, 鼠标类型1是左键点击目标,4是右键取消
 native KKCommandTargetClick takes integer mouse_type, widget target returns boolean
 
 // 技能按钮 - 目标指示器点击地面坐标
 // 鼠标${mouse_type}类型点击坐标 x轴${x}, y轴${y}, z轴${z}
+// @param mouse_type 鼠标类型(1是左键点击目标,4是右键取消)
+// @param x X轴坐标
+// @param y Y轴坐标
+// @param z Z轴坐标
+// 坐标类的技能 需要先激活点或范围指示器后, 鼠标类型1是左键点击目标,4是右键取消
 native KKCommandTerrainClick takes integer mouse_type, real x, real y, real z returns boolean
 
 // 技能按钮 - 绑定单位技能
 // 技能按钮${btn} 绑定单位${Unit}的技能${abil_code}
+// @param btn 技能按钮控件
+// @param Unit 单位
+// @param abil_code 技能代码
+// 需要 先添加单位技能, 然后改按钮y轴-11隐藏, 然后再计时器循环0.1秒绑定, 技能id填0是取消绑定。
 native KKSetCommandUnitAbility takes integer btn, unit Unit, integer abil_code returns nothing
 
 // 物品 - 获取物品颜色
 // 获取 ${Item} 的颜色
+// @param Item 物品
+// @return 颜色值
 native DzItemGetVertexColor takes item Item returns integer
 
 // 物品 - 物品大小
 // 物品${Item} 按照${size}进行缩放
+// @param Item 物品
+// @param size 缩放大小
 native DzItemSetSize takes item Item, real size returns nothing
 
 // 物品 - 获取物品大小
 // 获取 ${Item} 的缩放大小
+// @param Item 物品
+// @return 缩放大小
 native DzItemGetSize takes item Item returns real
 
 // 物品 - 模型按照X轴旋转
 // 物品${Item} 按照X轴${x}进行旋转
+// @param Item 物品
+// @param x X轴旋转角度
+// 多次调用是会乘法累计旋转的, 拾取丢弃物品会重置
 native DzItemMatRotateX takes item Item, real x returns nothing
 
 // 物品 - 模型按照Y轴旋转
 // 物品${Item} 按照Y轴${y}进行旋转
+// @param Item 物品
+// @param y Y轴旋转角度
+// 多次调用是会乘法累计旋转的, 拾取丢弃物品会重置
 native DzItemMatRotateY takes item Item, real y returns nothing
 
 // 物品 - 模型按照Z轴旋转
 // 物品${Item} 按照Z轴${z}进行旋转
+// @param Item 物品
+// @param z Z轴旋转角度
+// 多次调用是会乘法累计旋转的, 拾取丢弃物品会重置
 native DzItemMatRotateZ takes item Item, real z returns nothing
 
 // 物品 - 模型按照XYZ轴缩放
 // 物品${Item} 按照X轴${x},Y轴${y},Z轴${z} 进行缩放
+// @param Item 物品
+// @param x X轴缩放
+// @param y Y轴缩放
+// @param z Z轴缩放
+// 多次调用是会乘法累计缩放的, 拾取丢弃物品会重置
 native DzItemMatScale takes item Item, real x, real y, real z returns nothing
 
 // 物品 - 模型重置旋转缩
 // 物品${Item} 模型重置旋转缩
+// @param Item 物品
+// 旋转清零,缩放重置为1
 native DzItemMatReset takes item Item returns nothing
 
 // 物品 - 当前选择的物品(异步)
 // 获取主控物品
+// @return 当前选中的物品
+// 获取的物品是异步的,请谨慎操作
 native DzGetLastSelectedItem takes nothing returns item
 
 // 模型粒子2的缩放倍数
 // ${Widget} 模型粒子2的缩放 ${scale}倍数
+// @param Widget 对象(单位/特效/物品)
+// @param scale 缩放倍数
+// 每次调用是乘法计算 需要填大于0的数值,填0会直接导致之后的计算失效
 native DzSetPariticle2Size takes agent Widget, real scale returns nothing
 
 // 单位 - 修改单位碰撞体积
 // 修改单位${Unit} 的碰撞体积为${size}
+// @param Unit 单位
+// @param size 碰撞体积大小
+// 修改之后移动一下单位或者重新设置一下位置就会刷新了
 native DzSetUnitCollisionSize takes unit Unit, real size returns nothing
 
 // 单位 - 获取单位的碰撞体积
 // 获取 ${Unit} 的碰撞体积
+// @param Unit 单位
+// @return 碰撞体积大小
 native DzGetUnitCollisionSize takes unit Unit returns real
 
 // 替换贴图
 // 替换${Handle} 新的贴图${TexturePath} 为指定 TexId${ReplaceId}
+// @param Handle 对象(单位/物品/特效)
+// @param TexturePath 贴图路径
+// @param ReplaceId 贴图ID索引
+// 只能替换模型中有Replaceable ID x 贴图的模型,ID为索引。不会替换大头像中的模型
 native DzSetWidgetTexture takes agent Handle, string TexturePath, integer ReplaceId returns nothing
 
 // 单位 - 修改单位选择圈缩放
 // 修改单位${Unit} 的选择圈缩放为${scale}
+// @param Unit 单位
+// @param scale 缩放大小
+// 可以0隐藏或者显示修改指定单位的选择圈大小
 native DzSetUnitSelectScale takes unit Unit, real scale returns nothing
 
 // 单位 - 设置单位是否忽略点击
 // 设置单位${Unit} 的点击球是否忽略${ignore}
+// @param Unit 单位
+// @param ignore 是否忽略点击
+// true为忽略, false会恢复,删除蝗虫技能后, 隐藏显示单位, 再设置忽略点击false, 关闭打开碰撞 即完美删除蝗虫。
 native DzSetUnitHitIgnore takes unit Unit, boolean ignore returns nothing
 
 // 特效 - 特效绑定特效
 // 给特效${Handle}的附加点${AttachName} 绑定特效 ${eff}
+// @param Handle 特效
+// @param AttachName 附加点名称
+// @param eff 要绑定的特效
 native DzEffectBindEffect takes agent Handle, string AttachName, effect eff returns nothing
 
 function KKConvertInt2AbilId takes integer i returns integer
@@ -2360,168 +2440,299 @@ endfunction
 
 // 界面 - 设置Frame控件忽略点击事件
 // 设置Frame控件${frame}忽略点击事件为${ignore}
+// @param frame Frame控件
+// @param ignore 是否忽略
+// 只能用在Frame类型的控件, 对SimpleFrame类型的控件无效, 忽略后可以鼠标穿透地面, 不忽略则会挡住鼠标点击。
 native DzFrameSetIgnoreTrackEvents takes integer frame, boolean ignore returns nothing
 
 // 界面 - 创建ui模型控件
 // 创建ui模型控件 指定父控件${parent_frame}
+// @param parent_frame 父控件
+// @return ui模型控件
+// 用来显示3d模型用的,需要手动设置镜头参数,旋转缩放才能正确显示。
 native DzFrameAddModel takes integer parent_frame returns integer
 
 // 界面 - ui模型 - 设置模型文件
 // 设置ui模型控件${model_frame}的文件路径为${model_file}, 队伍颜色id为${team_color_id}
+// @param model_frame ui模型控件
+// @param model_file 模型文件路径
+// @param team_color_id 队伍颜色ID(0-15,0为红色)
+// 只能是ui模型控件, 队伍颜色id是0~15 0为红色
 native DzFrameSetModel2 takes integer model_frame, string model_file, integer team_color_id returns nothing
 
 // 界面 - ui模型 - 添加绑定特效
 // 为ui模型控件${model_frame}绑定特效, 附加点${attach_point}, 特效模型文件路径${model_file}
+// @param model_frame ui模型控件
+// @param attach_point 附加点名称
+// @param model_file 特效模型文件路径
+// @return 特效控件
+// 重置模型后自动失效,只能是ui模型控件, 返回effect_frame
 native DzFrameAddModelEffect takes integer model_frame, string attach_point, string model_file returns integer
 
 // 界面 - ui模型 - 移除绑定特效
 // 为ui模型控件${model_frame}移除绑定的特效${effect_frame}
+// @param model_frame ui模型控件
+// @param effect_frame 特效控件
+// effect_frame只能是ui模型添加绑定特效的返回值
 native DzFrameRemoveModelEffect takes integer model_frame, integer effect_frame returns nothing
 
 // 界面 - ui模型 - 播放动画指定索引
 // ui模型控件${model_frame}播放动画指定索引${anim_index}
+// @param model_frame ui模型控件
+// @param anim_index 动画索引
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelAnimationByIndex takes integer model_frame, integer anim_index returns nothing
 
 // 界面 - ui模型 - 播放动画指定动画名
 // ui模型控件${model_frame}播放动画指定动画名${animation}
+// @param model_frame ui模型控件
+// @param animation 动画名称
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelAnimation takes integer model_frame, string animation returns nothing
 
 // 界面 - ui模型 - 设置场景内镜头源点
 // ui模型控件${model_frame} 设置镜头源点 x轴${x},y轴${y},z轴${z}
+// @param model_frame ui模型控件
+// @param x X轴坐标
+// @param y Y轴坐标
+// @param z Z轴坐标
+// 只能是ui模型控件
 native DzFrameSetModelCameraSource takes integer model_frame, real x, real y, real z returns nothing
 
 // 界面 - ui模型 - 设置场景内镜头目标点
 // ui模型控件${model_frame}设置镜头目标点 x轴${x},y轴${y},z轴${z}
+// @param model_frame ui模型控件
+// @param x X轴坐标
+// @param y Y轴坐标
+// @param z Z轴坐标
+// 只能是ui模型控件
 native DzFrameSetModelCameraTarget takes integer model_frame, real x, real y, real z returns nothing
 
 // 界面 - ui模型 - 设置缩放大小
 // ui模型控件${model_frame} 设置 缩放${size}
+// @param model_frame ui模型控件
+// @param size 缩放大小
+// 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelSize takes integer model_frame, real size returns nothing
 
 // 界面 - ui模型 - 获取缩放大小
 // 获取ui模型控件${model_frame}的缩放大小
+// @param model_frame ui模型控件
+// @return 缩放大小
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameGetModelSize takes integer model_frame returns real
 
 // 界面 - ui模型 - 设置场景内的坐标(X Y Z)
 // ui模型控件${model_frame} 设置 X轴${x}, Y轴${y}, Z轴${z}
+// @param model_frame ui模型控件
+// @param x X轴坐标
+// @param y Y轴坐标
+// @param z Z轴坐标
+// 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelPosition takes integer model_frame, real x, real y, real z returns nothing
 
 // 界面 - ui模型 - 设置场景内的坐标X轴
 // ui模型控件${model_frame} 设置 X轴${x}
+// @param model_frame ui模型控件
+// @param x X轴坐标
+// 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelX takes integer model_frame, real x returns nothing
 
 // 界面 - ui模型 - 获取场景内的坐标X轴
 // 获取ui模型控件${model_frame}场景内的坐标X轴
+// @param model_frame ui模型控件
+// @return X轴坐标
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameGetModelX takes integer model_frame returns real
 
 // 界面 - ui模型 - 设置场景内的坐标Y轴
 // ui模型控件${model_frame} 设置 Y轴${y}
+// @param model_frame ui模型控件
+// @param y Y轴坐标
+// 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelY takes integer model_frame, real y returns nothing
 
 // 界面 - ui模型 - 获取场景内的坐标Y轴
 // 获取ui模型控件${model_frame}场景内的坐标Y轴
+// @param model_frame ui模型控件
+// @return Y轴坐标
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameGetModelY takes integer model_frame returns real
 
 // 界面 - ui模型 - 设置场景内的坐标Z轴
 // ui模型控件${model_frame} 设置 Z轴${z}
+// @param model_frame ui模型控件
+// @param z Z轴坐标
+// 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelZ takes integer model_frame, real z returns nothing
 
 // 界面 - ui模型 - 获取场景内的坐标Z轴
 // 获取ui模型控件${model_frame}场景内的坐标Z轴
+// @param model_frame ui模型控件
+// @return Z轴坐标
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameGetModelZ takes integer model_frame returns real
 
 // 界面 - ui模型 - 设置动画播放速度
 // ui模型控件${model_frame} 设置 动画播放速度${speed}
+// @param model_frame ui模型控件
+// @param speed 播放速度倍率
+// 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelSpeed takes integer model_frame, real speed returns nothing
 
 // 界面 - ui模型 - 获取动画播放速度
 // 获取ui模型控件${model_frame}场景内的动画播放速度
+// @param model_frame ui模型控件
+// @return 播放速度倍率
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameGetModelSpeed takes integer model_frame returns real
 
 // 界面 - ui模型 - 设置矩阵缩放
 // ui模型控件${model_frame} 设置 矩阵缩放 (X轴${x}, Y轴${y}, Z轴${z})
+// @param model_frame ui模型控件
+// @param x X轴缩放
+// @param y Y轴缩放
+// @param z Z轴缩放
+// 每次调用累计乘法计算缩放, 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelScale takes integer model_frame, real x, real y, real z returns nothing
 
 // 界面 - ui模型 - 设置矩阵重置
 // ui模型控件${model_frame} 设置矩阵重置
+// @param model_frame ui模型控件
+// 缩放重置为1, 旋转清零, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelMatReset takes integer model_frame returns nothing
 
 // 界面 - ui模型 - 设置矩阵旋转X轴
 // ui模型控件${model_frame} 设置矩阵旋转X轴${x}
+// @param model_frame ui模型控件
+// @param x X轴旋转角度
+// 每次调用累计乘法计算, 不想累计的重置后再设置, 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelRotateX takes integer model_frame, real x returns nothing
 
 // 界面 - ui模型 - 设置矩阵旋转Y轴
 // ui模型控件${model_frame} 设置矩阵旋转Y轴${y}
+// @param model_frame ui模型控件
+// @param y Y轴旋转角度
+// 每次调用累计乘法计算, 不想累计的重置后再设置, 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelRotateY takes integer model_frame, real y returns nothing
 
 // 界面 - ui模型 - 设置矩阵旋转Z轴
 // ui模型控件${model_frame} 设置矩阵旋转Z轴${z}
+// @param model_frame ui模型控件
+// @param z Z轴旋转角度
+// 每次调用累计乘法计算, 不想累计的重置后再设置, 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelRotateZ takes integer model_frame, real z returns nothing
 
 // 界面 - ui模型 - 设置模型颜色
 // ui模型控件${model_frame} 设置模型颜色${color}
+// @param model_frame ui模型控件
+// @param color 颜色值(包含透明通道)
+// 包含透明通道, 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelColor takes integer model_frame, integer color returns nothing
 
 // 界面 - ui模型 - 获取颜色
 // 获取ui模型控件 ${model_frame} 的颜色
+// @param model_frame ui模型控件
+// @return 颜色值
+// 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameGetModelColor takes integer model_frame returns integer
 
 // 界面 - ui模型 - 替换模型id贴图
 // ui模型控件${model_frame} 设置贴图路径${texture_file}, 指定id${replace_texutre_id}
+// @param model_frame ui模型控件
+// @param texture_file 贴图路径
+// @param replace_texutre_id 贴图ID索引
+// id是指模型里指定的纹理id, 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelTexture takes integer model_frame, string texture_file, integer replace_texutre_id returns nothing
 
 // 界面 - ui模型 - 设置粒子2缩放大小
 // ui模型控件${model_frame} 设置粒子2缩放大小${scale}
+// @param model_frame ui模型控件
+// @param scale 缩放倍数
+// 必须是有粒子2的模型, 缩放是乘法计算需要大于0, 设置模型后会重置, 可以是ui模型控件、SPRITE、MODEL类型的控件
 native DzFrameSetModelParticle2Size takes integer model_frame, real scale returns nothing
 
 // 界面 - 获取游戏外界面底层
 // 获取游戏外界面底层
+// @return GlueUI控件
+// 返回GlueUI, 从config房间界面到加载界面完成 都属于GlueUI, 进入游戏后属于GameUI
 native DzGetGlueUI takes nothing returns integer
 
 // 界面 - 获取鼠标控件
 // 获取鼠标控件
+// @return 鼠标控件
+// 返回的是SPRITE模型控件,可以通过缩放大小为0来隐藏鼠标, 需要注意的是游戏内跟游戏外鼠标UI不一样,可以游戏开始0秒之后再获取使用。
 native DzFrameGetMouse takes nothing returns integer
 
 // 界面 - 获取控件绑定的整数
 // 获取控件${frame}绑定的整数
+// @param frame 控件
+// @return 绑定的整数值
+// 相当于获取 <<新建Frame [Tag]:DzCreateFrameByTagName>> 函数最后一个参数
 native DzFrameGetContext takes integer frame returns integer
 
 // 界面 - 获取控件的全局名字
 // 获取控件${frame}的全局名字
+// @param frame 控件
+// @return 全局名字
+// 相当于获取 <<新建Frame [Tag]:DzCreateFrameByTagName>> 函数第2个参数
 native DzFrameGetName takes integer frame returns string
 
 // 界面 - 设置控件全局名字跟绑定整数
 // 设置控件${frame} 全局名字${name} 绑定整数${context}
+// @param frame 控件
+// @param name 全局名字
+// @param context 绑定的整数
+// 相当于修改 <<新建Frame [Tag]:DzCreateFrameByTagName>> 函数的第2个参数,跟最后一个参数,全局名字不能重复,否则退出游戏时会崩溃,可以使用修改后的名字跟整数查找控件,支持Frame、SimpleFrame、SimpleTexture、SimpleStringFont
 native DzFrameSetNameContext takes integer frame, string name, integer context returns nothing
 
 // 界面 - 设置文本控件字间距
 // 设置文本控件${text_frame} 设置字间距${spacing}
+// @param text_frame 文本控件
+// @param spacing 字间距
+// 只能TEXT类型控件使用
 native DzFrameSetTextFontSpacing takes integer text_frame, real spacing returns nothing
 
 // 界面 - 获取技能/物品按钮的冷却模型控件
 // 获取技能/物品按钮${cmd_btn}的冷却模型控件
+// @param cmd_btn 技能/物品按钮
+// @return 冷却模型控件
+// 获取技能或者物品按钮上面的 冷却模型控件,相当于是SPRITE类型的控件
 native KKCommandGetCooldownModel takes integer cmd_btn returns integer
 
 // 界面 - 设置技能/物品按钮的冷却模型缩放大小
 // 设置技能/物品按钮${cmd_btn}的冷却模型缩放大小${size}
+// @param cmd_btn 技能/物品按钮
+// @param size 缩放大小
+// 只能技能/物品按钮使用, 修改按钮大小后,需要手动缩放一次cd模型的缩放比例
 native KKCommandSetCooldownModelSize takes integer cmd_btn, real size returns nothing
 
 // 界面 - 设置技能/物品按钮的冷却模型缩放指定宽高比例
 // 设置技能/物品按钮${cmd_btn}的冷却模型缩放宽比例${width}, 高比例${height}
+// @param cmd_btn 技能/物品按钮
+// @param width 宽度缩放比例
+// @param height 高度缩放比例
+// 只能技能/物品按钮使用, 修改按钮大小后,需要手动缩放一次cd模型的缩放比例
 native KKCommandSetCooldownModelSize2 takes integer cmd_btn, real width, real height returns nothing
 
 // 物品 - 玩家当前选择的物品(同步)
 // 获取玩家${p}当前选择的物品(同步)
+// @param p 玩家
+// @return 选中的物品
+// 返回值是同步的。每次选择物品后会延迟0.1秒刷新返回值。
 native DzGetPlayerLastSelectedItem takes player p returns item
 
 // 获取当前缓存模型的数量
 // 获取当前缓存模型的数量
+// @return 缓存模型数量
+// 返回值异步的,用来检测当前游戏模型数量用的
 native DzGetCacheModelCount takes nothing returns integer
 
 // 游戏 - 限制最高帧数
 // 限制最高帧数 为${max_fps}
+// @param max_fps 最高帧数
+// 跟解锁上限不同,只能60之内, 例如30帧用来模拟卡顿的游戏环境
 native DzSetMaxFps takes integer max_fps returns nothing
-
 
 
 #endif
