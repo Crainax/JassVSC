@@ -1355,5 +1355,1174 @@ native DzDoodadRemove takes integer doodad returns nothing
 //移除科技等级
 native DzRemovePlayerTechResearched takes player whichPlayer, integer techid, integer removelevels returns nothing
 
+
+//------- 251002 更新 ------
+
+// 注册UI事件回调-异步(func handle)[观战、录像不响应][new]
+// 注册 frame 的事件类型事件 运行:code handle 是否同步:sync
+// 注册UI事件回调-异步，可以在游戏、录像、观战等所有模式响应
+// @param frame UI框架
+// @param eventId 事件类型
+// @param funcHandle 代码句柄
+// @param sync 是否同步
+native DzFrameSetScriptBlock takes integer frame, integer eventId, code funcHandle, boolean sync returns nothing
+// * 注册UI事件回调-异步(func name)[观战、录像可响应][new]
+// * 注册 frame 的事件类型事件 运行:func name
+// * @param frame UI框架
+// * @param eventId 事件类型
+// * @param funcName 函数名
+native DzFrameSetScriptAsync takes integer frame, integer eventId, string funcName returns nothing
+// * 注册UI事件回调-异步(func handle)[观战、录像可响应][new]
+// * 注册 frame 的事件类型事件 运行:code handle
+// * 注册UI事件回调-异步，可以在游戏、录像、观战等所有模式响应
+// * @param frame UI框架
+// * @param eventId 事件类型
+// * @param func 代码句柄
+native DzFrameSetScriptByCodeAsync takes integer frame, integer eventId, code func returns nothing
+// * 注册UI事件回调-异步(func handle)[观战、录像可响应][new]
+// * 注册 frame 的事件类型事件 运行:code handle
+// * 注册UI事件回调-异步，可以在游戏、录像、观战等所有模式响应，该函数执行会阻止它原本的功能继续响应
+// * @param frame UI框架
+// * @param eventId 事件类型
+// * @param func 代码句柄
+native DzFrameSetScriptBlockAsync takes integer frame, integer eventId, code func returns nothing
+
+
+// 是否地图测试服
+function DzAPI_Map_IsMapTest takes nothing returns boolean
+	return RequestExtraBooleanData(74, null, null, null, false, 0, 0, 0)
+endfunction
+
+
+    // BeginBatchSaveArchive,  // 开始批量保存存档
+    function KKApiBeginBatchSaveArchive takes player whichPlayer returns boolean
+        return RequestExtraBooleanData(102, whichPlayer, null, null, false, 0, 0, 0)
+    endfunction
+
+    // AddBatchSaveArchive,    // 添加批量保存存档条目
+    function KKApiAddBatchSaveArchive takes player whichPlayer, string key, string value, boolean caseInsensitive returns boolean
+        return RequestExtraBooleanData(103, whichPlayer, key, value, caseInsensitive, 0, 0, 0)
+    endfunction
+
+    // EndBatchSaveArchive,    // 结束批量保存存档
+    function KKApiEndBatchSaveArchive takes player whichPlayer, boolean abandon returns boolean
+        return RequestExtraBooleanData(104, whichPlayer, null, null, abandon, 0, 0, 0)
+    endfunction
+
+// 【批量存档】添加条目-整数
+// 对添加批量保存存档条目进行保存。KEY不区分大小写
+// @param whichPlayer 玩家
+// @param key 存档键名
+// @param value 整数值
+function KKApiAddBatchSaveArchiveInteger takes player whichPlayer, string key, integer value returns nothing
+	set key="I"+key
+	call KKApiAddBatchSaveArchive(whichPlayer,key,I2S(value),false)
+	set key=null
+	set whichPlayer=null
+endfunction
+
+// 【批量存档】添加条目-实数
+// 对添加批量保存存档条目进行保存。KEY不区分大小写
+// @param whichPlayer 玩家
+// @param key 存档键名
+// @param value 实数值
+function KKApiAddBatchSaveArchiveReal takes player whichPlayer, string key, real value returns nothing
+	set key="R"+key
+	call KKApiAddBatchSaveArchive(whichPlayer,key,R2S(value),false)
+	set key=null
+	set whichPlayer=null
+endfunction
+
+// 【批量存档】添加条目-布尔值
+// 对添加批量保存存档条目进行保存。KEY不区分大小写
+// @param whichPlayer 玩家
+// @param key 存档键名
+// @param value 布尔值
+function KKApiAddBatchSaveArchiveBoolean takes player whichPlayer, string key, boolean value returns nothing
+	set key="B"+key
+	if(value)then
+		call KKApiAddBatchSaveArchive(whichPlayer,key,"1",false)
+	else
+		call KKApiAddBatchSaveArchive(whichPlayer,key,"0",false)
+	endif
+	set key=null
+	set whichPlayer=null
+endfunction
+
+// 【批量存档】添加条目-字符串
+// 对添加批量保存存档条目进行保存。KEY不区分大小写
+// @param whichPlayer 玩家
+// @param key 存档键名
+// @param value 字符串值
+function KKApiAddBatchSaveArchiveString takes player whichPlayer, string key, string value returns nothing
+	set key="S"+key
+	call KKApiAddBatchSaveArchive(whichPlayer,key,value,false)
+	set key=null
+	set whichPlayer=null
+endfunction
+
+
+// 获取地图版本号[new]
+// 获取地图版本号
+function KKApiGetMapVersion takes nothing returns string
+	return RequestExtraStringData(111, null, null, null, false, 0, 0, 0)
+endfunction
+
+// 获取赛事模式[new]
+// 获取赛事模式
+function KKApiGetCompetitionGameMode takes nothing returns string
+	return RequestExtraStringData(112, null, null, null, false, 0, 0, 0)
+endfunction
+
+// 获取玩家当天总游戏局数[new]
+// 获取 whichPlayer 当天总游戏局数
+// 为当天玩家玩该地图的有效局数，10分钟算一局，每天05:00刷新
+// @param whichPlayer 玩家
+function KKApiDayRounds takes player whichPlayer returns integer
+	return RequestExtraIntegerData(113, whichPlayer, null, null, false, 0, 0, 0)
+endfunction
+
+// 获取玩家在指定地图会员等级[new]
+// 获取 whichPlayer 在地图 mapId 的会员等级
+// 该功能需要在作者之家后台申请开启权限，否则返回值都是0
+// @param whichPlayer 玩家
+// @param mapId 地图ID
+function KKApiConsumeLevel takes player whichPlayer, integer mapId returns integer
+	return RequestExtraIntegerData(115, whichPlayer, null, null, false, mapId, 0, 0)
+endfunction
+
+// 血条刷新事件 [NEW]
+// 血条刷新事件
+native DzFrameHookHpBar takes code func returns nothing
+// 触发的血条单位 [NEW]
+// 触发血条的单位
+// 用于血条刷新事件下
+native DzFrameGetTriggerHpBarUnit takes nothing returns unit
+// 触发的血条 [NEW]
+// 触发的血条
+// 用于血条刷新事件下
+native DzFrameGetTriggerHpBar takes nothing returns integer
+// 获取单位血条 [NEW]
+// 获取 whichUnit 血条
+// 获取单位血条
+// @param whichUnit 单位
+// param whichUnit 单位
+native DzFrameGetUnitHpBar takes unit whichUnit returns integer
+
+// 鼠标界面 [NEW]
+// 鼠标界面
+native DzGetCursorFrame takes nothing returns integer
+// 是否有指定锚点 [NEW]
+// 判断 whichFrame 是否有 anchor 锚点
+// @param frame 界面
+// @param anchor 锚点
+// param frame 界面句柄
+// param anchor 锚点
+native DzFrameGetPointValid takes integer frame, integer anchor returns boolean
+// 获取相对锚点所在界面 [NEW]
+// 判断 whichFrame 的相对锚点 anchor 所在界面
+// @param frame 界面
+// @param anchor 锚点
+// param frame 界面句柄
+// param anchor 锚点
+native DzFrameGetPointRelative takes integer frame, integer anchor returns integer
+// 获取相对锚点的界面锚点 [NEW]
+// 判断 whichFrame 的相对锚点 anchor 所在界面的锚点
+// @param frame 界面
+// @param anchor 锚点
+// param frame 界面句柄
+// param anchor 锚点
+native DzFrameGetPointRelativePoint takes integer frame, integer anchor returns integer
+// 获取锚点X坐标 [NEW]
+// whichFrame 的 anchor X坐标
+// @param frame 界面
+// @param anchor 锚点
+// param frame 界面句柄
+// param anchor 锚点
+native DzFrameGetPointX takes integer frame, integer anchor returns real
+// 获取锚点Y坐标 [NEW]
+// whichFrame 的 anchor Y坐标
+// @param frame 界面
+// @param anchor 锚点
+// param frame 界面句柄
+// param anchor 锚点
+native DzFrameGetPointY takes integer frame, integer anchor returns real
+
+function DzIsLeapYear takes integer year returns boolean
+	return (ModuloInteger(year , 4) == 0 and ModuloInteger(year , 100) != 0) or (ModuloInteger(year , 400) == 0)
+endfunction
+
+function DzGetTimeDateFromTimestamp takes integer timestamp returns string
+endfunction
+
+// 转换时间戳为具体时间 [NEW]
+// 转换 timestamp 为具体时间
+// 返回值类似：2025-1-10 17:4:40
+// @param timestamp 时间戳
+// param timestamp 时间戳
+function KKAPIGetTimeDateFromTimestamp takes integer timestamp returns string
+	set timestamp=IMaxBJ(timestamp,0)
+	if(HaveSavedString(Hash,timestamp,4))then
+		return LoadStr(Hash,timestamp,4)
+	else
+		return DzGetTimeDateFromTimestamp(timestamp)
+	endif
+endfunction
+
+// 获取时间戳年份 [NEW]
+// timestamp 的年份
+// @param timestamp 时间戳
+// param timestamp 时间戳
+function  KKAPIGetTimestampYear takes integer timestamp returns integer
+	set timestamp=IMaxBJ(timestamp,0)
+	if(HaveSavedInteger(Hash,timestamp,1)==false)then
+		call DzGetTimeDateFromTimestamp(timestamp)
+	endif
+	return LoadInteger(Hash,timestamp,1)
+endfunction
+
+// 获取时间戳月份 [NEW]
+// timestamp 的月份
+// @param timestamp 时间戳
+// param timestamp 时间戳
+function  KKAPIGetTimestampMonth takes integer timestamp returns integer
+	set timestamp=IMaxBJ(timestamp,0)
+	if(HaveSavedInteger(Hash,timestamp,2)==false)then
+		call DzGetTimeDateFromTimestamp(timestamp)
+	endif
+	return LoadInteger(Hash,timestamp,2)
+endfunction
+
+// 获取时间戳日份 [NEW]
+// timestamp 的日份
+// @param timestamp 时间戳
+// param timestamp 时间戳
+function  KKAPIGetTimestampDay takes integer timestamp returns integer
+	set timestamp=IMaxBJ(timestamp,0)
+	if(HaveSavedInteger(Hash,timestamp,3)==false)then
+		call DzGetTimeDateFromTimestamp(timestamp)
+	endif
+	return LoadInteger(Hash,timestamp,3)
+endfunction
+
+// 打印调试信息到平台日志 [NEW]
+// 打印 msg 到平台日志
+// 用于调试，打印信息到平台日志文件
+// @param msg 信息
+// param msg 信息
+native DzWriteLog takes string msg returns nothing
+
+// texttag
+// 获取当前漂浮文字的字体 [NEW]
+// 漂浮文字的字体
+native DzTextTagGetFont takes nothing returns string
+// 设置漂浮文字字体 [NEW]
+// 设置漂浮文字字体：fileName
+// @param fileName 字体文件名
+// param fileName 字体文件名
+native DzTextTagSetFont takes string fileName returns nothing
+// 设置漂浮文字透明度 [NEW]
+// 设置 t 透明度：alpha
+// @param t 漂浮文字
+// @param alpha 透明度
+// param t 漂浮文字句柄
+// param alpha 透明度
+native DzTextTagSetStartAlpha takes texttag t, integer alpha returns nothing
+// 获取漂浮文字的阴影颜色 [NEW]
+// 获取 t 的阴影颜色
+// @param t 漂浮文字
+// param t 漂浮文字句柄
+native DzTextTagGetShadowColor takes texttag t returns integer
+// 设置漂浮文字阴影颜色 [NEW]
+// 设置 t 阴影颜色：color
+// @param t 漂浮文字
+// @param color 颜色
+// param t 漂浮文字句柄
+// param color 颜色
+native DzTextTagSetShadowColor takes texttag t, integer color returns nothing
+
+// group
+// 获取单位组里单位数量 [NEW]
+// 获取 g 里单位数量
+// @param g 单位组
+// param g 单位组句柄
+native DzGroupGetCount takes group g returns integer
+// 获取单位组里指定索引的单位 [NEW]
+// 获取 g 里第 index 个单位
+// @param g 单位组
+// @param index 索引
+// param g 单位组句柄
+// param index 索引
+native DzGroupGetUnitAt takes group g, integer index returns unit
+
+// unit
+// 创建幻象单位 [NEW]
+// 为 p 创建一个 unitId 类型的幻象，在坐标(x,y),面向角度：face
+// @param p 玩家
+// @param unitId 单位类型ID
+// @param x X坐标
+// @param y Y坐标
+// @param face 面向角度
+// param p 玩家
+// param unitId 单位类型ID
+// param x X坐标
+// param y Y坐标
+// param face 面向角度
+native DzUnitCreateIllusion takes player p, integer unitId, real x, real y, real face returns unit
+// 为单位创建幻象 [NEW]
+// 为 u 创建一个幻象
+// @param u 单位
+// param u 单位句柄
+native DzUnitCreateIllusionFromUnit takes unit u returns unit
+
+// string
+// 检查字符串是否包含指定的子字符串 [NEW]
+// 检测 s 是否包含 whichString 字符串，判定规则：caseSensitive 区分大小写
+// @param s 目标字符串
+// @param whichString 子字符串
+// @param caseSensitive 是否区分大小写
+// param s 目标字符串
+// param whichString 子字符串
+// param caseSensitive 是否区分大小写
+native DzStringContains takes string s, string whichString, boolean caseSensitive returns boolean
+// 字符串中查找子字符串并返回其位置 [NEW]
+// 检测 s 包含 whichString 的位置，从第 off 位开始，判定规则：caseSensitive 区分大小写
+// @param s 目标字符串
+// @param whichString 子字符串
+// @param off 起始位置
+// @param caseSensitive 是否区分大小写
+// param s 目标字符串
+// param whichString 子字符串
+// param off 起始位置
+// param caseSensitive 是否区分大小写
+native DzStringFind takes string s, string whichString, integer off, boolean caseSensitive returns integer
+// 检测字符串里第一个包含指定字符串里任意字符的位置 [NEW]
+// 检测 s 第一个包含 whichString 里任意字符的位置，从第 off 位开始，判定规则：caseSensitive 区分大小写
+// @param s 目标字符串
+// @param whichString 子字符串
+// @param off 起始位置
+// @param caseSensitive 是否区分大小写
+// param s 目标字符串
+// param whichString 子字符串
+// param off 起始位置
+// param caseSensitive 是否区分大小写
+native DzStringFindFirstOf takes string s, string whichString, integer off, boolean caseSensitive returns integer
+// 检查字符串第一个不包含指定字符串里任意字符的位置 [NEW]
+// 检测 s 第一个不包含 whichString 里任意字符的位置，从第 off 位开始，判定规则：caseSensitive 区分大小写
+// @param s 目标字符串
+// @param whichString 子字符串
+// @param off 起始位置
+// @param caseSensitive 是否区分大小写
+// param s 目标字符串
+// param whichString 子字符串
+// param off 起始位置
+// param caseSensitive 是否区分大小写
+native DzStringFindFirstNotOf takes string s, string whichString, integer off, boolean caseSensitive returns integer
+// 从后往前查找字符串中包含指定字符串任意字符的所在位置 [NEW]
+// 从后往前检测 s 包含指定字符串 whichString 任意字符的位置，从第 off 位开始，判定规则：caseSensitive 区分大小写
+// @param s 目标字符串
+// @param whichString 子字符串
+// @param off 起始位置
+// @param caseSensitive 是否区分大小写
+// param s 目标字符串
+// param whichString 子字符串
+// param off 起始位置
+// param caseSensitive 是否区分大小写
+native DzStringFindLastOf takes string s, string whichString, integer off, boolean caseSensitive returns integer
+// 从后往前查找字符串中不包含指定字符串任意字符的所在位置 [NEW]
+// 从后往前检测 s 不包含指定字符串 whichString 任意字符的位置，从第 off 位开始，判定规则：caseSensitive 区分大小写
+// @param s 目标字符串
+// @param whichString 子字符串
+// @param off 起始位置
+// @param caseSensitive 是否区分大小写
+// param s 目标字符串
+// param whichString 子字符串
+// param off 起始位置
+// param caseSensitive 是否区分大小写
+native DzStringFindLastNotOf takes string s, string whichString, integer off, boolean caseSensitive returns integer
+// 删除字符串左边的空格 [NEW]
+// 删除 s 左边的空格
+// @param s 字符串
+// param s 字符串
+native DzStringTrimLeft takes string s returns string
+// 删除字符串右边的空格 [NEW]
+// 删除 s 右边的空格
+// @param s 字符串
+// param s 字符串
+native DzStringTrimRight takes string s returns string
+// 删除字符串两边的空格 [NEW]
+// 删除 s 两边的空格
+// @param s 字符串
+// param s 字符串
+native DzStringTrim takes string s returns string
+// 反转字符串 [NEW]
+// 反转 s
+// @param s 字符串
+// param s 字符串
+native DzStringReverse takes string s returns string
+// 替换字符串 [NEW]
+// 替换 s 里的 whichString 为 replaceWith
+// @param s 目标字符串
+// @param whichString 要替换的字符串
+// @param replaceWith 替换为的字符串
+// @param caseSensitive 是否区分大小写
+// param s 目标字符串
+// param whichString 要替换的字符串
+// param replaceWith 替换为的字符串
+// param caseSensitive 是否区分大小写
+native DzStringReplace takes string s, string whichString, string replaceWith, boolean caseSensitive returns string
+// 插入字符串 [NEW]
+// 在 s 的位置 whichPosition 插入 whichString
+// @param s 目标字符串
+// @param whichPosition 插入位置
+// @param whichString 要插入的字符串
+// param s 目标字符串
+// param whichPosition 插入位置
+// param whichString 要插入的字符串
+native DzStringInsert takes string s, integer whichPosition, string whichString returns string
+
+// bit
+// 整数的2进制的位值 [NEW]
+// i 的2进制的第 byteIndex 位的值
+// @param i 整数
+// @param byteIndex 字节索引
+native DzBitGet takes integer i, integer byteIndex returns integer
+// 设置整数的2进制的位值 [NEW]
+// 设置 i 的2进制的第 byteIndex 位的值：byteValue
+// @param i 整数
+// @param byteIndex 字节索引
+// @param byteValue 字节值
+native DzBitSet takes integer i, integer byteIndex, integer byteValue returns integer
+// 整数的256进制的位值 [NEW]
+// ${i} 256进制第 ${byteIndex} 位的值
+// @param i 整数
+// @param byteIndex 字节索引
+native DzBitGetByte takes integer i, integer byteIndex returns integer
+
+// 设置整数的256进制的位值 [NEW]
+// 设置 ${i} 的256进制的第 ${byteIndex} 位的值：${byteValue}
+// @param i 整数
+// @param byteIndex 字节索引
+// @param byteValue 字节值
+native DzBitSetByte takes integer i, integer byteIndex, integer byteValue returns integer
+
+// 按位取反 [NEW]
+// ${i} 按位取反
+// @param i 整数
+native DzBitNot takes integer i returns integer
+
+// 按位与 [NEW]
+// ${a} 和 ${b} 按位与
+// @param a 整数a
+// @param b 整数b
+native DzBitAnd takes integer a, integer b returns integer
+
+// 按位或 [NEW]
+// ${a} 和 ${b} 按位或
+// @param a 整数a
+// @param b 整数b
+native DzBitOr takes integer a, integer b returns integer
+
+// 按位异或 [NEW]
+// ${a} 和 ${b} 按位异或
+// @param a 整数a
+// @param b 整数b
+native DzBitXor takes integer a, integer b returns integer
+
+// 按位左移 [NEW]
+// ${i} 的所有位向左移动 ${bitsToShift} 位
+// @param i 整数
+// @param bitsToShift 移位数
+native DzBitShiftLeft takes integer i, integer bitsToShift returns integer
+
+// 按位右移 [NEW]
+// ${i} 的所有位向右移动 ${bitsToShift} 位
+// @param i 整数
+// @param bitsToShift 移位数
+native DzBitShiftRight takes integer i, integer bitsToShift returns integer
+
+// 4字节组合为整数 [NEW]
+// 在4个字节(${b1},${b2},${b3},${b4})组合成一个整数。这里组合是256进制，组合的结果其实是b4b3b2b1
+// @param b1 字节1
+// @param b2 字节2
+// @param b3 字节3
+// @param b4 字节4
+native DzBitToInt takes integer b1, integer b2, integer b3, integer b4 returns integer
+
+// 对单位组添加命令到队列(无目标) [NEW]
+// 对单位组 ${whichGroup} 添加 ${order} 命令到队列
+// @param whichGroup 单位组
+// @param order 命令
+native DzQueueGroupImmediateOrderById              takes group whichGroup, integer order returns boolean
+
+// 对单位组添加命令到队列(指定坐标) [NEW]
+// 对单位组 ${whichGroup} 添加 ${order} 命令到队列，位置 (${x}, ${y})
+// @param whichGroup 单位组
+// @param order 命令
+// @param x X坐标
+// @param y Y坐标
+native DzQueueGroupPointOrderById                  takes group whichGroup, integer order, real x, real y returns boolean
+
+// 对单位组添加命令到队列(指定单位) [NEW]
+// 对单位组 ${whichGroup} 添加 ${order} 命令到队列，目标 ${targetWidget}
+// @param whichGroup 单位组
+// @param order 命令
+// @param targetWidget 目标控件
+native DzQueueGroupTargetOrderById                 takes group whichGroup, integer order, widget targetWidget returns boolean
+
+// 对单位添加命令到队列(无目标) [NEW]
+// 对单位 ${whichUnit} 添加 ${order} 命令到队列
+// @param whichUnit 单位
+// @param order 命令
+native DzQueueIssueImmediateOrderById      takes unit whichUnit, integer order returns boolean
+
+// 对单位添加命令到队列(指定坐标) [NEW]
+// 对单位 ${whichUnit} 添加 ${order} 命令到队列，位置 (${x}, ${y})
+// @param whichUnit 单位
+// @param order 命令
+// @param x X坐标
+// @param y Y坐标
+native DzQueueIssuePointOrderById          takes unit whichUnit, integer order, real x, real y returns boolean
+
+// 对单位添加命令到队列(指定单位) [NEW]
+// 对单位 ${whichUnit} 添加 ${order} 命令到队列，目标 ${targetWidget}
+// @param whichUnit 单位
+// @param order 命令
+// @param targetWidget 目标控件
+native DzQueueIssueTargetOrderById         takes unit whichUnit, integer order, widget targetWidget returns boolean
+
+// 对单位添加命令到队列(指定坐标和瞬发目标) [NEW]
+// 对单位 ${whichUnit} 添加 ${order} 命令到队列，位置 (${x}, ${y})，瞬发目标 ${instantTargetWidget}
+// @param whichUnit 单位
+// @param order 命令
+// @param x X坐标
+// @param y Y坐标
+// @param instantTargetWidget 瞬发目标控件
+native DzQueueIssueInstantPointOrderById   takes unit whichUnit, integer order, real x, real y, widget instantTargetWidget returns boolean
+
+// 对单位添加命令到队列(指定单位和瞬发目标) [NEW]
+// 对单位 ${whichUnit} 添加 ${order} 命令到队列，目标 ${targetWidget}，瞬发目标 ${instantTargetWidget}
+// @param whichUnit 单位
+// @param order 命令
+// @param targetWidget 目标控件
+// @param instantTargetWidget 瞬发目标控件
+native DzQueueIssueInstantTargetOrderById  takes unit whichUnit, integer order, widget targetWidget, widget instantTargetWidget returns boolean
+
+// 对单位添加建造命令到队列 [NEW]
+// 对单位 ${whichPeon} 添加建造 ${unitId} 命令到队列，位置 (${x}, ${y})
+// @param whichPeon 农民单位
+// @param unitId 单位ID
+// @param x X坐标
+// @param y Y坐标
+native DzQueueIssueBuildOrderById          takes unit whichPeon, integer unitId, real x, real y returns boolean
+
+// 添加中介命令到队列(无目标) [NEW]
+// 使 ${forWhichPlayer} 对 ${neutralStructure} 添加 ${unitId} 命令到队列
+// @param forWhichPlayer 玩家
+// @param neutralStructure 中立建筑
+// @param unitId 单位ID
+native DzQueueIssueNeutralImmediateOrderById   takes player forWhichPlayer,unit neutralStructure, integer unitId returns boolean
+
+// 添加中介命令到队列(指定坐标) [NEW]
+// 使 ${forWhichPlayer} 对 ${neutralStructure} 添加 ${unitId} 命令到队列，位置 (${x}, ${y})
+// @param forWhichPlayer 玩家
+// @param neutralStructure 中立建筑
+// @param unitId 单位ID
+// @param x X坐标
+// @param y Y坐标
+native DzQueueIssueNeutralPointOrderById       takes player forWhichPlayer,unit neutralStructure, integer unitId, real x, real y returns boolean
+
+// 添加中介命令到队列(指定单位) [NEW]
+// 使 ${forWhichPlayer} 对单位 ${neutralStructure} 添加 ${unitId} 命令到队列，目标 ${TargetWidget}
+// @param forWhichPlayer 玩家
+// @param neutralStructure 中立建筑
+// @param unitId 单位ID
+// @param target 目标控件
+native DzQueueIssueNeutralTargetOrderById      takes player forWhichPlayer,unit neutralStructure, integer unitId, widget target returns boolean
+
+// 获取单位的命令数量 [NEW]
+// 获取单位 ${u} 的命令数量
+// @param u 单位
+native DzUnitOrdersCount takes unit u returns integer
+
+// 清除单位命令队列 [NEW]
+// 清除单位 ${u} 命令，清理规则： ${onlyQueued} 仅清理队列里的命令
+// @param u 单位
+// @param onlyQueued 是否仅清理队列
+native DzUnitOrdersClear takes unit u, boolean onlyQueued returns nothing
+
+// 执行单位的命令队列 [NEW]
+// 执行单位 ${u} 的命令队列
+// @param u 单位
+native DzUnitOrdersExec takes unit u returns nothing
+
+// 强制停止单位当前命令 [NEW]
+// 强制停止单位 ${u} 的当前命令，${clearQueue} 清理队列里的命令
+// @param u 单位
+// @param clearQueue 是否清理队列
+native DzUnitOrdersForceStop takes unit u, boolean clearQueue returns nothing
+
+// 反转单位命令队列 [NEW]
+// 反转 ${u} 命令队列
+// @param u 单位
+native DzUnitOrdersReverse takes unit u returns nothing
+// 打开Excel文件 [NEW]
+// 打开Excel文件 ${filePath}
+// @param filePath 文件路径
+native DzXlsxOpen takes string filePath returns integer
+
+// 关闭工作表 [NEW]
+// 关闭工作表：${docHandle}
+// @param docHandle 文档句柄
+native DzXlsxClose takes integer docHandle returns boolean
+
+// 工作表的总行数 [NEW]
+// ${docHandle} 里 ${sheetName} 页的总行数
+// @param docHandle 文档句柄
+// @param sheetName 工作表名
+native DzXlsxWorksheetGetRowCount takes integer docHandle, string sheetName returns integer
+
+// 工作表的总列数 [NEW]
+// ${docHandle} 里 ${sheetName} 的列数
+// @param docHandle 文档句柄
+// @param sheetName 工作表名
+native DzXlsxWorksheetGetColumnCount takes integer docHandle, string sheetName returns integer
+
+// 单元格的数据类型 [NEW]
+// ${docHandle} 里 ${sheetName} 中单元格 (${row}, ${column}) 的数据类型
+// @param docHandle 文档句柄
+// @param sheetName 工作表名
+// @param row 行号
+// @param column 列号
+native DzXlsxWorksheetGetCellType takes integer docHandle, string sheetName, integer row, integer column returns integer
+
+// 工作表的值（字符串） [NEW]
+// ${docHandle} 里 ${sheetName} 中单元格 (${row}, ${column}) 的字符串值
+// @param docHandle 文档句柄
+// @param sheetName 工作表名
+// @param row 行号
+// @param column 列号
+native DzXlsxWorksheetGetCellString takes integer docHandle, string sheetName, integer row, integer column returns string
+
+// 工作表的值（整数） [NEW]
+// ${docHandle} 里 ${sheetName} 中单元格 (${row}, ${column}) 的整数值
+// @param docHandle 文档句柄
+// @param sheetName 工作表名
+// @param row 行号
+// @param column 列号
+native DzXlsxWorksheetGetCellInteger takes integer docHandle, string sheetName, integer row, integer column returns integer
+
+// 工作表的值（布尔值） [NEW]
+// ${docHandle} 里 ${sheetName} 中单元格 (${row}, ${column}) 的布尔值
+// @param docHandle 文档句柄
+// @param sheetName 工作表名
+// @param row 行号
+// @param column 列号
+native DzXlsxWorksheetGetCellBoolean takes integer docHandle, string sheetName, integer row, integer column returns boolean
+
+// 工作表的值（实数） [NEW]
+// ${docHandle} 里 ${sheetName} 中单元格 (${row}, ${column}) 的实数值
+// @param docHandle 文档句柄
+// @param sheetName 工作表名
+// @param row 行号
+// @param column 列号
+native DzXlsxWorksheetGetCellFloat takes integer docHandle, string sheetName, integer row, integer column returns real
+
+// 设置界面纹理坐标 [NEW]
+// 设置 ${frame} 的纹理坐标为 (${left}, ${top}, ${right}, ${bottom})
+// @param frame 界面
+// @param left 左坐标
+// @param top 上坐标
+// @param right 右坐标
+// @param bottom 下坐标
+native DzFrameSetTexCoord takes integer frame, real left, real top, real right, real bottom returns nothing
+
+// 技能 - 设置技能施法距离（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的施法距离${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 距离值
+native DzSetUnitAbilityRange takes unit Unit, integer abil_code, real value returns boolean
+
+// 技能 - 获取技能施法距离（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的施法距离
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityRange takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能施法范围（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的施法范围${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 范围值
+native DzSetUnitAbilityArea takes unit Unit, integer abil_code, real value returns boolean
+
+// 技能 - 获取技能施法范围（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的施法范围
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityArea takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能冷却时间（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的当前冷却时间${cool}/最大冷却时间${max_cool}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param cool 当前冷却时间
+// @param max_cool 最大冷却时间
+native DzSetUnitAbilityCool takes unit Unit, integer abil_code, real cool, real max_cool returns boolean
+
+// 技能 - 获取技能当前冷却时间（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的当前冷却时间
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityCool takes unit Unit, integer abil_code returns real
+
+// 技能 - 获取技能最大冷却时间（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的最大冷却时间
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityMaxCool takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能数据A（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的数据A${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 数据值
+native DzSetUnitAbilityDataA takes unit Unit, integer abil_code, real value returns boolean
+
+// 技能 - 获取技能数据A（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的数据A
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityDataA takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能数据B（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的数据B${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 数据值
+native DzSetUnitAbilityDataB takes unit Unit, integer abil_code, real value returns boolean
+
+// 技能 - 获取技能数据B（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的数据B
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityDataB takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能数据C（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的数据C${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 数据值
+native DzSetUnitAbilityDataC takes unit Unit, integer abil_code, real value returns boolean
+
+// 技能 - 获取技能数据C（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的数据C
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityDataC takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能数据D（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的数据D${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 数据值
+native DzSetUnitAbilityDataD takes unit Unit, integer abil_code, real value returns boolean
+
+// 技能 - 获取技能数据D（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的数据D
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityDataD takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能数据E（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的数据E${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 数据值
+native DzSetUnitAbilityDataE takes unit Unit, integer abil_code, real value returns boolean
+
+// 技能 - 获取技能数据E（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的数据E
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityDataE takes unit Unit, integer abil_code returns real
+
+// 技能 - 设置技能按钮位置（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的按钮X轴${x}, Y轴${y}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param x X坐标
+// @param y Y坐标
+native DzSetUnitAbilityButtonPos takes unit Unit, integer abil_code, integer x, integer y returns boolean
+
+// 技能 - 设置技能快捷键（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的按钮快捷键${key}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param key 快捷键
+native DzSetUnitAbilityHotkey takes unit Unit, integer abil_code, string key returns boolean
+
+// 转化 - 目标允许整数转字符串
+// 转换 ${targs}为字符串
+// @param targs 目标允许
+native DzConvertTargs2Str takes integer targs returns string
+
+// 转化 - 目标允许字符串转整数
+// 转换 ${targs}为整数
+// @param targs 目标允许字符串
+native DzConvertStr2Targs takes string targs returns integer
+
+// 技能 - 设置技能目标允许（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的目标允许${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 目标允许值
+native DzSetUnitAbilityTargs takes unit Unit, integer abil_code, integer value returns boolean
+
+// 技能 - 获取技能目标允许（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的目标允许
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityTargs takes unit Unit, integer abil_code returns integer
+
+// 技能 - 设置技能魔法消耗（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的魔法消耗${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 消耗值
+native DzSetUnitAbilityCost takes unit Unit, integer abil_code, integer value returns boolean
+
+// 技能 - 获取技能魔法消耗（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的魔法消耗
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityCost takes unit Unit, integer abil_code returns integer
+
+// 技能 - 设置技能等级要求（通魔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的等级要求${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 等级要求
+native DzSetUnitAbilityReqLevel takes unit Unit, integer abil_code, integer value returns boolean
+
+// 技能 - 获取技能等级要求（通魔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的等级要求
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityReqLevel takes unit Unit, integer abil_code returns integer
+
+// 技能 - 设置建造技能单位ID（象牙塔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的单位id${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 单位ID
+native DzSetUnitAbilityUnitId takes unit Unit, integer abil_code, integer value returns boolean
+
+// 技能 - 获取建造技能单位ID（象牙塔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的单位ID
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityUnitId takes unit Unit, integer abil_code returns integer
+
+// 技能 - 设置建造技能命令ID（象牙塔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 的命令id${value}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param value 命令ID
+native DzSetUnitAbilityBuildOrderId takes unit Unit, integer abil_code, integer value returns boolean
+
+// 技能 - 获取建造技能命令ID（象牙塔）
+// 获取 单位${Unit} 当前拥有的技能${abil_code} 的命令ID
+// @param Unit 单位
+// @param abil_code 技能代码
+native DzGetUnitAbilityBuildOrderId takes unit Unit, integer abil_code returns integer
+
+// 技能 - 设置建造技能模型（象牙塔）
+// 设置单位${Unit} 当前拥有的技能${abil_code} 模型${model_path} 缩放${model_scale}
+// @param Unit 单位
+// @param abil_code 技能代码
+// @param model_path 模型路径
+// @param model_scale 模型缩放
+native DzSetUnitAbilityBuildModel takes unit Unit, integer abil_code, string model_path, real model_scale returns boolean
+
+// 技能 - 判断单位是否拥有技能 (包含模版技能)
+// 单位${Unit}是否拥有技能 ${abil_code}
+// @param Unit 单位
+// @param abil_code 技能ID
+native DzUnitHasAbility takes unit Unit, integer abil_code returns boolean
+
+
+// 技能按钮 - 创建技能按钮控件
+// 创建技能按钮控件
+native KKCreateCommandButton takes nothing returns integer
+
+// 技能按钮 - 删除技能按钮
+// 删除技能按钮${btn}
+native KKDestroyCommandButton takes integer btn returns nothing
+
+// 技能按钮 - 鼠标点击技能按钮 (无目标施法 或 激活目标指示器)
+// 点击技能按钮${btn}, 按照鼠标${mouse_type}类型来点击
+native KKCommandButtonClick takes integer btn, integer mouse_type returns nothing
+
+// 技能按钮 - 目标指示器点击目标单位
+// 鼠标${mouse_type}类型点击目标${target}
+native KKCommandTargetClick takes integer mouse_type, widget target returns boolean
+
+// 技能按钮 - 目标指示器点击地面坐标
+// 鼠标${mouse_type}类型点击坐标 x轴${x}, y轴${y}, z轴${z}
+native KKCommandTerrainClick takes integer mouse_type, real x, real y, real z returns boolean
+
+// 技能按钮 - 绑定单位技能
+// 技能按钮${btn} 绑定单位${Unit}的技能${abil_code}
+native KKSetCommandUnitAbility takes integer btn, unit Unit, integer abil_code returns nothing
+
+// 物品 - 获取物品颜色
+// 获取 ${Item} 的颜色
+native DzItemGetVertexColor takes item Item returns integer
+
+// 物品 - 物品大小
+// 物品${Item} 按照${size}进行缩放
+native DzItemSetSize takes item Item, real size returns nothing
+
+// 物品 - 获取物品大小
+// 获取 ${Item} 的缩放大小
+native DzItemGetSize takes item Item returns real
+
+// 物品 - 模型按照X轴旋转
+// 物品${Item} 按照X轴${x}进行旋转
+native DzItemMatRotateX takes item Item, real x returns nothing
+
+// 物品 - 模型按照Y轴旋转
+// 物品${Item} 按照Y轴${y}进行旋转
+native DzItemMatRotateY takes item Item, real y returns nothing
+
+// 物品 - 模型按照Z轴旋转
+// 物品${Item} 按照Z轴${z}进行旋转
+native DzItemMatRotateZ takes item Item, real z returns nothing
+
+// 物品 - 模型按照XYZ轴缩放
+// 物品${Item} 按照X轴${x},Y轴${y},Z轴${z} 进行缩放
+native DzItemMatScale takes item Item, real x, real y, real z returns nothing
+
+// 物品 - 模型重置旋转缩
+// 物品${Item} 模型重置旋转缩
+native DzItemMatReset takes item Item returns nothing
+
+// 物品 - 当前选择的物品(异步)
+// 获取主控物品
+native DzGetLastSelectedItem takes nothing returns item
+
+// 模型粒子2的缩放倍数
+// ${Widget} 模型粒子2的缩放 ${scale}倍数
+native DzSetPariticle2Size takes agent Widget, real scale returns nothing
+
+// 单位 - 修改单位碰撞体积
+// 修改单位${Unit} 的碰撞体积为${size}
+native DzSetUnitCollisionSize takes unit Unit, real size returns nothing
+
+// 单位 - 获取单位的碰撞体积
+// 获取 ${Unit} 的碰撞体积
+native DzGetUnitCollisionSize takes unit Unit returns real
+
+// 替换贴图
+// 替换${Handle} 新的贴图${TexturePath} 为指定 TexId${ReplaceId}
+native DzSetWidgetTexture takes agent Handle, string TexturePath, integer ReplaceId returns nothing
+
+// 单位 - 修改单位选择圈缩放
+// 修改单位${Unit} 的选择圈缩放为${scale}
+native DzSetUnitSelectScale takes unit Unit, real scale returns nothing
+
+// 单位 - 设置单位是否忽略点击
+// 设置单位${Unit} 的点击球是否忽略${ignore}
+native DzSetUnitHitIgnore takes unit Unit, boolean ignore returns nothing
+
+// 特效 - 特效绑定特效
+// 给特效${Handle}的附加点${AttachName} 绑定特效 ${eff}
+native DzEffectBindEffect takes agent Handle, string AttachName, effect eff returns nothing
+
+function KKConvertInt2AbilId takes integer i returns integer
+	return i
+endfunction
+
+function KKConvertAbilId2Int takes integer i returns integer
+	return i
+endfunction
+
+function KKConvertInt2Color takes integer i returns integer
+	return i
+endfunction
+
+function KKConvertColor2Int takes integer i returns integer
+	return i
+endfunction
+
+
+// 界面 - 设置Frame控件忽略点击事件
+// 设置Frame控件${frame}忽略点击事件为${ignore}
+native DzFrameSetIgnoreTrackEvents takes integer frame, boolean ignore returns nothing
+
+// 界面 - 创建ui模型控件
+// 创建ui模型控件 指定父控件${parent_frame}
+native DzFrameAddModel takes integer parent_frame returns integer
+
+// 界面 - ui模型 - 设置模型文件
+// 设置ui模型控件${model_frame}的文件路径为${model_file}, 队伍颜色id为${team_color_id}
+native DzFrameSetModel2 takes integer model_frame, string model_file, integer team_color_id returns nothing
+
+// 界面 - ui模型 - 添加绑定特效
+// 为ui模型控件${model_frame}绑定特效, 附加点${attach_point}, 特效模型文件路径${model_file}
+native DzFrameAddModelEffect takes integer model_frame, string attach_point, string model_file returns integer
+
+// 界面 - ui模型 - 移除绑定特效
+// 为ui模型控件${model_frame}移除绑定的特效${effect_frame}
+native DzFrameRemoveModelEffect takes integer model_frame, integer effect_frame returns nothing
+
+// 界面 - ui模型 - 播放动画指定索引
+// ui模型控件${model_frame}播放动画指定索引${anim_index}
+native DzFrameSetModelAnimationByIndex takes integer model_frame, integer anim_index returns nothing
+
+// 界面 - ui模型 - 播放动画指定动画名
+// ui模型控件${model_frame}播放动画指定动画名${animation}
+native DzFrameSetModelAnimation takes integer model_frame, string animation returns nothing
+
+// 界面 - ui模型 - 设置场景内镜头源点
+// ui模型控件${model_frame} 设置镜头源点 x轴${x},y轴${y},z轴${z}
+native DzFrameSetModelCameraSource takes integer model_frame, real x, real y, real z returns nothing
+
+// 界面 - ui模型 - 设置场景内镜头目标点
+// ui模型控件${model_frame}设置镜头目标点 x轴${x},y轴${y},z轴${z}
+native DzFrameSetModelCameraTarget takes integer model_frame, real x, real y, real z returns nothing
+
+// 界面 - ui模型 - 设置缩放大小
+// ui模型控件${model_frame} 设置 缩放${size}
+native DzFrameSetModelSize takes integer model_frame, real size returns nothing
+
+// 界面 - ui模型 - 获取缩放大小
+// 获取ui模型控件${model_frame}的缩放大小
+native DzFrameGetModelSize takes integer model_frame returns real
+
+// 界面 - ui模型 - 设置场景内的坐标(X Y Z)
+// ui模型控件${model_frame} 设置 X轴${x}, Y轴${y}, Z轴${z}
+native DzFrameSetModelPosition takes integer model_frame, real x, real y, real z returns nothing
+
+// 界面 - ui模型 - 设置场景内的坐标X轴
+// ui模型控件${model_frame} 设置 X轴${x}
+native DzFrameSetModelX takes integer model_frame, real x returns nothing
+
+// 界面 - ui模型 - 获取场景内的坐标X轴
+// 获取ui模型控件${model_frame}场景内的坐标X轴
+native DzFrameGetModelX takes integer model_frame returns real
+
+// 界面 - ui模型 - 设置场景内的坐标Y轴
+// ui模型控件${model_frame} 设置 Y轴${y}
+native DzFrameSetModelY takes integer model_frame, real y returns nothing
+
+// 界面 - ui模型 - 获取场景内的坐标Y轴
+// 获取ui模型控件${model_frame}场景内的坐标Y轴
+native DzFrameGetModelY takes integer model_frame returns real
+
+// 界面 - ui模型 - 设置场景内的坐标Z轴
+// ui模型控件${model_frame} 设置 Z轴${z}
+native DzFrameSetModelZ takes integer model_frame, real z returns nothing
+
+// 界面 - ui模型 - 获取场景内的坐标Z轴
+// 获取ui模型控件${model_frame}场景内的坐标Z轴
+native DzFrameGetModelZ takes integer model_frame returns real
+
+// 界面 - ui模型 - 设置动画播放速度
+// ui模型控件${model_frame} 设置 动画播放速度${speed}
+native DzFrameSetModelSpeed takes integer model_frame, real speed returns nothing
+
+// 界面 - ui模型 - 获取动画播放速度
+// 获取ui模型控件${model_frame}场景内的动画播放速度
+native DzFrameGetModelSpeed takes integer model_frame returns real
+
+// 界面 - ui模型 - 设置矩阵缩放
+// ui模型控件${model_frame} 设置 矩阵缩放 (X轴${x}, Y轴${y}, Z轴${z})
+native DzFrameSetModelScale takes integer model_frame, real x, real y, real z returns nothing
+
+// 界面 - ui模型 - 设置矩阵重置
+// ui模型控件${model_frame} 设置矩阵重置
+native DzFrameSetModelMatReset takes integer model_frame returns nothing
+
+// 界面 - ui模型 - 设置矩阵旋转X轴
+// ui模型控件${model_frame} 设置矩阵旋转X轴${x}
+native DzFrameSetModelRotateX takes integer model_frame, real x returns nothing
+
+// 界面 - ui模型 - 设置矩阵旋转Y轴
+// ui模型控件${model_frame} 设置矩阵旋转Y轴${y}
+native DzFrameSetModelRotateY takes integer model_frame, real y returns nothing
+
+// 界面 - ui模型 - 设置矩阵旋转Z轴
+// ui模型控件${model_frame} 设置矩阵旋转Z轴${z}
+native DzFrameSetModelRotateZ takes integer model_frame, real z returns nothing
+
+// 界面 - ui模型 - 设置模型颜色
+// ui模型控件${model_frame} 设置模型颜色${color}
+native DzFrameSetModelColor takes integer model_frame, integer color returns nothing
+
+// 界面 - ui模型 - 获取颜色
+// 获取ui模型控件 ${model_frame} 的颜色
+native DzFrameGetModelColor takes integer model_frame returns integer
+
+// 界面 - ui模型 - 替换模型id贴图
+// ui模型控件${model_frame} 设置贴图路径${texture_file}, 指定id${replace_texutre_id}
+native DzFrameSetModelTexture takes integer model_frame, string texture_file, integer replace_texutre_id returns nothing
+
+// 界面 - ui模型 - 设置粒子2缩放大小
+// ui模型控件${model_frame} 设置粒子2缩放大小${scale}
+native DzFrameSetModelParticle2Size takes integer model_frame, real scale returns nothing
+
+// 界面 - 获取游戏外界面底层
+// 获取游戏外界面底层
+native DzGetGlueUI takes nothing returns integer
+
+// 界面 - 获取鼠标控件
+// 获取鼠标控件
+native DzFrameGetMouse takes nothing returns integer
+
+// 界面 - 获取控件绑定的整数
+// 获取控件${frame}绑定的整数
+native DzFrameGetContext takes integer frame returns integer
+
+// 界面 - 获取控件的全局名字
+// 获取控件${frame}的全局名字
+native DzFrameGetName takes integer frame returns string
+
+// 界面 - 设置控件全局名字跟绑定整数
+// 设置控件${frame} 全局名字${name} 绑定整数${context}
+native DzFrameSetNameContext takes integer frame, string name, integer context returns nothing
+
+// 界面 - 设置文本控件字间距
+// 设置文本控件${text_frame} 设置字间距${spacing}
+native DzFrameSetTextFontSpacing takes integer text_frame, real spacing returns nothing
+
+// 界面 - 获取技能/物品按钮的冷却模型控件
+// 获取技能/物品按钮${cmd_btn}的冷却模型控件
+native KKCommandGetCooldownModel takes integer cmd_btn returns integer
+
+// 界面 - 设置技能/物品按钮的冷却模型缩放大小
+// 设置技能/物品按钮${cmd_btn}的冷却模型缩放大小${size}
+native KKCommandSetCooldownModelSize takes integer cmd_btn, real size returns nothing
+
+// 界面 - 设置技能/物品按钮的冷却模型缩放指定宽高比例
+// 设置技能/物品按钮${cmd_btn}的冷却模型缩放宽比例${width}, 高比例${height}
+native KKCommandSetCooldownModelSize2 takes integer cmd_btn, real width, real height returns nothing
+
+// 物品 - 玩家当前选择的物品(同步)
+// 获取玩家${p}当前选择的物品(同步)
+native DzGetPlayerLastSelectedItem takes player p returns item
+
+// 获取当前缓存模型的数量
+// 获取当前缓存模型的数量
+native DzGetCacheModelCount takes nothing returns integer
+
+// 游戏 - 限制最高帧数
+// 限制最高帧数 为${max_fps}
+native DzSetMaxFps takes integer max_fps returns nothing
+
+
+
 #endif
 
