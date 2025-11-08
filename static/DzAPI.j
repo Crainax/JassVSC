@@ -2734,6 +2734,204 @@ native DzGetCacheModelCount takes nothing returns integer
 // 跟解锁上限不同,只能60之内, 例如30帧用来模拟卡顿的游戏环境
 native DzSetMaxFps takes integer max_fps returns nothing
 
+// 界面 - 允许查看指定单位技能
+// 允许查看指定单位${u}的技能, 是否开启${is_enable}
+// @param u 单位
+// @param is_enable 是否开启
+// 开启后可以看友军或敌军单位的技能
+native DzEnableDrawSkillPanel takes unit u, boolean is_enable returns nothing
+
+// 界面 - 允许查看指定玩家单位技能
+// 允许查看指定玩家${p}的单位技能, 是否开启${is_enable}
+// @param p 玩家
+// @param is_enable 是否开启
+// 开启后可以看友军或敌军单位的技能
+native DzEnableDrawSkillPanelByPlayer takes player p, boolean is_enable returns nothing
+
+// 特效 - 设置特效迷雾可见
+// 设置特效${eff}在迷雾里可见${is_visible}
+// @param eff 特效
+// @param is_visible 是否可见
+// 只能对创建到地面的特效使用。迷雾即非视野 非黑色阴影的区域
+native DzSetEffectFogVisible takes effect eff, boolean is_visible returns nothing
+
+// 特效 - 设置特效黑色阴影可见
+// 设置特效${eff}在黑色阴影里可见${is_visible}
+// @param eff 特效
+// @param is_visible 是否可见
+// 只能对创建到地面的特效使用。黑色阴影即未解锁的区域
+native DzSetEffectMaskVisible takes effect eff, boolean is_visible returns nothing
+
+// 世界坐标 - 绑定Frame到单位实时位置
+// 绑定Frame${frame}到单位${u}的实时位置, 偏移世界坐标(X${world_x}, Y${world_y}, Z${world_z}) 偏移屏幕坐标(X${screen_x}, Y${screen_y}) 战争迷雾可见${fog_visible} 有单位视野可见${unit_visible} 单位死亡可见${dead_visible}
+// @param frame 控件
+// @param u 单位
+// @param world_x 世界坐标X偏移
+// @param world_y 世界坐标Y偏移
+// @param world_z 世界坐标Z偏移
+// @param screen_x 屏幕坐标X偏移
+// @param screen_y 屏幕坐标Y偏移
+// @param fog_visible 战争迷雾可见
+// @param unit_visible 有单位视野可见
+// @param dead_visible 单位死亡可见
+// 绑定后会清除控件锚点, 每帧设置控件中心坐标为 世界坐标+偏移 转屏幕坐标 +偏移后的位置, 超出屏幕，或者不满足条件的情况下会对控件隐藏, 在删除单位，或者删除控件前解除绑定。
+native DzFrameBindWidget takes integer frame, widget u, real world_x, real world_y, real world_z, real screen_x, real screen_y, boolean fog_visible, boolean unit_visible, boolean dead_visible returns nothing
+
+// 世界坐标 - 绑定Frame到世界坐标实时位置
+// 绑定Frame${frame}世界坐标(X${world_x}, Y${world_y}, Z${world_z}) 偏移屏幕坐标(X${screen_x}, Y${screen_y}) 战争迷雾可见${fog_visible}
+// @param frame 控件
+// @param world_x 世界坐标X
+// @param world_y 世界坐标Y
+// @param world_z 世界坐标Z
+// @param screen_x 屏幕坐标X偏移
+// @param screen_y 屏幕坐标Y偏移
+// @param fog_visible 战争迷雾可见
+// 绑定后会清除控件锚点, 每帧设置控件中心坐标为 世界坐标 转屏幕坐标 +偏移后的位置, 超出屏幕，或者不满足条件的情况下会对控件隐藏, 在删除控件前解除绑定。
+native DzFrameBindWorldPos takes integer frame, real world_x, real world_y, real world_z, real screen_x, real screen_y, boolean fog_visible returns nothing
+
+// 世界坐标 - 解除Frame的绑定
+// 解除Frame${frame}的绑定
+// @param frame 控件
+// 解除绑定后不会再刷新位置跟改变隐藏显示
+native DzFrameUnBind takes integer frame returns nothing
+
+// 世界坐标 - 绑定Frame到物品实时位置
+// 绑定Frame${frame}到物品${u}的实时位置, 偏移世界坐标(X${world_x}, Y${world_y}, Z${world_z}) 偏移屏幕坐标(X${screen_x}, Y${screen_y}) 战争迷雾可见${fog_visible} 物品隐藏时一起隐藏${item_visible}
+// @param frame 控件
+// @param u 物品
+// @param world_x 世界坐标X偏移
+// @param world_y 世界坐标Y偏移
+// @param world_z 世界坐标Z偏移
+// @param screen_x 屏幕坐标X偏移
+// @param screen_y 屏幕坐标Y偏移
+// @param fog_visible 战争迷雾可见
+// @param item_visible 物品隐藏时一起隐藏
+// 绑定后会清除控件锚点, 每帧设置控件中心坐标为 世界坐标+偏移 转屏幕坐标 +偏移后的位置, 超出屏幕，或者不满足条件的情况下会对控件隐藏, 在删除物品，或者删除控件前解除绑定。
+function KKFrameBindItem takes integer frame, widget u, real world_x, real world_y, real world_z, real screen_x, real screen_y, boolean fog_visible, boolean item_visible returns nothing
+
+// 界面 - 屏蔽所有单位指向UI跟血条
+// 屏蔽所有单位指向UI跟血条
+// 屏蔽会保留选择圈，开局调用一次后即可屏蔽所有单位的，以便重写血条
+native DzDisableUnitPreselectUi takes nothing returns nothing
+
+// 界面 - 屏蔽所有物品指向UI
+// 屏蔽所有物品指向UI
+// 屏蔽会保留选择圈，开局调用一次后即可屏蔽所有物品的，以便写物品地面UI
+native DzDisableItemPreselectUi takes nothing returns nothing
+
+// 界面 - 获取下层Frame
+// 获取下层Frame
+// @return 下层Frame
+native DzFrameGetLowerLevelFrame takes nothing returns integer
+
+// 界面 - 设置复选框勾选状态
+// 设置复选框${check_box_frame}的勾选状态为${checked}
+// @param check_box_frame 复选框
+// @param checked 勾选状态
+// 只能对CHECKBOX、GLUECHECKBOX 类型使用
+native DzFrameSetCheckBoxState takes integer check_box_frame, boolean checked returns nothing
+
+// 界面 - 获取复选框勾选状态
+// 获取复选框${check_box_frame}的勾选状态
+// @param check_box_frame 复选框
+// @return 勾选状态
+native DzFrameGetCheckBoxState takes integer check_box_frame returns boolean
+
+// 界面 - 判断Frame是否获得焦点
+// 判断Frame${frame}是否获得焦点
+// @param frame 控件
+// @return 是否获得焦点
+native DzFrameIsFocus takes integer frame returns boolean
+
+// 界面 - 设置编辑框激活状态
+// 设置编辑框${frame}激活状态${is_active}
+// @param frame 编辑框
+// @param is_active 激活状态
+// true可以主动调用激活焦点的同时激活输入法, false关闭输入法, 只能对EDITBOX、GLUEEDITBOX类型使用
+native DzFrameSetEditBoxActive takes integer frame, boolean is_active returns nothing
+
+// 界面 - 设置编辑框禁用输入法
+// 设置编辑框${frame}是否禁用输入法${is_disable}
+// @param frame 编辑框
+// @param is_disable 是否禁用输入法
+// true禁用输入法, 禁用后只能输入英文字母跟数字, 不禁用可以打中文, 只能对EDITBOX、GLUEEDITBOX类型使用
+native DzFrameSetEditBoxDisableIme takes integer frame, boolean is_disable returns nothing
+
+// 硬件 - 判断是否窗口模式
+// 判断是否窗口模式
+// @return 是否窗口模式
+native DzIsWindowMode takes nothing returns boolean
+
+// 硬件 - 判断窗口是否激活
+// 判断窗口是否激活
+// @return 窗口是否激活
+native DzIsWindowActive takes nothing returns boolean
+
+// 硬件 - 设置游戏窗口位置
+// 设置游戏窗口位置 屏幕X轴${x}, 屏幕Y轴${y}
+// @param x 屏幕X轴坐标
+// @param y 屏幕Y轴坐标
+// 只有窗口模式才有效，屏幕XY轴是指用户屏幕 0,0 为右上角
+native DzWindowSetPoint takes integer x, integer y returns nothing
+
+// 硬件 - 设置游戏窗口大小
+// 设置游戏窗口大小 屏幕宽度${width}, 高度${height}
+// @param width 窗口宽度
+// @param height 窗口高度
+// 只有窗口模式才有效, 改变大小之后 可以通过屏幕大小 设置窗口位置来居中
+native DzWindowSetSize takes integer width, integer height returns nothing
+
+// 硬件 - 获取屏幕宽度
+// 获取屏幕宽度
+// @return 屏幕宽度
+native DzGetSystemMetricsWidth takes nothing returns integer
+
+// 硬件 - 获取屏幕高度
+// 获取屏幕高度
+// @return 屏幕高度
+native DzGetSystemMetricsHeight takes nothing returns integer
+
+// 装饰物 - 获取地形装饰物数量
+// 获取地形装饰物数量
+// @return 装饰物数量
+native DzGetDoodadsCount takes nothing returns integer
+
+// 装饰物 - 设置地形装饰物矩阵缩放
+// 装饰物${doodads_index}设置 X轴${x}, Y轴${y}, Z轴${z}缩放
+// @param doodads_index 装饰物索引
+// @param x X轴缩放
+// @param y Y轴缩放
+// @param z Z轴缩放
+// 每次调用是乘法计算， 需要填大于0的数值，填0会直接导致之后的计算失效
+native DzSetDoodadsMatScale takes integer doodads_index, real x, real y, real z returns nothing
+
+// 装饰物 - 设置地形装饰物矩阵旋转X轴
+// 装饰物${doodads_index}设置 X轴${x}旋转
+// @param doodads_index 装饰物索引
+// @param x X轴旋转角度
+// 每次调用是乘法计算
+native DzSetDoodadsMatRotateX takes integer doodads_index, real x returns nothing
+
+// 装饰物 - 设置地形装饰物矩阵旋转Y轴
+// 装饰物${doodads_index}设置 Y轴${y}旋转
+// @param doodads_index 装饰物索引
+// @param y Y轴旋转角度
+// 每次调用是乘法计算
+native DzSetDoodadsMatRotateY takes integer doodads_index, real y returns nothing
+
+// 装饰物 - 设置地形装饰物矩阵旋转Z轴
+// 装饰物${doodads_index}设置 Z轴${z}旋转
+// @param doodads_index 装饰物索引
+// @param z Z轴旋转角度
+// 每次调用是乘法计算
+native DzSetDoodadsMatRotateZ takes integer doodads_index, real z returns nothing
+
+// 装饰物 - 设置地形装饰物矩阵重置
+// 装饰物${doodads_index}矩阵重置
+// @param doodads_index 装饰物索引
+// 将缩放重置为1，将旋转角度重置为0
+native DzSetDoodadsMatReset takes integer doodads_index returns nothing
+
 
 #endif
 
