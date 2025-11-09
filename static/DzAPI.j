@@ -2808,6 +2808,9 @@ native DzFrameUnBind takes integer frame returns nothing
 // @param item_visible 物品隐藏时一起隐藏
 // 绑定后会清除控件锚点, 每帧设置控件中心坐标为 世界坐标+偏移 转屏幕坐标 +偏移后的位置, 超出屏幕，或者不满足条件的情况下会对控件隐藏, 在删除物品，或者删除控件前解除绑定。
 function KKFrameBindItem takes integer frame, widget u, real world_x, real world_y, real world_z, real screen_x, real screen_y, boolean fog_visible, boolean item_visible returns nothing
+	call DzFrameBindWidget(frame, u, world_x, world_y, world_z, screen_x, screen_y, fog_visible, item_visible, true)
+	set u=null
+endfunction
 
 // 界面 - 屏蔽所有单位指向UI跟血条
 // 屏蔽所有单位指向UI跟血条
