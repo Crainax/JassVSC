@@ -2935,6 +2935,175 @@ native DzSetDoodadsMatRotateZ takes integer doodads_index, real z returns nothin
 // 将缩放重置为1，将旋转角度重置为0
 native DzSetDoodadsMatReset takes integer doodads_index returns nothing
 
+// 平台 - 判断玩家当前地图在游戏大厅置顶状态[new]
+// 获取${whichPlayer}当前地图在游戏大厅置顶状态
+// @param whichPlayer 玩家
+// 玩家在游戏大厅首页置顶该地图后返回true
+function KKApiIsPinned takes player whichPlayer returns boolean
+	return RequestExtraBooleanData(117, whichPlayer, null, null, false, 0, 0, 0)
+endfunction
+
+// 技能 - 设置技能图标
+// 设置单位${u}当前拥有的技能${abil_id}的图标为${art_path}
+// @param u 单位
+// @param abil_id 技能代码
+// @param art_path 图标路径
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityArt takes unit u, integer abil_id, string art_path returns boolean
+// 技能 - 获取技能图标
+// 获取单位${u}当前的技能${abil_id}的技能图标
+// @param u 单位
+// @param abil_id 技能代码
+// 返回当前技能图标
+native DzGetUnitAbilityArt takes unit u, integer abil_id returns string
+// 技能 - 设置技能提示
+// 设置单位${u}当前拥有的技能${abil_id}的提示为${tip}
+// @param u 单位
+// @param abil_id 技能代码
+// @param tip 提示文本
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityTip takes unit u, integer abil_id, string tip returns boolean
+// 技能 - 获取技能提示
+// 获取单位${u}当前的技能${abil_id}的技能提示
+// @param u 单位
+// @param abil_id 技能代码
+// 返回当前技能提示tip
+native DzGetUnitAbilityTip takes unit u, integer abil_id returns string
+// 技能 - 设置技能提示扩展
+// 设置单位${u}当前拥有的技能${abil_id}的提示扩展为${ubertip}
+// @param u 单位
+// @param abil_id 技能代码
+// @param ubertip 提示扩展文本
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityUberTip takes unit u, integer abil_id, string ubertip returns boolean
+// 技能 - 获取技能提示扩展
+// 获取单位${u}当前的技能${abil_id}的技能提示扩展
+// @param u 单位
+// @param abil_id 技能代码
+// 返回当前技能提示扩展ubertip
+native DzGetUnitAbilityUberTip takes unit u, integer abil_id returns string
+// 技能 - 设置刷新数据
+// 设置单位${u}当前拥有的技能${abil_id}数据刷新
+// @param u 单位
+// @param abil_id 技能代码
+// 不能异步调用。用来替代升级降级的刷新数据用的, 1级技能也能用。
+native DzSetUnitAbilityUpdate takes unit u, integer abil_id returns boolean
+// 技能 - 设置技能命令ID
+// 设置单位${u}当前拥有的技能${abil_id}的命令ID${order_id}
+// @param u 单位
+// @param abil_id 技能代码
+// @param order_id 命令ID
+// 可以动态修改大部分技能的命令ID，让同类型技能不冲突。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityOrderId takes unit u, integer abil_id, integer order_id returns boolean
+// 技能 - 获取技能命令ID
+// 获取单位${u}当前的技能${abil_id}的当前的命令ID
+// @param u 单位
+// @param abil_id 技能代码
+// 返回当前使用的命令ID
+native DzGetUnitAbilityOrderId takes unit u, integer abil_id returns integer
+// 技能 - 设置魔法书的技能列表
+// 设置单位${u}当前拥有的魔法书技能${abil_id}的技能列表${abil_list}是否保留cd${save_cooldown}
+// @param u 单位
+// @param abil_id 技能代码
+// @param abil_list 技能列表
+// @param save_cooldown 是否保留冷却时间
+// 保留cd的话， 同ID技能在修改列表后才能保持cd， 列表超过12个无效, 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除
+native DzSetUnitAbilitySpellBookList takes unit u, integer abil_id, string abil_list, boolean save_cooldown returns boolean
+// 技能 - 获取魔法书的技能列表
+// 获取单位${u}的魔法书技能${abil_id}的技能列表
+// @param u 单位
+// @param abil_id 技能代码
+// 返回当前魔法书的技能列表
+native DzGetUnitAbilitySpellBookList takes unit u, integer abil_id returns string
+// 技能 - 设置技能投射物模型
+// 设置单位${u}当前拥有的技能${abil_id}的投射物模型${missile_art}
+// @param u 单位
+// @param abil_id 技能代码
+// @param missile_art 投射物模型路径
+// 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityMissileArt takes unit u, integer abil_id, string missile_art returns boolean
+// 技能 - 获取技能投射物模型
+// 获取单位${u}的技能${abil_id}的投射物模型
+// @param u 单位
+// @param abil_id 技能代码
+// 返回技能投射物的路径
+native DzGetUnitAbilityMissileArt takes unit u, integer abil_id returns string
+// 技能 - 设置技能投射物速度
+// 设置单位${u}当前拥有的技能${abil_id}的投射物速度${missile_speed}
+// @param u 单位
+// @param abil_id 技能代码
+// @param missile_speed 投射物速度
+// 弹道飞行速度。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityMissileSpeed takes unit u, integer abil_id, real missile_speed returns boolean
+// 技能 - 获取技能投射物速度
+// 获取单位${u}的技能${abil_id}的投射物速度
+// @param u 单位
+// @param abil_id 技能代码
+// 返回技能投射物的速度
+native DzGetUnitAbilityMissileSpeed takes unit u, integer abil_id returns real
+// 技能 - 设置技能投射物弧度
+// 设置单位${u}当前拥有的技能${abil_id}的投射物弧度${missile_arc}
+// @param u 单位
+// @param abil_id 技能代码
+// @param missile_arc 投射物弧度
+// 抛物线的弧度。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityMissileArc takes unit u, integer abil_id, real missile_arc returns boolean
+// 技能 - 获取技能投射物弧度
+// 获取单位${u}的技能${abil_id}的投射物弧度
+// @param u 单位
+// @param abil_id 技能代码
+// 返回技能投射物的弧度
+native DzGetUnitAbilityMissileArc takes unit u, integer abil_id returns real
+// 技能 - 设置技能投射物允许自导
+// 设置单位${u}当前拥有的技能${abil_id}的投射物允许自导${missile_homing}
+// @param u 单位
+// @param abil_id 技能代码
+// @param missile_homing 是否允许自导
+// true相当于发射投射物后，目标单位移动了会持续追踪的意思, false则不追踪会砸到地面。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityMissileHoming takes unit u, integer abil_id, boolean missile_homing returns boolean
+// 技能 - 获取技能投射物允许自导
+// 获取单位${u}的技能${abil_id}的投射物允许自导
+// @param u 单位
+// @param abil_id 技能代码
+// 返回技能投射物是否允许自导
+native DzGetUnitAbilityMissileHoming takes unit u, integer abil_id returns boolean
+// 技能 - 设置技能投射物数量 (弹幕攻击)
+// 设置单位${u}当前拥有的弹幕攻击技能${abil_id}的投射物数量${missile_count}
+// @param u 单位
+// @param abil_id 技能代码
+// @param missile_count 投射物数量
+// 只对Aroc弹幕攻击技能生效, 修改DataC也能改变数量，但此函数数量更精准。 单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityMissileCount takes unit u, integer abil_id, integer missile_count returns boolean
+// 技能 - 获取技能投射物数量 (弹幕攻击)
+// 获取单位${u}的弹幕攻击技能${abil_id}的投射物数量
+// @param u 单位
+// @param abil_id 技能代码
+// 返回Aroc弹幕攻击的技能投射物数量
+native DzGetUnitAbilityMissileCount takes unit u, integer abil_id returns integer
+// 技能 - 设置技能投射物伤害 (弹幕攻击)
+// 设置单位${u}当前拥有的弹幕攻击技能${abil_id}的投射物单目标伤害${damage}多目标伤害限制${max_damage}攻击类型${atktp}伤害类型${dmgtp}
+// @param u 单位
+// @param abil_id 技能代码
+// @param damage 单目标伤害
+// @param max_damage 多目标伤害限制
+// @param atktp 攻击类型
+// @param dmgtp 伤害类型
+// 只对Aroc弹幕攻击技能生效, damage等同修正原物编DataA无效项, max_damage等同修改原物编DataB。该伤害对主目标无效，只对弹幕分裂目标有效。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+native DzSetUnitAbilityMissileDamage takes unit u, integer abil_id, real damage, real max_damage, attacktype atktp, damagetype dmgtp returns boolean
+// 技能 - 获取技能投射物伤害 (弹幕攻击)
+// 获取单位${u}的弹幕攻击技能${abil_id}的投射物伤害
+// @param u 单位
+// @param abil_id 技能代码
+// 返回Aroc弹幕攻击的技能投射物伤害
+native DzGetUnitAbilityMissileDamage takes unit u, integer abil_id returns real
+// 技能 - 获取技能投射物最大伤害 (弹幕攻击)
+// 获取单位${u}的弹幕攻击技能${abil_id}的投射物最大伤害
+// @param u 单位
+// @param abil_id 技能代码
+// 返回Aroc弹幕攻击的技能投射物最大伤害
+native DzGetUnitAbilityMissileMaxDamage takes unit u, integer abil_id returns real
+
+
 
 #endif
 
