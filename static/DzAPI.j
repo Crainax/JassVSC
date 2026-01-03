@@ -3103,6 +3103,191 @@ native DzGetUnitAbilityMissileDamage takes unit u, integer abil_id returns real
 // 返回Aroc弹幕攻击的技能投射物最大伤害
 native DzGetUnitAbilityMissileMaxDamage takes unit u, integer abil_id returns real
 
+// 游戏 - 模拟按键 (窗口消息)
+// 让玩家${p}发送窗口消息模拟键盘${key_code}进行${is_down}的消息
+// @param p 玩家
+// @param key_code 按键代码
+// @param is_down 按键状态(按下/抬起)
+// 会触发响应同步事件, 发送模拟按键窗口消息给魔兽, 相当于SendMessage, 点击记得释放, 不然可能会键盘按键会在下一次失效, 聊天框显示时不执行
+    native DzSendKeyboard takes player p, integer key_code, integer is_down returns nothing
+// 游戏 - 模拟按键 (游戏UI消息)
+// 让玩家${p}发送游戏UI消息模拟键盘${key_code}进行${is_down}的消息
+// @param p 玩家
+// @param key_code 按键代码
+// @param is_down 按键状态(按下/抬起)
+// 发送UI按键消息给魔兽GameUI, 不会触发响应同步事件, 相当于自带ForceUiKey函数支持更多按键的版本, 某些特殊键无效。
+    native DzForceUiKeyboard takes player p, integer key_code, integer is_down returns nothing
+// 游戏 - 屏蔽按键 (窗口消息)
+// 让玩家${p}屏蔽窗口键盘${key_code}的消息
+// @param p 玩家
+// @param key_code 按键代码
+// 会屏蔽硬件同步事件, 聊天框显示时不屏蔽
+    native DzDisableWindowKeyboard takes player p, integer key_code returns nothing
+// 游戏 - 屏蔽按键 (游戏UI消息)
+// 让玩家${p}屏蔽游戏UI按键${key_code}的消息
+// @param p 玩家
+// @param key_code 按键代码
+// 在屏蔽游戏UI的按键消息, 某些特殊键无效。 dz的硬件同步事件依旧会执行
+    native DzDisableGameUIKeyboard takes player p, integer key_code returns nothing
+// 单位 - 是否可以被放置到坐标
+// 判断单位${obj}是否可以放置到该坐标(${x}, ${y})
+// @param obj 单位或物品
+// @param x X轴坐标
+// @param y Y轴坐标
+// 判断地面通行条件以及碰撞范围
+    native DzUnitCanPlaceAround takes widget obj, real x, real y returns boolean
+
+// 单位 - 是否可以被放置到点
+// 判断单位${obj}是否可以放置到该点${loc}
+// @param obj 单位或物品
+// @param loc 点
+// 判断地面通行条件以及碰撞范围
+    function KKUnitCanPlaceAroundLoc takes widget obj, location loc returns boolean
+        return DzUnitCanPlaceAround(obj, GetLocationX(loc), GetLocationY(loc))
+    endfunction
+
+// 物品 - 是否可以被放置到坐标
+// 判断物品${obj}是否可以放置到该坐标(${x}, ${y})
+// @param obj 物品
+// @param x X轴坐标
+// @param y Y轴坐标
+// 判断地面通行条件以及碰撞范围
+    function kkUnitCanPlaceAroundItem takes widget obj, real x, real y returns boolean
+        return DzUnitCanPlaceAround(obj, x, y)
+    endfunction
+
+// 物品 - 是否可以被放置到点
+// 判断物品${obj}是否可以放置到该点${loc}
+// @param obj 物品
+// @param loc 点
+// 判断地面通行条件以及碰撞范围
+    function KKUnitCanPlaceAroundLocItem takes widget obj, location loc returns boolean
+        return DzUnitCanPlaceAround(obj, GetLocationX(loc), GetLocationY(loc))
+    endfunction
+
+// 坐标 - 是否可以能够通过物体
+// 判断地形坐标(${x}, ${y})是否可以能够通过碰撞范围${collision_size}碰撞类型${collision_type}的物体
+// @param x X轴坐标
+// @param y Y轴坐标
+// @param collision_size 碰撞范围
+// @param collision_type 碰撞类型
+// 根据碰撞范围碰撞类型判断地面通行条件
+    native DzPositionCanPlaceAround takes real x, real y, real collision_size, integer collision_type returns boolean
+
+// 点 - 是否可以能够通过物体
+// 判断地形点${loc}是否可以能够通过碰撞范围${collision_size}碰撞类型${collision_type}的物体
+// @param loc 点
+// @param collision_size 碰撞范围
+// @param collision_type 碰撞类型
+// 根据碰撞范围碰撞类型判断地面通行条件
+    function KKPositionCanPlaceAroundLoc takes location loc, real collision_size, integer collision_type returns boolean
+        return DzPositionCanPlaceAround(GetLocationX(loc), GetLocationY(loc), collision_size, collision_type)
+    endfunction
+
+// 坐标 - 获取地形Z轴高度
+// 获取地形坐标(${x}, ${y})的Z轴高度
+// @param x X轴坐标
+// @param y Y轴坐标
+// 跟GetLocationZ获取的结果一致, 地形z轴在某些特殊情况下可能会是异步的，请小心使用。
+    native DzGetTerrainZ takes real x, real y returns real
+// 单位 - 获取单位Z轴高度
+// 获取单位${u}地形Z轴高度
+// @param u 单位
+// 相当于飞行高度+GetLocationZ, 地形z轴在某些特殊情况下可能会是异步的，请小心使用。
+    native DzGetUnitZ takes unit u returns real
+// 单位 - 获取单位头顶高度偏移
+// 获取单位${u}头顶高度偏移
+// @param u 单位或物品
+// 加上单位z轴高度相当于血条高度, 头顶高度偏移,因本地模型可能不一致结果可能是异步的,请小心使用
+    native DzGetUnitOverheadOffset takes widget u returns real
+
+// 界面 - ui模型 - 设置宽屏补丁
+// 设置ui模型控件${frame}强制开启或关闭${is_enable}宽屏补丁
+// @param frame ui模型控件
+// @param is_enable 是否开启
+// 只能是ui模型控件, true时强制指定ui模型开启宽屏补丁, false时强制指定ui模型关闭宽屏补丁。
+    native DzFrameSetModelEnableWideScreen takes integer frame, boolean is_enable returns nothing
+
+// 技能 - 设置技能启用
+// 设置单位${u}当前拥有的技能${abil_id}的启用状态
+// @param u 单位
+// @param abil_id 技能代码
+// 内部有累计次数，只有次数为小于等于0的时候才会真的启用。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+    native DzSetUnitAbilityEnable takes unit u, integer abil_id returns boolean
+// 技能 - 设置技能禁用
+// 设置单位${u}当前拥有的技能${abil_id}禁用状态
+// @param u 单位
+// @param abil_id 技能代码
+// 内部有累计次数，只有次数大于0的时候才会真的禁用。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+    native DzSetUnitAbilityDisable takes unit u, integer abil_id returns boolean
+// 技能 - 获取当前是否禁用状态
+// 获取单位${u}的技能${abil_id}当前是否禁用状态
+// @param u 单位
+// @param abil_id 技能代码
+// 默被禁用后返回true
+    native DzGetUnitAbilityIsDisabled takes unit u, integer abil_id returns boolean
+// 技能 - 获取当前禁用的内部计数
+// 获取单位${u}的技能${abil_id}当前禁用的内部计数
+// @param u 单位
+// @param abil_id 技能代码
+// 大于0是禁用状态，否则是开启状态
+    native DzGetUnitAbilityDisabledCount takes unit u, integer abil_id returns integer
+// 技能 - 设置技能科技条件达成
+// 设置单位${u}当前拥有的技能${abil_id}的科技条件是否${reach}达成
+// @param u 单位
+// @param abil_id 技能代码
+// @param reach 是否达成
+// 支持大部分技能、魔法书内技能、收费技能等。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+    native DzSetUnitAbilityTechReach takes unit u, integer abil_id, boolean reach returns boolean
+// 技能 - 获取当前科技条件是否达成
+// 获取单位${u}的技能${abil_id}当前科技条件是否达成
+// @param u 单位
+// @param abil_id 技能代码
+// true是已经解锁，false是未解锁科技
+    native DzGetUnitAbilityTechReach takes unit u, integer abil_id returns boolean
+// 技能 - 设置技能科技条件文本
+// 设置单位${u}当前拥有的技能${abil_id}的科技条件的文本为${tip}
+// @param u 单位
+// @param abil_id 技能代码
+// @param tip 提示文本
+// 只有当科技未达成时才会显示,支持大部分技能、魔法书内技能、收费技能等。单位的独立修改,不会影响其他单位身上的技能;删除技能后改动即清除, 如无效果刷新技能数据即可
+    native DzSetUnitAbilityTechReachTip takes unit u, integer abil_id, string tip returns boolean
+
+// 建造 - 异步获取当前正在建造的技能Id
+// 异步获取当前正在建造的技能Id
+// 默认返回0,准备建造状态下返回技能id, 注意该函数返回值是异步的，请谨慎使用。
+    native DzAsyncGetCurrentBuildingAbilityId takes nothing returns integer
+// 建造 - 异步获取当前正在建造的单位Id
+// 异步获取当前正在建造的单位Id
+// 默认返回0,准备建造状态下返回单位id, 注意该函数返回值是异步的，请谨慎使用。
+    native DzAsyncGetCurrentBuildingUnitId takes nothing returns integer
+// 界面 - 解锁右下角区域鼠标焦点限制
+// 解锁右下角区域鼠标焦点限制是否解锁${is_unlock}
+// @param is_unlock 是否解锁
+// 解锁后右下角技能栏附近的Frame进入离开事件跟焦点可以生效。开局调用一次即可
+    native DzFrameUnlockMouseRectLimit takes boolean is_unlock returns nothing
+// 界面 - 判断SimpleFrame类型控件是否显示
+// 判断SimpleFrame类型控件${simple_frame}是否显示
+// @param simple_frame SimpleFrame控件
+// 支持SimpleFrame、SimpleTexture、SimpleFontString及其扩展控件, 以及判断聊天框控件是否显示
+    native KKSimpleFrameIsVisible takes integer simple_frame returns boolean
+// 界面 - 原生 - 获取聊天输入栏控件
+// 获取聊天输入栏控件
+// 返回回车键按下时打开的聊天输入框控件。
+    native DzFrameGetChatEditBar takes nothing returns integer
+
+// 玩家 - 获取本地玩家的聊天频道
+// 获取本地玩家的聊天频道
+// 返回值是异步的, 用在发生聊天消息时获取玩家当前的聊天频道
+    native DzGetLocalChatRecipient takes nothing returns integer
+// 玩家 - 发送聊天消息(触发同步事件)
+// 玩家${p}发送聊天消息${msg}使用聊天频道${recipient}
+// @param p 玩家
+// @param msg 消息内容
+// @param recipient 聊天频道
+// player在异步事件里可以使用本地玩家, 在同步事件里可以指定玩家, 该函数会进行网络同步, 同步后会响应所有触发器聊天事件, 由于有同步请不要高频率执行。
+    native DzPlayerSendChat takes player p, string msg, integer recipient returns nothing
+
 
 
 #endif
