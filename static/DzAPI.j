@@ -3290,5 +3290,692 @@ native DzGetUnitAbilityMissileMaxDamage takes unit u, integer abil_id returns re
 
 
 
-#endif
+// 游戏 - 禁用攻速限制
+// 禁用攻速限制
+// 极限可以大概每秒 9360, 但是你确定电脑撑得住?
+//注:  该函数正式服目前不可用
+    native DzDisableAttackSpeedLimit takes nothing returns nothing
 
+// 哈希表 - 开启保存空值(逆天设置null)
+// 哈希表是否 ${是否开启} 开启保存空值(逆天设置null)
+// @param is_enable 布尔值
+// 开局调用,开启之后 哈希表、逆天局部变量、逆天自定义值 都可以设置null值。 true开启 false关闭
+    native DzEnableHashtableSetNull takes boolean is_enable returns nothing
+
+// 游戏 - 修复单位命令事件泄漏
+// 修复单位命令事件泄漏
+// 开局调用一次即可，修复注册单位无目标命令事件后 每次发布无目标命令都会产生的内存泄漏。
+    native DzFixUnitEventMemoryLeak takes nothing returns nothing
+
+// 世界坐标 - 为绑定的Frame添加隐藏区域
+// 为绑定的Frame ${frame} 添加隐藏区域( ${左0~0.8}, ${下0~0.6}, ${右0~0.8}, ${上0~0.6} ) 控件大小( ${宽度}, ${高度} )
+// @param frame 整数
+// @param left 实数
+// @param bottom 实数
+// @param right 实数
+// @param top 实数
+// @param width 实数
+// @param height 实数
+// 需要先绑定Frame到世界坐标或者物品单位实时坐标后, 再使用该函数。可以在控件进入区域时隐藏控件。屏幕区域左右0~0.8, 上下0~0.6
+    native DzFrameBindAddHideRect takes integer frame, real left, real bottom, real right, real top, real width, real height returns nothing
+
+// 界面 - 获取控件实际高度
+// 获取控件 ${控件} 实际高度
+// @param frame 整数
+// 自适应文本控件等特殊情况要在改变文字内容后延迟1帧之后才能获取到正确的值
+    native DzFrameGetRealHeight takes integer frame returns real
+
+// 界面 - 获取控件实际宽度
+// 获取控件 ${控件} 实际宽度
+// @param frame 整数
+// 自适应文本控件等特殊情况要在改变文字内容后延迟1帧之后才能获取到正确的值
+    native DzFrameGetRealWidth takes integer frame returns real
+
+// 英雄 - 获取主属性
+// 获取英雄 ${hero} 的主属性 包括加成 ${flag}
+// @param whichUnit 单位
+// @param include_bonus 布尔值
+// 加成指的是绿字
+//注:  该函数正式服目前不可用
+    native DzGetHeroPrimaryAttribute takes unit whichUnit, boolean include_bonus returns integer
+
+// 英雄 - 获取主属性加成
+// 获取英雄${whichUnit}的主属性${attribute}加成值
+// @param whichUnit 单位
+// @param attribute 属性类型
+//注:  该函数正式服目前不可用
+    native DzGetHeroPrimaryAttributePlus takes unit whichUnit, integer attribute returns real
+
+// 英雄 - 获取主属性类型
+// 获取英雄 ${hero} 的主属性类型
+// @param whichUnit 单位
+//注:  该函数正式服目前不可用
+    native DzGetHeroPrimaryAttributeType takes unit whichUnit returns integer
+
+// 物品 - 获取物品的碰撞体积
+// 获取 ${物品} 的碰撞体积
+// @param it 物品
+    native DzGetItemCollisionSize takes item it returns real
+
+// 技能 - 设置技能魔法施放回复(后摇)
+// 获取单位 ${unit} 当前拥有的技能 ${id} 的魔法施放回复(后摇)
+// @param u 单位
+// @param abil_id 整数
+// 即施法后摇;
+//注:  该函数正式服目前不可用
+    native DzGetUnitAbilityBackSwing takes unit u, integer abil_id returns real
+
+// 技能 - 获取技能魔法施放点(前摇)
+// 获取单位 ${unit} 当前拥有的技能 ${id} 的魔法施放点(前摇)
+// @param u 单位
+// @param abil_id 整数
+// 即施法前摇;
+//注:  该函数正式服目前不可用
+    native DzGetUnitAbilityCastPoint takes unit u, integer abil_id returns real
+
+// 技能 - 获取技能魔法施法时间
+// 获取单位 ${unit} 当前拥有的技能 ${id} 的魔法施法时间
+// @param u 单位
+// @param abil_id 整数
+// 开始施法前的准备时间.暗影突袭的此项为伤害间隔.暴风雪和火焰雨的此项为每波间隔;
+//注:  该函数正式服目前不可用
+    native DzGetUnitAbilityCastTime takes unit u, integer abil_id returns real
+
+// 技能 - 获取技能持续时间(普通)
+// 获取单位 ${unit} 当前拥有的技能 ${id} 的持续时间(普通)
+// @param u 单位
+// @param abil_id 整数
+// 普通持续时间;烈焰风暴的此项为燃烧持续时间.变身(恶魔猎手)的此项为完成变身前暂停时间
+//注:  该函数正式服目前不可用
+    native DzGetUnitAbilityDuration takes unit u, integer abil_id returns real
+
+// 技能 - 工程升级 - 获取替换后的技能ID
+// 获取单位 ${unit} 的技能 ${old_id} 工程升级替换后的技能ID
+// @param whichUnit 单位
+// @param old_id 整数
+// 输入旧的id 获取 新的id
+//注:  该函数正式服目前不可用
+    native DzGetUnitAbilityEngineeringUpgradeNewId takes unit whichUnit, integer old_id returns integer
+
+// 技能 - 工程升级 - 获取替换前的技能ID
+// 获取单位 ${unit} 的技能 ${new_id} 工程升级替换前的技能ID
+// @param whichUnit 单位
+// @param new_id 整数
+// 输入新的id 获取 旧的id
+//注:  该函数正式服目前不可用
+    native DzGetUnitAbilityEngineeringUpgradeOldId takes unit whichUnit, integer new_id returns integer
+
+// 技能 - 获取技能持续时间(英雄)
+// 获取单位 ${unit} 当前拥有的技能 ${id} 的持续时间(英雄)
+// @param u 单位
+// @param abil_id 整数
+// 英雄持续时间;技能对英雄或具有抗性皮肤的单位的持续时间.烈焰风暴的此项为熄灭持续时间.静止陷阱的此项是眩晕时间
+//注:  该函数正式服目前不可用
+    native DzGetUnitAbilityHeroDuration takes unit u, integer abil_id returns real
+
+// 单位 - 获取单位作为目标类型
+// 获取单位 ${单位} 作为目标类型
+// @param u 单位
+// 返回值可使用“转化 - 目标允许整数转字符串”
+    native DzGetUnitAsAttackTargetType takes unit u returns integer
+
+// 单位 - 获取单位攻击1目标允许
+// 获取单位 ${单位} 攻击1目标允许
+// @param u 单位
+// 返回值可使用“转化 - 目标允许整数转字符串”
+    native DzGetUnitAttack1TargetType takes unit u returns integer
+
+// 单位 - 获取单位攻击2目标允许
+// 获取单位 ${单位} 攻击2目标允许
+// @param u 单位
+// 返回值可使用“转化 - 目标允许整数转字符串”
+    native DzGetUnitAttack2TargetType takes unit u returns integer
+
+// 单位 - 获取攻击最大目标数
+// 设置单位 ${unit} 的攻击 ${index} 最大目标数
+// @param whichUnit 单位
+// @param index 整数
+// 第二个参数index 为0的时候 代表攻击1 1的时候代表攻击2
+//注:  该函数正式服目前不可用
+    native DzGetUnitAttackTargetCount takes unit whichUnit, integer index returns integer
+
+// 单位 - 获取魔法施放回复(后摇)
+// 获取 ${单位} 的魔法施放回复(后摇)
+// @param whichUnit 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitBackSwing takes unit whichUnit returns real
+
+// 单位 - 获取魔法施放点(前摇)
+// 获取 ${单位} 的魔法施放点(前摇)
+// @param whichUnit 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitCastPoint takes unit whichUnit returns real
+
+// 单位 - 获取单位控制命令是否被屏蔽
+// 获取单位 ${单位} 控制命令是否被屏蔽
+// @param u 单位
+// 判断该单位当前是否失控状态
+    native DzGetUnitDisableControlOrder takes unit u returns boolean
+
+// 单位 - 获取单位本地命令是否被屏蔽
+// 获取单位 ${单位} 本地命令是否被屏蔽
+// @param u 单位
+// 判断该单位当前是否失控状态
+    native DzGetUnitDisableLocalOrder takes unit u returns boolean
+
+// 单位 - 获取每秒生命恢复
+// 获取 ${单位} 的每秒生命恢复
+// @param whichUnit 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitLifeRegen takes unit whichUnit returns real
+
+// 单位 - 获取每秒魔法恢复
+// 获取 ${单位} 的每秒魔法恢复
+// @param whichUnit 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitManaRegen takes unit whichUnit returns real
+
+// 单位 - 获取最高移动速度
+// 获取 ${单位} 的最高移动速度
+// @param whichUnit 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitMaxSpeed takes unit whichUnit returns real
+
+// 单位 - 获取最低移动速度
+// 获取 ${单位} 的最低移动速度
+// @param whichUnit 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitMinSpeed takes unit whichUnit returns real
+
+// 单位 - 获取投射物发射坐标X
+// 获取 ${单位} 的投射物发射坐标X
+// @param u 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitPojectileLaunchX takes unit u returns real
+
+// 单位 - 获取投射物发射坐标Y
+// 获取 ${单位} 的投射物发射坐标Y
+// @param u 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitPojectileLaunchY takes unit u returns real
+
+// 单位 - 获取投射物发射坐标Z
+// 获取 ${单位} 的投射物发射坐标Z
+// @param u 单位
+//注:  该函数正式服目前不可用
+    native DzGetUnitPojectileLaunchZ takes unit u returns real
+
+// 单位 - 杀死(指定凶手)
+// 杀死 ${单位} 凶手为 ${killer}
+// @param whichUnit 单位
+// @param killer 单位
+// 杀死单位时指定凶手
+//注:  该函数正式服目前不可用
+    native DzKillUnit takes unit whichUnit, unit killer returns boolean
+
+// 投射物 - 发射炮火
+// 发射炮火 伤害来源: ${source} 目标: ${target} 目标坐标: ${target_x} ${target_y} 模型: ${model} 队伍颜色: ${i} 颜色: ${color} 创建坐标: ${x} ${y} ${z} 缩放: ${scale} 速度: ${speed} 攻击类型: ${at} 伤害类型: ${dt} 武器类型: ${wt} 伤害: ${damage} 孤度: ${arc} 攻击: ${attack} flag: ${flag} 最小范围: ${min_distance} 目标允许: ${targetflags} 中伤害参数: ${half_factor} 小伤害参数: ${quar_factor} 全伤害范围: ${full_area} 半伤害范围: ${half_area} 小伤害范围: ${quar_area}
+// @param source 单位
+// @param target 单位或物品
+// @param target_x 实数
+// @param target_y 实数
+// @param model 字符串
+// @param team_color 整数
+// @param color 整数
+// @param x 实数
+// @param y 实数
+// @param z 实数
+// @param scale 实数
+// @param speed 实数
+// @param attack_type 攻击类型
+// @param damage_type 伤害类型
+// @param weapon_type 武器类型
+// @param damage 实数
+// @param arc 实数
+// @param attack 布尔值
+// @param flags 整数
+// @param min_distance 实数
+// @param target_flags 整数
+// @param half_factor 实数
+// @param quar_factor 实数
+// @param full_area 实数
+// @param half_area 实数
+// @param quar_area 实数
+// 只封装了单位目标, 目标 null 则类似于攻击地面, flag 256(0x100) = 单位所受伤害是攻击伤害, 攻击 = 单位所受伤害是物理伤害
+//注:  该函数正式服目前不可用
+    native DzLaunchArtillery takes unit source, widget target, real target_x, real target_y, string model, integer team_color, integer color, real x, real y, real z, real scale, real speed, attacktype attack_type, damagetype damage_type, weapontype weapon_type, real damage, real arc, boolean attack, integer flags, real min_distance, integer target_flags, real half_factor, real quar_factor, real full_area, real half_area, real quar_area returns boolean
+
+// 投射物 - 发射炮火(穿透)
+// 发射炮火(穿透) 伤害来源: ${source} 目标: ${target} 目标坐标: ${target_x} ${target_y} 模型: ${model} 队伍颜色: ${i} 颜色: ${color} 创建坐标: ${x} ${y} ${z} 缩放: ${scale} 速度: ${speed} 攻击类型: ${at} 伤害类型: ${dt} 武器类型: ${wt} 伤害: ${damage} 孤度: ${arc} 攻击: ${attack} flag: ${flag} 最小范围: ${min_distance} 目标允许: ${targetflags} 中伤害参数: ${half_factor} 小伤害参数: ${quar_factor} 全伤害范围: ${full_area} 半伤害范围: ${half_area} 小伤害范围: ${quar_area} 伤害衰减: ${damage_loss} 距离: ${distance} 范围: ${range}
+// @param source 单位
+// @param target 单位或物品
+// @param target_x 实数
+// @param target_y 实数
+// @param model 字符串
+// @param team_color 整数
+// @param color 整数
+// @param x 实数
+// @param y 实数
+// @param z 实数
+// @param scale 实数
+// @param speed 实数
+// @param attack_type 攻击类型
+// @param damage_type 伤害类型
+// @param weapon_type 武器类型
+// @param damage 实数
+// @param arc 实数
+// @param attack 布尔值
+// @param flags 整数
+// @param min_distance 实数
+// @param target_flags 整数
+// @param half_factor 实数
+// @param quar_factor 实数
+// @param full_area 实数
+// @param half_area 实数
+// @param quar_area 实数
+// @param damage_loss 实数
+// @param distance 实数
+// @param range 实数
+// 只封装了单位目标, 目标 null 则类似于攻击地面, flag 256(0x100) = 单位所受伤害是攻击伤害, 攻击 = 单位所受伤害是物理伤害
+//注:  该函数正式服目前不可用
+    native DzLaunchArtilleryLine takes unit source, widget target, real target_x, real target_y, string model, integer team_color, integer color, real x, real y, real z, real scale, real speed, attacktype attack_type, damagetype damage_type, weapontype weapon_type, real damage, real arc, boolean attack, integer flags, real min_distance, integer target_flags, real half_factor, real quar_factor, real full_area, real half_area, real quar_area, real damage_loss, real distance, real range returns boolean
+
+// 投射物 - 发射箭矢
+// 发射箭矢 伤害来源: ${source} 目标: ${target} 模型: ${model} 队伍颜色: ${i} 颜色: ${color} 创建坐标: ${x} ${y} ${z} 缩放: ${scale} 速度: ${speed} 攻击类型: ${at} 伤害类型: ${dt} 武器类型: ${wt} 伤害: ${damage} 孤度: ${arc} 自导: ${homing} 可以丢失: ${can_miss} 永不丢失: ${never_miss} 攻击: ${attack} flag: ${flag}
+// @param source 单位
+// @param target 单位或物品
+// @param model 字符串
+// @param team_color 整数
+// @param color 整数
+// @param x 实数
+// @param y 实数
+// @param z 实数
+// @param scale 实数
+// @param speed 实数
+// @param attack_type 攻击类型
+// @param damage_type 伤害类型
+// @param weapon_type 武器类型
+// @param damage 实数
+// @param arc 实数
+// @param homing 布尔值
+// @param can_miss 布尔值
+// @param never_miss 布尔值
+// @param attack 布尔值
+// @param flags 整数
+// 只封装了单位目标, flag 256(0x100) = 单位所受伤害是攻击伤害, 攻击 = 单位所受伤害是物理伤害
+//注:  该函数正式服目前不可用
+    native DzLaunchMissile takes unit source, widget target, string model, integer team_color, integer color, real x, real y, real z, real scale, real speed, attacktype attack_type, damagetype damage_type, weapontype weapon_type, real damage, real arc, boolean homing, boolean can_miss, boolean never_miss, boolean attack, integer flags returns boolean
+
+// 投射物 - 发射箭矢(弹射)
+// 发射箭矢(弹射) 伤害来源: ${source} 目标: ${target} 模型: ${model} 队伍颜色: ${i} 颜色: ${color} 创建坐标: ${x} ${y} ${z} 缩放: ${scale} 速度: ${speed} 攻击类型: ${at} 伤害类型: ${dt} 武器类型: ${wt} 伤害: ${damage} 孤度: ${arc} 自导: ${homing} 可以丢失: ${can_miss} 永不丢失: ${never_miss} 攻击: ${attack} flag: ${flag} 目标允许: ${target_flag} 最大目标数: ${target_count} 弹射距离: ${range} 伤害衰减: ${damage_loss}
+// @param source 单位
+// @param target 单位或物品
+// @param model 字符串
+// @param team_color 整数
+// @param color 整数
+// @param x 实数
+// @param y 实数
+// @param z 实数
+// @param scale 实数
+// @param speed 实数
+// @param attack_type 攻击类型
+// @param damage_type 伤害类型
+// @param weapon_type 武器类型
+// @param damage 实数
+// @param arc 实数
+// @param homing 布尔值
+// @param can_miss 布尔值
+// @param never_miss 布尔值
+// @param attack 布尔值
+// @param flags 整数
+// @param target_flags 整数
+// @param target_count 整数
+// @param bounce_range 实数
+// @param damage_loss 实数
+// 只封装了单位目标, flag 256(0x100) = 单位所受伤害是攻击伤害, 攻击 = 单位所受伤害是物理伤害
+//注:  该函数正式服目前不可用
+    native DzLaunchMissileBounce takes unit source, widget target, string model, integer team_color, integer color, real x, real y, real z, real scale, real speed, attacktype attack_type, damagetype damage_type, weapontype weapon_type, real damage, real arc, boolean homing, boolean can_miss, boolean never_miss, boolean attack, integer flags, integer target_flags, integer target_count, real bounce_range, real damage_loss returns boolean
+
+// 投射物 - 发射技能投射物(腐臭蜂群)
+// 发射技能投射物(腐臭蜂群) 伤害来源: ${source} 模型: ${model} 队伍颜色: ${i} 颜色: ${color} 创建坐标: ${x} ${y} ${z} 角度: ${degree} 距离: ${distance} 缩放: ${scale} 速度: ${speed} 攻击类型: ${at} 伤害类型: ${dt} 武器类型: ${wt} 伤害: ${damage} flag: ${flag} 目标允许: ${targetflags} 初始范围: ${start_radius} 最终范围: ${start_radius} 最大伤害: ${max_damage} 魔法效果: ${buffID}
+// @param source 单位
+// @param model 字符串
+// @param team_color 整数
+// @param color 整数
+// @param x 实数
+// @param y 实数
+// @param z 实数
+// @param facing 实数
+// @param distance 实数
+// @param scale 实数
+// @param speed 实数
+// @param attack_type 攻击类型
+// @param damage_type 伤害类型
+// @param weapon_type 武器类型
+// @param damage 实数
+// @param flags 整数
+// @param target_flags 整数
+// @param start_radius 实数
+// @param end_radius 实数
+// @param max_damage 实数
+// @param buffID 整数
+// 只封装了单位目标, 魔法效果用途未知, flag 256(0x100) = 单位所受伤害是攻击伤害
+//注:  该函数正式服目前不可用
+    native DzLaunchMissileCarrionSwarmEx takes unit source, string model, integer team_color, integer color, real x, real y, real z, real facing, real distance, real scale, real speed, attacktype attack_type, damagetype damage_type, weapontype weapon_type, real damage, integer flags, integer target_flags, real start_radius, real end_radius, real max_damage, integer buffID returns boolean
+
+// 投射物 - 发射箭矢(穿透)
+// 发射箭矢(穿透) 伤害来源: ${source} 目标: ${target} 模型: ${model} 队伍颜色: ${i} 颜色: ${color} 创建坐标: ${x} ${y} ${z} 缩放: ${scale} 速度: ${speed} 攻击类型: ${at} 伤害类型: ${dt} 武器类型: ${wt} 伤害: ${damage} 孤度: ${arc} 自导: ${homing} 可以丢失: ${can_miss} 永不丢失: ${never_miss} 攻击: ${attack} flag: ${flag} 目标允许: ${target_flag} 伤害衰减: ${damage_loss} 距离: ${distance} 范围: ${range}
+// @param source 单位
+// @param target 单位或物品
+// @param model 字符串
+// @param team_color 整数
+// @param color 整数
+// @param x 实数
+// @param y 实数
+// @param z 实数
+// @param scale 实数
+// @param speed 实数
+// @param attack_type 攻击类型
+// @param damage_type 伤害类型
+// @param weapon_type 武器类型
+// @param damage 实数
+// @param arc 实数
+// @param homing 布尔值
+// @param can_miss 布尔值
+// @param never_miss 布尔值
+// @param attack 布尔值
+// @param flags 整数
+// @param target_flags 整数
+// @param damage_loss 实数
+// @param distance 实数
+// @param range 实数
+// 只封装了单位目标, flag 256(0x100) = 单位所受伤害是攻击伤害, 攻击 = 单位所受伤害是物理伤害
+//注:  该函数正式服目前不可用
+    native DzLaunchMissileLine takes unit source, widget target, string model, integer team_color, integer color, real x, real y, real z, real scale, real speed, attacktype attack_type, damagetype damage_type, weapontype weapon_type, real damage, real arc, boolean homing, boolean can_miss, boolean never_miss, boolean attack, integer flags, integer target_flags, real damage_loss, real distance, real range returns boolean
+
+// 投射物 - 发射箭矢(溅射)
+// 发射箭矢(溅射) 伤害来源: ${source} 目标: ${target} 模型: ${model} 队伍颜色: ${i} 颜色: ${color} 创建坐标: ${x} ${y} ${z} 缩放: ${scale} 速度: ${speed} 攻击类型: ${at} 伤害类型: ${dt} 武器类型: ${wt} 伤害: ${damage} 孤度: ${arc} 自导: ${homing} 可以丢失: ${can_miss} 永不丢失: ${never_miss} 攻击: ${attack} flag: ${flag} 目标允许: ${targetflags} 中伤害参数: ${half_factor} 小伤害参数: ${quar_factor} 全伤害范围: ${full_area} 半伤害范围: ${half_area} 小伤害范围: ${quar_area}
+// @param source 单位
+// @param target 单位或物品
+// @param model 字符串
+// @param team_color 整数
+// @param color 整数
+// @param x 实数
+// @param y 实数
+// @param z 实数
+// @param scale 实数
+// @param speed 实数
+// @param attack_type 攻击类型
+// @param damage_type 伤害类型
+// @param weapon_type 武器类型
+// @param damage 实数
+// @param arc 实数
+// @param homing 布尔值
+// @param can_miss 布尔值
+// @param never_miss 布尔值
+// @param attack 布尔值
+// @param flags 整数
+// @param target_flags 整数
+// @param half_factor 实数
+// @param quar_factor 实数
+// @param full_area 实数
+// @param half_area 实数
+// @param quar_area 实数
+// 只封装了单位目标, flag 256(0x100) = 单位所受伤害是攻击伤害, 攻击 = 单位所受伤害是物理伤害
+//注:  该函数正式服目前不可用
+    native DzLaunchMissileSplash takes unit source, widget target, string model, integer team_color, integer color, real x, real y, real z, real scale, real speed, attacktype attack_type, damagetype damage_type, weapontype weapon_type, real damage, real arc, boolean homing, boolean can_miss, boolean never_miss, boolean attack, integer flags, integer target_flags, real half_factor, real quar_factor, real full_area, real half_area, real quar_area returns boolean
+
+// 游戏 - 设置全局移速 上/下 限
+// 设置全局移速 硬编码限制(建筑 ${building_min}-${building_max} 单位 ${unit_min}-${unit_max}) 平衡性常数限制(建筑 ${GC_building_min}-${GC_building_max} 单位 ${GC_unit_min}-${GC_unit_max}) 采矿最低移速 ${harvest_min} 疾步风最高移速 ${windwalk_max}
+// @param building_min 实数
+// @param building_max 实数
+// @param unit_min 实数
+// @param unit_max 实数
+// @param GC_building_min 实数
+// @param GC_building_max 实数
+// @param GC_unit_min 实数
+// @param GC_unit_max 实数
+// @param harvest_min 实数
+// @param windwalk_max 实数
+// 副作用: 会影响转身速度
+//注:  该函数正式服目前不可用
+    native DzSetGlobalUnitMinMaxMoveSpeed takes real building_min, real building_max, real unit_min, real unit_max, real GC_building_min, real GC_building_max, real GC_unit_min, real GC_unit_max, real harvest_min, real windwalk_max returns nothing
+
+// 英雄 - 设置主属性
+// 设置英雄 ${hero} 的主属性为 ${value}
+// @param whichUnit 单位
+// @param attribute 整数
+// 白字属性
+//注:  该函数正式服目前不可用
+    native DzSetHeroPrimaryAttribute takes unit whichUnit, integer attribute returns boolean
+
+// 英雄 - 设置属性成长
+// 设置英雄 ${hero} 的 ${attribute} 属性成长为 ${value} 保留当前数值: ${flag}
+// @param whichUnit 单位
+// @param attreibute 整数
+// @param value 实数
+// @param keep_current_bonus 布尔值
+// 因内部是混用整数和实数 所以保留数值为 TRUE 时会可能丢失/获取额外属性
+//注:  该函数正式服目前不可用
+    native DzSetHeroPrimaryAttributePlus takes unit whichUnit, integer attreibute, real value, boolean keep_current_bonus returns boolean
+
+// 英雄 - 设置主属性类型
+// 设置英雄 ${hero} 的主属性类型为 ${attribute} 保留当前主属性加成 ${flag}
+// @param whichUnit 单位
+// @param attribute 整数
+// @param keep_primary_bonus 布尔值
+//注:  该函数正式服目前不可用
+    native DzSetHeroPrimaryAttributeType takes unit whichUnit, integer attribute, boolean keep_primary_bonus returns boolean
+
+// 物品 - 修改物品碰撞体积
+// 修改物品 ${物品} 的碰撞体积为 ${碰撞体积}
+// @param it 物品
+// @param size 实数
+// 体积可以是0,8,16,32,64。修改之后重新设置一下位置就会刷新了
+    native DzSetItemCollisionSize takes item it, real size returns nothing
+
+// 游戏 - 设置攻速上限
+// 设置攻速上限为 ${min} - ${max}
+// @param min_factor 实数
+// @param max_factor 实数
+// 除非禁用攻速限制, 不然最终攻速无法超过每秒 50 次
+//注:  该函数正式服目前不可用
+    native DzSetMinMaxAttackSpeedFactor takes real min_factor, real max_factor returns nothing
+
+// 游戏 - 设置移速可叠加
+// 设置移速可叠加 ${flag}
+// @param is_enable 布尔值
+// 多个技能，多个物品的移动速度能叠加。平衡性常数那个有bug
+//注:  该函数正式服目前不可用
+    native DzSetMoveSpeedBonusesStack takes boolean is_enable returns nothing
+
+// 技能 - 设置技能魔法施放回复(后摇)
+// 设置单位 ${unit} 当前拥有的技能 ${id} 的魔法施放回复(后摇) ${cast_time}
+// @param u 单位
+// @param abil_id 整数
+// @param value 实数
+// 即施法后摇
+//注:  该函数正式服目前不可用
+    native DzSetUnitAbilityBackSwing takes unit u, integer abil_id, real value returns boolean
+
+// 技能 - 设置技能魔法施放点(前摇)
+// 设置单位 ${unit} 当前拥有的技能 ${id} 的魔法施放点(前摇) ${cast_time}
+// @param u 单位
+// @param abil_id 整数
+// @param value 实数
+// 即施法前摇
+//注:  该函数正式服目前不可用
+    native DzSetUnitAbilityCastPoint takes unit u, integer abil_id, real value returns boolean
+
+// 技能 - 设置技能魔法施法时间
+// 设置单位 ${unit} 当前拥有的技能 ${id} 的魔法施法时间 ${cast_time}
+// @param u 单位
+// @param abil_id 整数
+// @param value 实数
+// 开始施法前的准备时间.暗影突袭的此项为伤害间隔.暴风雪和火焰雨的此项为每波间隔;单位的独立修改,删除技能后改动即清除, 需要刷新数据
+//注:  该函数正式服目前不可用
+    native DzSetUnitAbilityCastTime takes unit u, integer abil_id, real value returns boolean
+
+// 技能 - 设置技能持续时间(普通)
+// 设置单位 ${unit} 当前拥有的技能 ${id} 的持续时间(普通) ${cast_time}
+// @param u 单位
+// @param abil_id 整数
+// @param value 实数
+// 普通持续时间;单位的独立修改,删除技能后改动即清除, 需要刷新数据;烈焰风暴的此项为燃烧持续时间.变身(恶魔猎手)的此项为完成变身前暂停时间
+//注:  该函数正式服目前不可用
+    native DzSetUnitAbilityDuration takes unit u, integer abil_id, real value returns boolean
+
+// 技能 - 工程升级 - 替换技能(要相同模板)
+// 工程升级替换技能 单位 ${u} 原有技能 ${old_id} 到目标技能 ${new_id} 更新英雄技能 ${flag}
+// @param whichUnit 单位
+// @param old_id 整数
+// @param new_id 整数
+// @param update_hero_ability 布尔值
+// 相当于替换技能, 将指定技能替换成目标技能, 只能替换相同模板的类型, 不同模板替换会错误，谨慎使用。
+//注:  该函数正式服目前不可用
+    native DzSetUnitAbilityEngineeringUpgrade takes unit whichUnit, integer old_id, integer new_id, boolean update_hero_ability returns boolean
+
+// 技能 - 工程升级 - 取消替换技能
+// 工程升级取消替换技能 单位 ${u} 原有技能 ${old_id}
+// @param whichUnit 单位
+// @param old_id 整数
+//注:  该函数正式服目前不可用
+    native DzSetUnitAbilityEngineeringUpgradeCancel takes unit whichUnit, integer old_id returns boolean
+
+// 技能 - 设置技能持续时间(英雄)
+// 设置单位 ${unit} 当前拥有的技能 ${id} 的持续时间(英雄) ${cast_time}
+// @param u 单位
+// @param abil_id 整数
+// @param value 实数
+// 英雄持续时间;单位的独立修改,删除技能后改动即清除, 需要刷新数据;技能对英雄或具有抗性皮肤的单位的持续时间.烈焰风暴的此项为熄灭持续时间.静止陷阱的此项是眩晕时间
+//注:  该函数正式服目前不可用
+    native DzSetUnitAbilityHeroDuration takes unit u, integer abil_id, real value returns boolean
+
+// 技能 - 设置魔法书技能列表添加新技能
+// 设置单位 ${unit} 当前拥有的魔法书技能 ${id} 的技能列表 添加新技能 ${abil_id}
+// @param u 单位
+// @param abil_id 整数
+// @param add_abil_id 整数
+// 添加新技能, 不能跟原有的重复，不能超过12个技能。
+    native DzSetUnitAbilitySpellBookAddAbility takes unit u, integer abil_id, integer add_abil_id returns boolean
+
+// 技能 - 设置魔法书技能列表移除指定技能
+// 设置单位 ${unit} 当前拥有的魔法书技能 ${id} 的技能列表 移除指定技能 ${abil_id}
+// @param u 单位
+// @param abil_id 整数
+// @param remove_abil_id 整数
+// 将指定技能从魔法书里剔除。
+    native DzSetUnitAbilitySpellBookRemoveAbility takes unit u, integer abil_id, integer remove_abil_id returns boolean
+
+// 单位 - 设置单位作为目标类型
+// 设置单位 ${单位} 作为目标类型 ${目标允许}
+// @param u 单位
+// @param target_type 整数
+// 使用“转化 - 目标允许字符串转整数”, 例如 设置自身是否作为空中目标, 近战不能打空中
+    native DzSetUnitAsAttackTargetType takes unit u, integer target_type returns nothing
+
+// 单位 - 设置单位攻击1目标允许
+// 设置单位 ${单位} 攻击1目标类型 ${目标允许}
+// @param u 单位
+// @param target_type 整数
+// 可使用“转化 - 目标允许字符串转整数”, 例如 允许地面单位攻击飞行单位
+    native DzSetUnitAttack1TargetType takes unit u, integer target_type returns nothing
+
+// 单位 - 设置单位攻击2目标允许
+// 设置单位 ${单位} 攻击2目标类型 ${目标允许}
+// @param u 单位
+// @param target_type 整数
+// 可使用“转化 - 目标允许字符串转整数”, 例如 设置允许地面单位攻击空中单位
+    native DzSetUnitAttack2TargetType takes unit u, integer target_type returns nothing
+
+// 单位 - 设置攻击最大目标数
+// 设置单位 ${unit} 的攻击 ${index} 最大目标数为 ${value}
+// @param whichUnit 单位
+// @param index 整数
+// @param target_count 整数
+// 仅 箭矢(弹射) 攻击类型有效, 并且物编需要填全伤害范围。 第二个参数index 为0的时候 代表攻击1 1的时候代表攻击2
+//注:  该函数正式服目前不可用
+    native DzSetUnitAttackTargetCount takes unit whichUnit, integer index, integer target_count returns boolean
+
+// 单位 - 设置魔法施放回复(后摇)
+// 设置 ${单位} 的魔法施放回复(后摇)为 ${value}
+// @param whichUnit 单位
+// @param back_swing 实数
+// 不会影响已经初始化的技能, 修改之后添加的所有技能会使用该后摇
+//注:  该函数正式服目前不可用
+    native DzSetUnitBackSwing takes unit whichUnit, real back_swing returns boolean
+
+// 单位 - 设置魔法施放点(前摇)
+// 设置 ${单位} 的魔法施放点(前摇)为 ${value}
+// @param whichUnit 单位
+// @param cast_point 实数
+// 不会影响已经初始化的技能, 修改之后添加的所有技能会使用该前摇
+//注:  该函数正式服目前不可用
+    native DzSetUnitCastPoint takes unit whichUnit, real cast_point returns boolean
+
+// 单位 - 设置单位屏蔽控制命令(模拟失控)
+// 设置单位 ${单位} 屏蔽控制命令为 ${屏蔽状态}
+// @param u 单位
+// @param is_disable 布尔值
+// true是失控状态, false是恢复。 屏蔽之后该单位任何手动控制都将失效, 只能通过触发器命令控制该单位。
+    native DzSetUnitDisableControlOrder takes unit u, boolean is_disable returns nothing
+
+// 单位 - 设置单位屏蔽本地命令(模拟失控)
+// 设置单位 ${单位} 屏蔽本地命令为 ${屏蔽状态}
+// @param u 单位
+// @param is_disable 布尔值
+// true是失控状态, false是恢复。 屏蔽之后该单位任何手动控制都将失效, 只能通过触发器命令控制该单位。 屏蔽本地命令的缺点是 多选单位会因为其中一个屏蔽而所有选择单位
+    native DzSetUnitDisableLocalOrder takes unit u, boolean is_disable returns nothing
+
+// 单位 - 设置每秒生命恢复
+// 设置 ${单位} 的每秒生命恢复为 ${value}
+// @param whichUnit 单位
+// @param regen 实数
+//注:  该函数正式服目前不可用
+    native DzSetUnitLifeRegen takes unit whichUnit, real regen returns boolean
+
+// 单位 - 设置每秒魔法恢复
+// 设置 ${单位} 的每秒魔法恢复为 ${value}
+// @param whichUnit 单位
+// @param regen 实数
+//注:  该函数正式服目前不可用
+    native DzSetUnitManaRegen takes unit whichUnit, real regen returns boolean
+
+// 单位 - 设置最高移动速度
+// 设置 ${单位} 的最高移动速度为 ${value} 忽略变形术 ${flag}
+// @param whichUnit 单位
+// @param speed 实数
+// @param ignore_polymorph 布尔值
+//注:  该函数正式服目前不可用
+    native DzSetUnitMaxSpeed takes unit whichUnit, real speed, boolean ignore_polymorph returns boolean
+
+// 单位 - 设置最低移动速度
+// 设置 ${单位} 的最低移动速度为 ${value} 忽略变形术 ${flag}
+// @param whichUnit 单位
+// @param speed 实数
+// @param ignore_polymorph 布尔值
+//注:  该函数正式服目前不可用
+    native DzSetUnitMinSpeed takes unit whichUnit, real speed, boolean ignore_polymorph returns boolean
+
+// 单位 - 设置XY坐标(不打断命令)
+// 设置单位 ${unit} 的坐标为 X: ${x} Y: ${y}
+// @param whichUnit 单位
+// @param x 实数
+// @param y 实数
+// 相当于同时 设置单位X轴+设置单位Y轴, 并且不会触发错误的进入区域事件, 不会发布stop命令, 性能比设置单位位置高7倍。
+//注:  该函数正式服目前不可用
+    native DzSetUnitXY takes unit whichUnit, real x, real y returns boolean
+
+// 技能按钮 - 获取按钮上的技能ID
+// 获取按钮 ${按钮} 上的技能ID
+// @param command_button 整数
+// 参数是原生或自己创建的技能按钮、物品按钮、 返回值是异步的, 当按钮有绑定技能时 会返回正确的ID
+    native KKCommandButtonGetAbilityId takes integer command_button returns integer
+
+// 技能按钮 - 获取按钮上的命令ID
+// 获取按钮 ${按钮} 上的命令ID
+// @param command_button 整数
+// 参数是原生或自己创建的技能按钮、物品按钮、 返回值是异步的, 当按钮有绑定时 会返回正确的ID
+    native KKCommandButtonGetOrderId takes integer command_button returns integer
+
+#endif
